@@ -1,0 +1,24 @@
+{
+  "name": "Range-slider-plagin",
+  "version": "1.0.0",
+  "description": "making a range slider plagin",
+  "main": "index.js",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andrew-Zaitsev/Range-slider-plagin.git"
+  },
+  "keywords": [],
+  "author": "Andrew Zaitsev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Andrew-Zaitsev/Range-slider-plagin/issues"
+  },
+  "homepage": "https://github.com/Andrew-Zaitsev/Range-slider-plagin#readme"
+}

@@ -1,0 +1,10 @@
+#cache files
+/.cache/*
+#local dev files
+/dist/*
+#node modules files
+/node_modules/*
+#git files
+/git ignore/*
+#some files??
+/debug.log
