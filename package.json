@@ -1,24 +1,42 @@
 {
-  "name": "Range-slider-plagin",
+  "name": "Range-slider-plugin",
   "version": "1.0.0",
-  "description": "making a range slider plagin",
-  "main": "index.js",
-  "dependencies": {
-    "parcel-bundler": "^1.12.4"
+  "description": "making a range slider plugin",
+  "main": "src/index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jquery": "^3.5.6",
+    "clean-webpack-plugin": "^4.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.4.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "jquery": "^3.6.0",
+    "mini-css-extract-plugin": "^2.4.2",
+    "node-sass": "^6.0.1",
+    "pug": "^3.0.2",
+    "pug-loader": "^2.4.0",
+    "sass-loader": "^12.2.0",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.3",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=development webpack serve --mode development --open",
+    "build": "cross-env NODE_ENV=production webpack --mode production"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Andrew-Zaitsev/Range-slider-plagin.git"
+    "url": "git+https://github.com/Andrew-Zaitsev/Range-slider-plugin.git"
   },
   "keywords": [],
   "author": "Andrew Zaitsev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Andrew-Zaitsev/Range-slider-plagin/issues"
+    "url": "https://github.com/Andrew-Zaitsev/Range-slider-plugin/issues"
   },
-  "homepage": "https://github.com/Andrew-Zaitsev/Range-slider-plagin#readme"
+  "homepage": "https://github.com/Andrew-Zaitsev/Range-slider-plugin#readme"
 }
