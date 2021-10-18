@@ -20,5 +20,8 @@ module.exports = {
     'max-len': [1, 120],
   },
   // root: true,
-  // plugins: ['fsd'],
+  plugins: [
+    // 'fsd'
+    '@typescript-eslint',
+  ],
 };

@@ -1,0 +1,23 @@
+//main colors
+$black: rgba(31, 32, 65, 1); //#1F2041
+$white: rgba(255, 255, 255, 1); //#FFFFFF фон
+$grey: rgba(229, 229, 229, 1); //#E5E5E5
+$green: rgba(0, 135, 140, 1); //00878c зеленая линия и круги
+$darkgrey: rgba(187, 187, 187, 1); //bbbbbb гистограмма
+$lightgrey: rgba(217, 217, 217, 1); //d9d9d9 серая линия
+
+//transparencies
+$aFirst: 0.75;
+
+//additional transparencies
+
+//secondary colors
+
+//gradients
+$whiteGradient: linear-gradient(180deg, $white 0%, $white 100%);
+
+//font
+$mainFont: Montserrat,
+OpenSans,
+sans-serif;
+$mainFontSize: 16px;

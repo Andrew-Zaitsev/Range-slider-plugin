@@ -1,0 +1,40 @@
+@import '../assets/scss/main.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: $mainFont;
+  font-size: $mainFontSize;
+  color: $black;
+  background-color: $white;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+}
+
+.demo {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1440px;
+  min-width: 260px;
+  margin: 0 auto;
+  padding: 70px 50px;
+  background-image: url('./resource_wall_1.jpg');//url(images/resource_wall_1.jpg);
+  background-position: top center;
+  background-size: cover;
+
+  &__title {
+    padding: 20px 0;
+    text-align: center;
+    font-size: 3rem;
+    color: black;//$white;
+  }
+}
+
+// @import '../modules/slider-section/slider-section.scss'

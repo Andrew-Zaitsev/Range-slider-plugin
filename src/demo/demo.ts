@@ -1,1 +1,1 @@
-console.log('there');
+import './demo.scss';

@@ -1,30 +1,33 @@
+//const fs = require('fs'); // работа с файловой системой
 const path = require('path');
-const fs = require('fs'); // работа с файловой системой
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlagin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
-const isDev = process.env.NODE_ENV === 'development'; // в режиме разработки или нет
+const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
 
 const optimization = () => {
   const config = {
-    runtimeChunk: 'single',
+    runtimeChunk: 'single', // без этого куска открытое окно не обновляется сервером
   };
   
   return config;
 };
 
-const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[hash:4].${ext}`);
+const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[fullhash:2].${ext}`);
 
 const cssLoaders = (addition) => {
   const loaders = [
-    'style-loader',
-    { loader: MiniCssExtractPlagin.loader },
+    isDev ? 'style-loader':
+      { loader: MiniCssExtractPlagin.loader,
+        options: {
+          esModule: false,
+        },
+      },
     'css-loader',
   ];
-  
+
   if (addition) loaders.push(addition);
   
   return loaders;
@@ -42,14 +45,16 @@ module.exports = {
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
-  //optimization: optimization(),
+  optimization: optimization(),
   devServer: {
+    // contentBase: './dist', не работает с ним, нет такого свойства больше
     port: 4200,
     hot: isDev,
     open: 'Google Chrome',
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/demo/demo.pug'),
@@ -58,7 +63,6 @@ module.exports = {
         collapseWhitespace: isProd,
       },
     }),
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlagin({
       filename: filename('css'),
     }),
@@ -86,11 +90,13 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/,
-        use: ['file-loader'],
+        type: 'asset/resource',
+        //use: ['file-loader'],
       },
       {
         test: /\.(ttf|woff|woff2|eot)$/,
-        use: ['file-loader'],
+        type: 'asset/inline',
+        //use: ['file-loader'],
       },
       {
         test: /\.pug$/,
