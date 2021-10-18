@@ -15,19 +15,23 @@ const optimization = () => {
   return config;
 };
 
-const filename = (ext) => (isDev ? `[name].${ext}` : `[name].[fullhash:2].${ext}`);
+const filename =  (ext) => `[name].${ext}`; // (ext) => (isDev ? `[name].${ext}` : `[name].[fullhash:2].${ext}`);
 
 const cssLoaders = (addition) => {
-  const loaders = [
-    isDev ? 'style-loader':
-      { loader: MiniCssExtractPlagin.loader,
-        options: {
-          esModule: false,
-        },
-      },
-    'css-loader',
-  ];
 
+  const loaders = ['css-loader'];
+  const loaderMCEP = { 
+    loader: MiniCssExtractPlagin.loader,
+    options: {
+      esModule: false,
+    },
+  };
+
+  if (isDev) {
+    loaders.unshift('style-loader')
+  } else {
+    loaders.unshift(loaderMCEP)
+  };
   if (addition) loaders.push(addition);
   
   return loaders;
@@ -54,7 +58,7 @@ module.exports = {
     hot: isDev,
     open: 'Google Chrome',
   },
-  devtool: 'source-map',
+  devtool: isDev ? 'source-map' : false,
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './src/demo/demo.pug'),
