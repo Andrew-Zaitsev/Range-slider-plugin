@@ -9,7 +9,18 @@ const isProd = !isDev;
 
 const optimization = () => {
   const config = {
+    minimize: false,
     runtimeChunk: 'single', // без этого куска открытое окно не обновляется сервером
+    splitChunks: {
+      cacheGroups: { // собрать все css в один выходной файл
+        styles: {
+          name: "sliderAppStyles",
+          type: "css/mini-extract",
+          chunks: "all",
+          enforce: true,
+        },
+      },
+    },
   };
   
   return config;
@@ -49,6 +60,7 @@ module.exports = {
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
+    // assetModuleFilename: 'images/[name][ext]',
     clean: true,
   },
   optimization: optimization(),
@@ -68,7 +80,7 @@ module.exports = {
       },
     }),
     new MiniCssExtractPlagin({
-      filename: filename('css'),
+      filename: 'assets/css/' + filename('css'),
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
@@ -95,11 +107,17 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name][ext]'
+        }
         //use: ['file-loader'],
       },
       {
         test: /\.(ttf|woff|woff2|eot)$/,
-        type: 'asset/inline',
+        type: 'asset/resource',//'asset/inline',
+        generator: {
+          filename: 'assets/fonts/[name][ext]'
+        }
         //use: ['file-loader'],
       },
       {
