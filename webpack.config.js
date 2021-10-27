@@ -60,12 +60,18 @@ module.exports = {
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
+    // publicPath: path.resolve(__dirname, 'public'),
     // assetModuleFilename: 'images/[name][ext]',
     clean: true,
   },
+  
+  resolve: {
+    extensions: ['.ts','.js'],
+  },
+  
   optimization: optimization(),
   devServer: {
-    // contentBase: './dist', не работает с ним, нет такого свойства больше
+    // contentBase: './public', // не работает с ним, нет такого свойства больше
     port: 4200,
     hot: isDev,
     open: 'Google Chrome',
