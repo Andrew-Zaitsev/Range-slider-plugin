@@ -39,3 +39,80 @@ body {
 }
 
 // @import '../modules/slider-section/slider-section.scss'
+
+.demo__slider-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0 0;
+}
+.demo__slider-wrapper {
+  width: 100%;
+  max-width: 925px;
+  border: 2px solid $darkgrey;
+  border-radius: 8px;
+  //box-shadow: 0px 0px 5px 5px $white;
+  background-color: $white;
+  &_for-controls {
+    max-width: 225px;
+    align-self: stretch;
+  }
+}
+
+.demo__slider {
+  padding: 5px;
+}
+/*
+.slider {
+  position: relative;
+  height: 70px;
+
+  &__line {
+    width: calc(100% - 70px);
+    height: 10px;
+    position: absolute;
+    top: 50%;
+    left: 35px;
+    transform: translateY(-50%);
+    border-radius: 5px;
+    background-color: $lightgrey;
+    cursor: pointer;
+  }
+
+  &__bar {
+    width: 70%;
+    height: 10px;
+    position: absolute;
+    top: 50%;
+    left: 35px;
+    transform: translateY(-50%);
+    background-color: $green;
+    cursor: pointer;
+  }
+
+  &__handle {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid $green;
+    background-color: $white;
+    box-shadow: 0px 5px 5px -1px $darkgrey;
+    //box-shadow: 0px 2px 5px 2px $green;
+    cursor: pointer;
+
+    &:hover {
+      border-width: 3px;
+      //box-shadow: 0px 0px 5px 2px $green;
+    }
+
+    &_left {}
+
+    &_right {
+      left: 70%;
+
+    }
+  }
+}
+*/
