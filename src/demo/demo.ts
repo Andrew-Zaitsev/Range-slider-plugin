@@ -1,7 +1,7 @@
 import './demo.scss';
-import type { userOptions } from '../model/optionsTypes';
+import type { userOptions } from '../facade/model/optionsTypes';
 
-const sliderOptions: userOptions[] = [
+const options: userOptions[] = [
   {
     minValue: 10,
     maxValue: 50,
@@ -25,5 +25,6 @@ const sliderOptions: userOptions[] = [
     step: 12,
   },
 ];
-// console.log('demo');
-$('.demo__title').rangeSlider('init').css('color', 'red');
+$('.demo__title').rangeSlider(options[0]);
+
+// console.log(a.data());

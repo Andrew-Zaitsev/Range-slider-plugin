@@ -1,4 +1,4 @@
-import type { defaultOptions, userOptions } from '../model/optionsTypes';
+import type { defaultOptions, userOptions } from './optionsTypes';
 
 export default class Model {
   static readonly defaultOptions: defaultOptions = {

@@ -1,47 +1,33 @@
 import './jquery.interface.ts';
-import type { userOptions } from './model/optionsTypes';
-import Model from './model/model';
-import View from './view/view';
-import Presenter from './presenter/presenter';
+import type { userOptions } from './facade/model/optionsTypes';
+import Facade from './facade/facade';
 
 (function ($) {
-  jQuery.fn.rangeSlider = function (requirements: any) {
-    // console.log('hi', requirements);
-
-    const methods = {
+  jQuery.fn.rangeSlider = function (pluginOptions: any): JQuery {
+    const pluginAPI = {
       init(options: userOptions|undefined): JQuery {
-        const model: Model = new Model(options);
-        const view: View = new View();
-        const presenter: Presenter = new Presenter(model, view);
-
-        console.log('from init \n ***************');
-        console.log('options: \n', options);
-        console.log('this \n', this);
-        console.log('****************');
-
-        return this;
+        return this.each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, options)));
       },
       show() {
-        // ПОДХОД
+        //
       },
       hide() {
-        // ПРАВИЛЬНЫЙ
+        //
       },
       update() {
-        // !!!
+        //
       },
       delete() {
-        // !!!
+        //
       },
     };
-    // this = $(elem)
+    // this = $(elem), this[0] = elem
     switch (true) {
-      case ((methods[requirements]) && (typeof requirements === 'string')):
-        return methods[requirements].call(this);
-      case (typeof requirements === 'object'):
-        return methods.init.call(this[0], requirements);
-      default:
-        throw new Error('Не правильные аргументы вызова метода "rangeSlider"');
+      case ((typeof pluginOptions === 'string') && (pluginAPI[pluginOptions])): return pluginAPI[pluginOptions].call(this);
+      case (typeof pluginOptions === 'object'): return pluginAPI.init.call(this, pluginOptions);
+      default: throw new Error('Не правильные аргументы вызова метода "rangeSlider"');
     }
   };
 }(jQuery));
+
+// console.log('from init \n ______________ \n', 'options: \n', options, 'this \n', this, '\n ______________');

@@ -15,9 +15,12 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
+    'import/extensions': [1, {
+      ts: 'never',
+    }],
     'import/no-unresolved': [1], // 1-warning
     'linebreak-style': ['error', 'windows'],
-    'max-len': [1, 120],
+    'max-len': [1, 130],
   },
   // root: true,
   plugins: [
