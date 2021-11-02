@@ -1,4 +1,5 @@
 import type { defaultOptions, userOptions } from './optionsTypes';
+import Presenter from '../presenter/presenter';
 
 export default class Model {
   static readonly defaultOptions: defaultOptions = {
@@ -12,6 +13,8 @@ export default class Model {
   };
 
   private sliderOptions: defaultOptions;
+
+  // private presenter: Presenter;
 
   constructor(initOptions: userOptions) {
     this.setOptions(initOptions);

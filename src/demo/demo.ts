@@ -33,6 +33,8 @@ class DemoSliderInit {
 
   private demoSliderWrapper: HTMLElement;
 
+  private demoSliderWrapperForControls: HTMLElement;
+
   private demoSliderControls: HTMLElement;
 
   private demoSlider: HTMLElement;
@@ -48,18 +50,24 @@ class DemoSliderInit {
     this.demoSliderWrapper = document.createElement('div');
     this.demoSliderWrapper.classList.add('demo__slider-wrapper');
 
+    this.demoSliderWrapperForControls = document.createElement('div');
+    this.demoSliderWrapperForControls.classList.add('demo__slider-wrapper', 'demo__slider-wrapper_for-controls');
+
     this.demoSliderControls = document.createElement('div');
     this.demoSliderControls.classList.add('demo__slider-controls');
 
     this.demoSlider = document.createElement('div');
     this.demoSlider.classList.add('demo__slider', 'js-demo__slider');
 
-    this.demoSliderWrapper.append(this.demoSliderControls, this.demoSlider);
+    this.demoSliderWrapper.append(this.demoSlider);
+    this.demoSliderWrapperForControls.append(this.demoSliderControls);
     this.demoSliderSection.append(this.demoSliderWrapper);
+    this.demoSliderSection.append(this.demoSliderWrapperForControls);
     this.demoSliderTitle.after(this.demoSliderSection);
 
     // console.log(this.demoSlider);
     $(this.demoSlider).rangeSlider(options);
+    console.log($(this.demoSlider).data());
   }
 }
 
