@@ -12,19 +12,23 @@ export default class Model {
     step: 5,
   };
 
-  private sliderOptions: defaultOptions;
+  private sliderData: defaultOptions;
 
   // private presenter: Presenter;
 
   constructor(initOptions: userOptions) {
-    this.setOptions(initOptions);
+    this.setData(initOptions);
   }
 
-  private setOptions(initData): void {
-    this.sliderOptions = {
+  private setData(initData): void {
+    this.sliderData = {
       ...Model.defaultOptions,
       ...initData,
     };
+  }
+
+  public getData() {
+    return this.sliderData;
   }
 }
 

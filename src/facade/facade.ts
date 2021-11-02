@@ -2,14 +2,14 @@
 // import './view/view';
 import { userOptions } from './model/optionsTypes';
 import Model from './model/model';
-import View from './view/view';
+// import View from './view/view';
 import Presenter from './presenter/presenter';
 
 export default class Facade {
   // public parentElem: <E extends keyof HTMLElement>;
   private model: Model;
 
-  private view: View;
+  // private view: View;
 
   private presenter: Presenter;
 
@@ -20,8 +20,8 @@ export default class Facade {
   private init(parent: HTMLElement, userData: userOptions): void {
     // console.log(parent);
     this.model = new Model(userData);
-    this.view = new View();
-    this.presenter = new Presenter(this.model, this.view);
+    // this.view = new View();
+    this.presenter = new Presenter(this.model);// , this.view);
     // console.log(this.model);
     // console.log(this.view);
     // console.log(this.presenter);

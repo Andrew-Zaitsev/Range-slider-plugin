@@ -67,7 +67,7 @@ class DemoSliderInit {
 
     // console.log(this.demoSlider);
     $(this.demoSlider).rangeSlider(options);
-    console.log($(this.demoSlider).data());
+    // console.log($(this.demoSlider).data());
   }
 }
 
