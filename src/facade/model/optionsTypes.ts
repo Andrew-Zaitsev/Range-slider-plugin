@@ -3,6 +3,7 @@ export type defaultOptions = {
   maxValue: number;
   isVertical: boolean;
   hasScale: boolean;
+  values: number[];
   hasRange: boolean;
   hasLabels: boolean;
   step: number;
@@ -13,6 +14,7 @@ export type userOptions = {
   maxValue: number;
   isVertical?: boolean;
   hasScale?: boolean;
+  nambers?: number[];
   hasRange?: boolean;
   hasLabels?: boolean;
   step?: number;

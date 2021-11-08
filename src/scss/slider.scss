@@ -15,4 +15,27 @@
     background-color: $lightgrey;
     cursor: pointer;
   }
+
+  &__handle {
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid $green;
+    background-color: $white;
+    box-shadow: 0px 5px 5px -1px $darkgrey;
+    //box-shadow: 0px 2px 5px 2px $green;
+    cursor: pointer;
+
+    &:hover {
+      border-width: 3px;
+      //box-shadow: 0px 0px 5px 2px $green;
+    }
+    
+    &_min {}
+
+    &_max {
+      left: 70%;
+    }
+  }
 }

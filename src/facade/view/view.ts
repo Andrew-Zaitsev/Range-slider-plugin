@@ -14,7 +14,9 @@ export default class View {
 
   private scale: Scale;
 
-  private handles: Handle[];
+  private handles: Handle;
+
+  private sliderElem: HTMLElement;
 
   constructor(parent, options: userOptions) {
     this.init(parent, options);
@@ -25,16 +27,14 @@ export default class View {
     this.parent = parent;
     this.options = options;
     this.main = new Main();
-    this.scale = new Scale(this.main.getElem());
-    if (this.options.hasRange) {
-      // подумать над валидацией переданных значений
-    } else {
+    this.sliderElem = this.main.getElem();
+    this.scale = new Scale(this.sliderElem);
+    this.handles = new Handle(this.sliderElem, options.values);
+    // подумать над валидацией переданных значений
 
-    }
-    // this.handles[0] = new Handle();
     this.scale.set();
-    // this.labelMin
-    // console.log(this.main.getElem());
+    this.handles.set();
+
     this.parent.append(this.main.getElem());
   }
 
@@ -42,8 +42,4 @@ export default class View {
   // }
 
   // console.log(this.sliderData);
-  // public registerWith(presenter: Presenter):void {
-  //   this.presenter = presenter;
-  //   console.log('presenter: \n', presenter);
-  // }
 }

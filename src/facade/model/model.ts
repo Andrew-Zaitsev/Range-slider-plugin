@@ -7,6 +7,7 @@ export default class Model {
     maxValue: 70,
     isVertical: false,
     hasScale: false,
+    values: [18, 90], // добавить проверку на единичное значение при hasrange: false
     hasRange: true,
     hasLabels: false,
     step: 5,
