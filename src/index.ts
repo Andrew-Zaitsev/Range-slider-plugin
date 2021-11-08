@@ -1,3 +1,5 @@
+import './scss/slider.scss';
+
 import './jquery.interface.ts';
 import type { userOptions } from './facade/model/optionsTypes';
 import Facade from './facade/facade';

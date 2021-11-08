@@ -7,7 +7,7 @@ export default class Model {
     maxValue: 70,
     isVertical: false,
     hasScale: false,
-    hasRange: false,
+    hasRange: true,
     hasLabels: false,
     step: 5,
   };
