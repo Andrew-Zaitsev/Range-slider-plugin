@@ -20,6 +20,9 @@
     width: 70px;
     height: 70px;
     position: absolute;
+    //left: 35px;
+    z-index: 1;
+    transform: translateX(-50%);
     border-radius: 50%;
     border: 2px solid $green;
     background-color: $white;
@@ -32,10 +35,23 @@
       //box-shadow: 0px 0px 5px 2px $green;
     }
     
-    &_min {}
+    &_min {
+      left: 35px;
+    }
 
     &_max {
       left: 70%;
     }
+  }
+
+  &__select-bar {
+    width: 70%;
+    height: 10px;
+    position: absolute;
+    top: 50%;
+    left: 35px;
+    transform: translateY(-50%);
+    background-color: $green;
+    cursor: pointer;
   }
 }

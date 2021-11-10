@@ -16,4 +16,8 @@ export default class Scale {
   public set():void {
     this.parent.append(this.scaleElem);
   }
+
+  public getScaleElem(): HTMLElement {
+    return this.scaleElem;
+  }
 }

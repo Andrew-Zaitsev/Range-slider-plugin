@@ -17,6 +17,7 @@ const demoSliderConfigs: userOptions[] = [
   {
     minValue: 500,
     maxValue: -50,
+    values: [500],
     isVertical: true,
     hasScale: false,
     hasRange: false,
@@ -25,7 +26,7 @@ const demoSliderConfigs: userOptions[] = [
 ];
 
 class DemoSliderInit {
-  private demoSliderTitle: HTMLElement = document.querySelector('.demo__title');
+  private demoSliders: HTMLElement = document.querySelector('.demo');
 
   private demoSliderSection: HTMLElement;
 
@@ -61,14 +62,11 @@ class DemoSliderInit {
     this.demoSliderWrapperForControls.append(this.demoSliderControls);
     this.demoSliderSection.append(this.demoSliderWrapper);
     this.demoSliderSection.append(this.demoSliderWrapperForControls);
-    this.demoSliderTitle.after(this.demoSliderSection);
+    this.demoSliders.append(this.demoSliderSection);
 
-    // console.log(this.demoSlider);
     $(this.demoSlider).rangeSlider(options);
-    // console.log($(this.demoSlider).data());
   }
 }
-
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 
 // console.log(a.data());
