@@ -23,7 +23,7 @@ export default class Handle {
     return this.handleElem;
   }
 
-  public setHandle(scale): void {
+  public setHandle(scale: Scale): void {
     this.scale = scale;
     this.parent.append(this.handleElem);
   }

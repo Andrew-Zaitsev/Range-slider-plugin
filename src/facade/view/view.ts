@@ -7,7 +7,7 @@ import SelectBar from './components/selectBar';
 export default class View {
   private parent: HTMLElement;
 
-  private options: userOptions;
+  private options: defaultOptions;
 
   private main: Main;
 
@@ -29,21 +29,19 @@ export default class View {
     this.main = new Main();
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
-    this.scale = new Scale(this.sliderElem);
-    this.scale.set();
-    this.createHandles(options);
-    this.handles.forEach((handle: Handle, i: number) => {
-      handle.setHandle(this.scale);
-      handle.setPosition(options, i);
-    });
 
-    this.selectBar = new SelectBar(this.sliderElem, options);
+    this.setScale(this.sliderElem);
+    this.setHandles(options);
+    this.updateHandlesPosition(options);
+    this.setSelectBar();
+    this.updateSelectBarPosition();
+
+    // this.selectBar = new SelectBar(this.sliderElem, options);
+    // this.selectBar.set();
     // подумать над валидацией переданных значений
-
-    this.selectBar.set();
   }
 
-  private createHandles(options: defaultOptions) {
+  private setHandles(options: defaultOptions) {
     if (options.hasRange) {
       options.values.forEach((value: number, i: number) => {
         this.handles.push(new Handle(this.sliderElem));
@@ -53,6 +51,30 @@ export default class View {
     } else {
       this.handles.push(new Handle(this.sliderElem));
     }
+
+    this.handles.forEach((handle: Handle, i: number) => {
+      handle.setHandle(this.scale);
+    });
+  }
+
+  private updateHandlesPosition(options): void {
+    this.handles.forEach((handle: Handle, i: number) => {
+      handle.setPosition(options, i);
+    });
+  }
+
+  private setScale(slider: HTMLElement): void {
+    this.scale = new Scale(slider);
+    this.scale.set();
+  }
+
+  private setSelectBar() {
+    this.selectBar = new SelectBar(this.sliderElem, this.options);
+    this.selectBar.set();
+  }
+
+  private updateSelectBarPosition() {
+    this.selectBar.setPosition(this.handles, this.options);
   }
   // console.log(this.sliderData);
 }
