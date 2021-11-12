@@ -6,12 +6,13 @@ const demoSliderConfigs: userOptions[] = [
     minValue: 10,
     maxValue: 50,
     hasLabels: false,
+    scaleDivisionsNumber: 5,
     step: 5,
   },
   {
     minValue: 0,
     maxValue: 100,
-    hasScale: false,
+    hasScale: true,
     hasLabels: false,
   },
   {

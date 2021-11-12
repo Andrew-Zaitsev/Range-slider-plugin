@@ -1,23 +1,54 @@
-export default class Scale {
-  private scaleElem: HTMLElement;
+import { defaultOptions } from '../../model/optionsTypes';
+import ScaleLabel from './scaleLabel';
 
+export default class Scale {
   private parent: HTMLElement;
 
-  constructor(parent: HTMLElement) {
+  private options: defaultOptions;
+
+  private scaleElem: HTMLElement;
+
+  private scaleLabels: ScaleLabel[] = [];
+
+  constructor(parent: HTMLElement, options: defaultOptions) {
+    this.options = options;
     this.init(parent);
   }
 
-  private init(parent):void {
-    this.parent = parent;
-    this.scaleElem = document.createElement('div');
-    this.scaleElem.classList.add('slider__scale');
+  public getScaleElem(): HTMLElement {
+    return this.scaleElem;
   }
 
   public set():void {
     this.parent.append(this.scaleElem);
   }
 
-  public getScaleElem(): HTMLElement {
-    return this.scaleElem;
+  private init(parent):void {
+    this.parent = parent;
+    this.scaleElem = document.createElement('div');
+    this.scaleElem.classList.add('slider__scale');
+
+    this.setScaleLabels();
+    this.updateLabelsValue();
+  }
+
+  private setScaleLabels(): void {
+    for (let i = 0; i < this.options.scaleDivisionsNumber; i += 1) {
+      this.scaleLabels.push(new ScaleLabel(this.scaleElem));
+    }
+
+    this.scaleLabels.forEach((scaleLabel) => this.scaleElem.append(scaleLabel.getElem()));
+  }
+
+  private updateLabelsValue() {
+    const { minValue, maxValue, scaleDivisionsNumber } = this.options;
+    const valueRange = maxValue - minValue;
+    const labelValueStep = valueRange / (scaleDivisionsNumber - 1);
+    let labelValue = minValue;
+
+    this.scaleLabels.forEach((label: ScaleLabel, i: number) => {
+      label.setLabelText(`${labelValue}`);
+      labelValue += labelValueStep;
+    });
   }
 }

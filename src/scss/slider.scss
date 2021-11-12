@@ -5,6 +5,8 @@
   height: 70px;
 
   &__scale {
+    display: flex;
+    justify-content: space-between;
     width: calc(100% - 70px);
     height: 10px;
     position: absolute;
@@ -15,7 +17,23 @@
     background-color: $lightgrey;
     cursor: pointer;
   }
-
+  
+  &__scale-label {
+    //width: 100%;
+    //position: absolute;
+    background-color: $lightgrey;
+    //transform: translateY(-40px);
+  }
+  &__scale-pin {
+    width: 1px;
+    height: 15px;
+    background-color: $lightgrey;
+  }
+  &__scale-text {
+    width: 100%;
+    background-color: $lightgrey;
+  }
+  
   &__handle {
     width: 70px;
     height: 70px;
@@ -51,6 +69,7 @@
     top: 50%;
     left: 35px;
     transform: translateY(-50%);
+    border-radius: 5px;
     background-color: $green;
     cursor: pointer;
   }

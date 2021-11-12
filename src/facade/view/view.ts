@@ -30,7 +30,7 @@ export default class View {
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
 
-    this.setScale(this.sliderElem);
+    this.setScale(this.sliderElem, this.options);
     this.setHandles(options);
     this.updateHandlesPosition(options);
     this.setSelectBar();
@@ -63,8 +63,8 @@ export default class View {
     });
   }
 
-  private setScale(slider: HTMLElement): void {
-    this.scale = new Scale(slider);
+  private setScale(slider: HTMLElement, options: defaultOptions): void {
+    this.scale = new Scale(slider, options);
     this.scale.set();
   }
 

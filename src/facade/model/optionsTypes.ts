@@ -1,11 +1,12 @@
 export type defaultOptions = {
   minValue: number;
   maxValue: number;
+  values: number[];
   isVertical: boolean;
   hasScale: boolean;
-  values: number[];
   hasRange: boolean;
   hasLabels: boolean;
+  scaleDivisionsNumber: number;
   step: number;
 };
 
@@ -18,5 +19,6 @@ export type userOptions = {
   nambers?: number[];
   hasRange?: boolean;
   hasLabels?: boolean;
+  scaleDivisionsNumber?: number,
   step?: number;
 };

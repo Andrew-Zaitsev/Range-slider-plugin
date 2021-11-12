@@ -39,6 +39,6 @@ export default class selectBar {
     const minXCoord: number = minHandleElemRect.left + minHandleElemRect.width / 2;
     const leftOffset: number = minXCoord - sliderRect.left;
 
-    return leftOffset;
+    return leftOffset; // пересчитать нужно в процентах % от шкалы при неизменном отступе от границ
   }
 }
