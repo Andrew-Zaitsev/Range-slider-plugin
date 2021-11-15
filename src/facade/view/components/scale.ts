@@ -47,7 +47,7 @@ export default class Scale {
     let labelValue = minValue;
 
     this.scaleLabels.forEach((label: ScaleLabel, i: number) => {
-      label.setLabelText(`${labelValue}`);
+      label.setLabelText(`${labelValue.toFixed(0)}`);
       labelValue += labelValueStep;
     });
   }
