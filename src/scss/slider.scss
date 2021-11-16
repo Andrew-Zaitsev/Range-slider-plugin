@@ -23,30 +23,32 @@
     flex-direction: column;
     align-items: center;
     transform: translateY(-30px);
-  }
 
-    &__scale-text {
+    &:hover > * {
+      &:first-child {
+        font-weight: bold;
+      }
+      
+      &:last-child {
+        background-color: $green;
+      }
+    }
+  }
+  
+  &__scale-text {
     width: 100%;
     padding: 3px 5px;
+    text-align: center;
     border-radius: 6px;
-    background-color: $lightgrey;
     color: $green;
-
-    &:hover {
-      font-weight: bold;
-    }
   }
 
   &__scale-pin {
     width: 32px;
-    min-height: 35px;
-    padding: 20px 15px 0px;
+    min-height: 37px;
+    padding: 25px 15px 0px;
     background-color: $darkgrey;//$lightgrey;
     background-clip: content-box;
-
-    &:hover {
-      background-color: $green;
-    }
   }
 
   
