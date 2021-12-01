@@ -38,8 +38,6 @@ export default class View {
 
     this.setScale(this.sliderElem, this.options);
 
-    // console.log(getComputedStyle(this.scale.getScaleElem()).left); /// получили левый отступ от родителя!
-    // console.log(this.calculateScaleIndent());
     this.scaleIndent = this.calculateScaleIndent();
 
     this.setHandles(options);
@@ -78,7 +76,7 @@ export default class View {
       this.handles.push(new Handle(this.sliderElem, this.scaleIndent));
     }
 
-    this.handles.forEach((handle: Handle, i: number) => {
+    this.handles.forEach((handle: Handle) => {
       handle.setHandle();
     });
   }
@@ -95,7 +93,6 @@ export default class View {
   }
 
   private updateSelectBarPosition() {
-    this.selectBar.setPosition(this.handles, this.options);
+    this.selectBar.setPosition(this.options);
   }
-  // console.log(this.sliderData);
 }

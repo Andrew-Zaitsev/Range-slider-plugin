@@ -1,10 +1,7 @@
 import { defaultOptions, userOptions } from '../../model/optionsTypes';
-import Handle from './handle';
 
 export default class selectBar {
   private selectBarElem: HTMLElement;
-
-  private handles: Handle[] = [];
 
   constructor(
     private parent: HTMLElement,
@@ -23,22 +20,22 @@ export default class selectBar {
     this.parent.append(this.selectBarElem);
   }
 
-  public setPosition(handles: Handle[], options: userOptions):void {
-    this.handles = handles;
+  public setPosition(options: userOptions):void {
+    const { minValue, maxValue, values } = options;
+
+    const scaleRange: number = maxValue - minValue; // диапазон значений шкалы
+    const minValueMinHandleValueRange: number = values[0] - minValue; // значение от минимальной точки шкалы до ползунка
+    const selectBarRange = values[1] - values[0];
+    const minHandleScaleRate: number = (minValueMinHandleValueRange / scaleRange);
+    const barScaleRate = selectBarRange / scaleRange;
+
     if (options.isVertical) {
       console.log('* вертикальный селект-бар не рассчитывается *');
     } else {
-      const selectBarLeftProperty = this.calculateLeftOffset();
-      this.selectBarElem.style.left = `${selectBarLeftProperty}px`;
+      this.selectBarElem.style
+        .left = `calc((100% - (${this.scaleIndent}px * 2)) * ${minHandleScaleRate} + ${this.scaleIndent}px)`;
+      this.selectBarElem.style
+        .width = `calc((100% - (${this.scaleIndent}px * 2)) * ${barScaleRate})`;
     }
-  }
-
-  private calculateLeftOffset(): number {
-    const minHandleElemRect: DOMRect = this.handles[0].getElem().getBoundingClientRect();
-    const sliderRect: DOMRect = this.parent.getBoundingClientRect();
-    const minXCoord: number = minHandleElemRect.left + minHandleElemRect.width / 2;
-    const leftOffset: number = minXCoord - sliderRect.left;
-
-    return leftOffset; // пересчитать нужно в процентах % от шкалы при неизменном отступе от границ
   }
 }
