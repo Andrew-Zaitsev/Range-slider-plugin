@@ -15,5 +15,11 @@ export default class Presenter {
   private init(parent, model: Model) {
     this.model = model;
     this.view = new View(parent, model.getData());
+
+    this.subscribeModelToView();
+  }
+
+  private subscribeModelToView() {
+    this.view.observer.subscribe(() => console.log('pointermove model callback'));
   }
 }

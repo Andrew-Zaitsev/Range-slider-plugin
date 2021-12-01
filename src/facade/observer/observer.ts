@@ -7,7 +7,7 @@ export default class Observer {
     this.callbacks = [];
   }
 
-  public sunscribe(fn: ObserverCallback):void {
+  public subscribe(fn: ObserverCallback):void {
     this.callbacks.push(fn);
   }
 
@@ -17,5 +17,9 @@ export default class Observer {
 
   public execute(): void {
     this.callbacks.forEach((callback) => callback());
+  }
+
+  public getCallbacks(): ObserverCallback[] {
+    return this.callbacks;
   }
 }

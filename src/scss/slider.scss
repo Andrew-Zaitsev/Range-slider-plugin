@@ -23,6 +23,7 @@
     flex-direction: column;
     align-items: center;
     transform: translateY(-30px);
+    position: relative;
 
     &:hover > * {
       &:first-child {
@@ -36,7 +37,9 @@
   }
   
   &__scale-text {
-    width: 100%;
+    //width: 100%;
+    position: absolute;
+    top: 5px;
     padding: 3px 5px;
     text-align: center;
     border-radius: 6px;
@@ -44,9 +47,11 @@
   }
 
   &__scale-pin {
+    position: absolute;
+    top: 45px;
     width: 32px;
-    min-height: 37px;
-    padding: 25px 15px 0px;
+    min-height: 12px;
+    padding: 0px 15px 0px;
     background-color: $darkgrey;//$lightgrey;
     background-clip: content-box;
   }

@@ -4,17 +4,17 @@ import Handle from './handle';
 export default class selectBar {
   private selectBarElem: HTMLElement;
 
-  private parent: HTMLElement;
-
   private handles: Handle[] = [];
 
-  constructor(parent: HTMLElement, options: defaultOptions) {
-    this.init(parent, options);
+  constructor(
+    private parent: HTMLElement,
+    private options: defaultOptions,
+    private scaleIndent: number,
+  ) {
+    this.init();
   }
 
-  private init(parent: HTMLElement, options: defaultOptions): void {
-    this.parent = parent;
-
+  private init(): void {
     this.selectBarElem = document.createElement('div');
     this.selectBarElem.classList.add('slider__select-bar');
   }
