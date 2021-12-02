@@ -1,7 +1,7 @@
-import { defaultOptions, userOptions } from '../../model/optionsTypes';
+import { defaultOptions } from '../../model/optionsTypes';
 
 export default class selectBar {
-  private selectBarElem: HTMLElement;
+  private selectBarElem!: HTMLElement;
 
   constructor(
     private parent: HTMLElement,
@@ -20,7 +20,7 @@ export default class selectBar {
     this.parent.append(this.selectBarElem);
   }
 
-  public setPosition(options: userOptions):void {
+  public setPosition(options: defaultOptions):void {
     const { minValue, maxValue, values } = options;
 
     const scaleRange: number = maxValue - minValue; // диапазон значений шкалы

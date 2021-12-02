@@ -4,15 +4,15 @@ import View from '../view/view';
 export default class Presenter {
   // private parent: HTMLElement;
 
-  private model: Model;
+  private model!: Model;
 
-  private view: View;
+  private view!: View;
 
   constructor(parent: HTMLElement, sliderModel: Model) {
     this.init(parent, sliderModel);
   }
 
-  private init(parent, model: Model) {
+  private init(parent: HTMLElement, model: Model) {
     this.model = model;
     this.view = new View(parent, model.getData());
 

@@ -6,9 +6,9 @@ import Facade from './facade/facade';
 
 (function ($) {
   jQuery.fn.rangeSlider = function (pluginOptions: any): JQuery {
-    const pluginAPI = {
+    const pluginAPI: any = {
       init(options: userOptions|undefined): JQuery {
-        return this.each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, options)));
+        return this.each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, options as userOptions)));
       },
       show() {
         //

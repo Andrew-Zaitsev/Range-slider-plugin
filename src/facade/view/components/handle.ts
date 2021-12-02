@@ -1,7 +1,7 @@
 import { defaultOptions } from '../../model/optionsTypes';
 
 export default class Handle {
-  private handleElem: HTMLElement;
+  private handleElem!: HTMLElement;
 
   constructor(
     private parent: HTMLElement,

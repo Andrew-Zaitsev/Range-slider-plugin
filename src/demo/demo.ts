@@ -27,36 +27,27 @@ const demoSliderConfigs: userOptions[] = [
 ];
 
 class DemoSliderInit {
-  private demoSliders: HTMLElement = document.querySelector('.demo');
+  private demoSliders: HTMLElement = <HTMLElement>document.querySelector('.demo');
 
-  private demoSliderSection: HTMLElement;
+  private demoSliderSection: HTMLElement = document.createElement('section');
 
-  private demoSliderWrapper: HTMLElement;
+  private demoSliderWrapper: HTMLElement = document.createElement('div');
 
-  private demoSliderWrapperForControls: HTMLElement;
+  private demoSliderWrapperForControls: HTMLElement = document.createElement('div');
 
-  private demoSliderControls: HTMLElement;
+  private demoSliderControls: HTMLElement = document.createElement('div');
 
-  private demoSlider: HTMLElement;
+  private demoSlider: HTMLElement = document.createElement('div');
 
   constructor(demoSliderOptions: userOptions) {
     this.init(demoSliderOptions);
   }
 
   private init(options: userOptions) {
-    this.demoSliderSection = document.createElement('section');
     this.demoSliderSection.classList.add('demo__slider-section');
-
-    this.demoSliderWrapper = document.createElement('div');
     this.demoSliderWrapper.classList.add('demo__slider-wrapper');
-
-    this.demoSliderWrapperForControls = document.createElement('div');
     this.demoSliderWrapperForControls.classList.add('demo__slider-wrapper', 'demo__slider-wrapper_for-controls');
-
-    this.demoSliderControls = document.createElement('div');
     this.demoSliderControls.classList.add('demo__slider-controls');
-
-    this.demoSlider = document.createElement('div');
     this.demoSlider.classList.add('demo__slider', 'js-demo__slider');
 
     this.demoSliderWrapper.append(this.demoSlider);

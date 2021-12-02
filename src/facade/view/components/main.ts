@@ -1,5 +1,5 @@
 export default class Main {
-  private sliderElem: HTMLElement;
+  private sliderElem!: HTMLElement;
 
   constructor() {
     this.init();

@@ -2,11 +2,11 @@ import { defaultOptions } from '../../model/optionsTypes';
 import ScaleLabel from './scaleLabel';
 
 export default class Scale {
-  private parent: HTMLElement;
+  private parent!: HTMLElement;
 
   private options: defaultOptions;
 
-  private scaleElem: HTMLElement;
+  private scaleElem!: HTMLElement;
 
   private scaleLabels: ScaleLabel[] = [];
 
@@ -23,7 +23,7 @@ export default class Scale {
     this.parent.append(this.scaleElem);
   }
 
-  private init(parent):void {
+  private init(parent: HTMLElement):void {
     this.parent = parent;
     this.scaleElem = document.createElement('div');
     this.scaleElem.classList.add('slider__scale');

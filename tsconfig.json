@@ -13,7 +13,7 @@
     ],
     "removeComments": false,
     "experimentalDecorators": true,
-    //"strict": true   //почему то не работает с analitics
+    "strict": true,   //почему то не работает с analitics
   },
   "include": ["./src"],
   "exclude": ["./node_modules",]

@@ -1,15 +1,15 @@
 import Scale from './scale';
 
 export default class ScaleLabel {
-  private parentElem: HTMLElement;
+  private parentElem!: HTMLElement;
 
-  private scale: Scale;
+  private scale!: Scale;
 
-  private scaleLabelElem: HTMLElement;
+  private scaleLabelElem!: HTMLElement;
 
-  private scalePinElem: HTMLElement;
+  private scalePinElem!: HTMLElement;
 
-  private scaleTextElem: HTMLElement;
+  private scaleTextElem!: HTMLElement;
 
   constructor(parent: HTMLElement) {
     this.init(parent);

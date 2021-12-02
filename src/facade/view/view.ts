@@ -6,29 +6,29 @@ import SelectBar from './components/selectBar';
 import Observer from '../observer/observer';
 
 export default class View {
-  private parent: HTMLElement;
+  private parent!: HTMLElement;
 
-  private options: defaultOptions;
+  private options!: defaultOptions;
 
-  private main: Main;
+  private main!: Main;
 
-  private scale: Scale;
+  private scale!: Scale;
 
-  private scaleIndent: number;
+  private scaleIndent!: number;
 
   private handles: Handle[] = [];
 
-  private selectBar: SelectBar;
+  private selectBar!: SelectBar;
 
-  private sliderElem: HTMLElement;
+  private sliderElem!: HTMLElement;
 
-  public observer: Observer;
+  public observer!: Observer;
 
-  constructor(parent, options: userOptions) {
+  constructor(parent: HTMLElement, options: defaultOptions) {
     this.init(parent, options);
   }
 
-  private init(parent, options) {
+  private init(parent: HTMLElement, options: defaultOptions) {
     this.parent = parent;
     this.options = options;
     this.observer = new Observer();
@@ -81,18 +81,18 @@ export default class View {
     });
   }
 
-  private updateHandlesPosition(options): void {
+  private updateHandlesPosition(options: defaultOptions): void {
     this.handles.forEach((handle: Handle, i: number) => {
       handle.setPosition(options, i);
     });
   }
 
-  private setSelectBar() {
+  private setSelectBar(): void {
     this.selectBar = new SelectBar(this.sliderElem, this.options, this.scaleIndent);
     this.selectBar.set();
   }
 
-  private updateSelectBarPosition() {
+  private updateSelectBarPosition(): void {
     this.selectBar.setPosition(this.options);
   }
 }

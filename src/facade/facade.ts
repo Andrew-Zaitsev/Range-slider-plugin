@@ -3,11 +3,11 @@ import Model from './model/model';
 import Presenter from './presenter/presenter';
 
 export default class Facade {
-  private model: Model;
+  private model!: Model;
 
-  private presenter: Presenter;
+  private presenter!: Presenter;
 
-  constructor(parentElem, options: userOptions) {
+  constructor(parentElem: HTMLElement, options: userOptions) {
     this.init(parentElem, options);
   }
 
