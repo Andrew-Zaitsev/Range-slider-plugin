@@ -9,6 +9,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "bind-decorator": "^1.0.11",
     "gh-pages": "^3.2.3"
   },
   "devDependencies": {

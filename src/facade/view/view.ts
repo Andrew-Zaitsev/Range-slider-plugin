@@ -1,22 +1,19 @@
+import bind from 'bind-decorator';
 import { defaultOptions, userOptions } from '../model/optionsTypes';
 import Main from './components/main';
 import Scale from './components/scale';
-import Handle from './components/handle';
+import Thumb from './components/thumb';
 import SelectBar from './components/selectBar';
 import Observer from '../observer/observer';
 
 export default class View {
-  private parent!: HTMLElement;
-
-  private options!: defaultOptions;
-
   private main!: Main;
 
   private scale!: Scale;
 
   private scaleIndent!: number;
 
-  private handles: Handle[] = [];
+  private thumbs: Thumb[] = [];
 
   private selectBar!: SelectBar;
 
@@ -24,7 +21,10 @@ export default class View {
 
   public observer!: Observer;
 
-  constructor(parent: HTMLElement, options: defaultOptions) {
+  constructor(
+    private parent: HTMLElement,
+    private options: defaultOptions,
+  ) {
     this.init(parent, options);
   }
 
@@ -40,14 +40,14 @@ export default class View {
 
     this.scaleIndent = this.calculateScaleIndent();
 
-    this.setHandles(options);
-    this.updateHandlesPosition(options);
+    this.setThumbs(options);
+    this.updateThumbsPosition(options);
     this.setSelectBar();
     this.updateSelectBarPosition();
 
-    // this.selectBar = new SelectBar(this.sliderElem, options);
-    // this.selectBar.set();
     // подумать над валидацией переданных значений
+
+    this.bindListeners();
   }
 
   private setScale(slider: HTMLElement, options: defaultOptions): void {
@@ -65,25 +65,25 @@ export default class View {
     return scaleIndent;
   }
 
-  private setHandles(options: defaultOptions) {
+  private setThumbs(options: defaultOptions) {
     if (options.hasRange) {
       options.values.forEach((value: number, i: number) => {
-        this.handles.push(new Handle(this.sliderElem, this.scaleIndent));
+        this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
       });
-      this.handles[0].getElem().classList.add('slider__handle_min');
-      this.handles[1].getElem().classList.add('slider__handle_max');
+      this.thumbs[0].getElem().classList.add('slider__handle_min');
+      this.thumbs[1].getElem().classList.add('slider__handle_max');
     } else {
-      this.handles.push(new Handle(this.sliderElem, this.scaleIndent));
+      this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
     }
 
-    this.handles.forEach((handle: Handle) => {
-      handle.setHandle();
+    this.thumbs.forEach((thunb: Thumb) => {
+      thunb.setHandle();
     });
   }
 
-  private updateHandlesPosition(options: defaultOptions): void {
-    this.handles.forEach((handle: Handle, i: number) => {
-      handle.setPosition(options, i);
+  private updateThumbsPosition(options: defaultOptions): void {
+    this.thumbs.forEach((thunb: Thumb, i: number) => {
+      thunb.setPosition(options, i);
     });
   }
 
@@ -94,5 +94,25 @@ export default class View {
 
   private updateSelectBarPosition(): void {
     this.selectBar.setPosition(this.options);
+  }
+
+  private bindListeners() {
+    this.thumbs.forEach((thunb: Thumb) => {
+      thunb.getElem().addEventListener('pointerdown', this.handlePointerDown);
+    });
+  }
+
+  @bind // this = View
+  private handlePointerDown(e: PointerEvent): void {
+    e.preventDefault();
+    (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
+    console.log('down');
+    // const handler = this.handlePointerUp.bind(this);
+  }
+
+  @bind // this = View
+  private handlePointerUp(e: PointerEvent): void {
+    (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
+    console.log('up');// , e.type, );// , this);
   }
 }

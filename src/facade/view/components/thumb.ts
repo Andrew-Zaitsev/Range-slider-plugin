@@ -1,7 +1,7 @@
 import { defaultOptions } from '../../model/optionsTypes';
 
-export default class Handle {
-  private handleElem!: HTMLElement;
+export default class Thumb {
+  private thumbElem!: HTMLElement;
 
   constructor(
     private parent: HTMLElement,
@@ -11,16 +11,16 @@ export default class Handle {
   }
 
   private init(): void {
-    this.handleElem = document.createElement('div');
-    this.handleElem.classList.add('slider__handle');
+    this.thumbElem = document.createElement('div');
+    this.thumbElem.classList.add('slider__handle');
   }
 
   public getElem(): HTMLElement {
-    return this.handleElem;
+    return this.thumbElem;
   }
 
   public setHandle(): void {
-    this.parent.append(this.handleElem);
+    this.parent.append(this.thumbElem);
   }
 
   public setPosition(options: defaultOptions, i: number): void {
@@ -36,9 +36,9 @@ export default class Handle {
     } = options;
 
     const scaleRange: number = maxValue - minValue; // диапазон значений шкалы
-    const minValueHandleValueDiff: number = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
-    const handleScaleRate: number = (minValueHandleValueDiff / scaleRange);
+    const minValueThumbValueDiff: number = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
+    const thumbScaleRate: number = (minValueThumbValueDiff / scaleRange);
 
-    this.handleElem.style.left = `calc((100% - (${this.scaleIndent}px * 2)) * ${handleScaleRate} + ${this.scaleIndent}px)`;
+    this.thumbElem.style.left = `calc((100% - (${this.scaleIndent}px * 2)) * ${thumbScaleRate} + ${this.scaleIndent}px)`;
   }
 }
