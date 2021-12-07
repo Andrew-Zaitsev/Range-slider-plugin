@@ -1,3 +1,4 @@
+import bind from 'bind-decorator';
 import Model from '../model/model';
 import View from '../view/view';
 
@@ -20,6 +21,13 @@ export default class Presenter {
   }
 
   private subscribeModelToView() {
-    this.view.observer.subscribe(() => console.log('pointermove model callback'));
+    // console.log(this.updateModel);
+    this.view.observer.subscribe(this.updateModel);
+  }
+
+  @bind
+  private updateModel(arr: any[]) {
+    // console.log('updateModel', this);
+    this.model.update(arr);
   }
 }

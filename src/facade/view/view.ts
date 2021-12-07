@@ -106,6 +106,7 @@ export default class View {
   private handlePointerDown(e: PointerEvent): void {
     e.preventDefault();
     (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
+    (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
     console.log('down');
     // const handler = this.handlePointerUp.bind(this);
   }
@@ -113,6 +114,28 @@ export default class View {
   @bind // this = View
   private handlePointerUp(e: PointerEvent): void {
     (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
+    (e.target as HTMLElement).removeEventListener('pointermove', this.handlePointerMove);
     console.log('up');// , e.type, );// , this);
+  }
+
+  @bind // this = View
+  private handlePointerMove(e: PointerEvent): void {
+    const value: number = this.calculateValue(e);
+
+    this.observer.execute(value);
+    // console.log(value);
+  }
+
+  private calculateValue(event: PointerEvent): number {
+    const { minValue, maxValue } = this.options;
+    const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
+    const scaleValuesRange = maxValue - minValue;
+    const scaleCoordsRange = scaleDomRect.width;
+    const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
+    const value: number = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange));
+
+    // console.log(scaleCoordsRange, pointerMinScaleCoordsRange);
+
+    return value;
   }
 }

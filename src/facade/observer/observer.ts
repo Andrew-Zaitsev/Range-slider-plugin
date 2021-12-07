@@ -1,4 +1,4 @@
-type ObserverCallback = () => void;
+type ObserverCallback = (arr: number[]) => void;
 
 export default class Observer {
   private callbacks: ObserverCallback[];
@@ -15,8 +15,9 @@ export default class Observer {
     this.callbacks = this.callbacks.filter((callback) => callback !== fn);
   }
 
-  public execute(): void {
-    this.callbacks.forEach((callback) => callback());
+  public execute(...args: any[]): void {
+    // console.log(args[0]);
+    this.callbacks.forEach((callback: ObserverCallback) => callback(args));
   }
 
   public getCallbacks(): ObserverCallback[] {

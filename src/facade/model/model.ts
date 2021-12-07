@@ -29,4 +29,9 @@ export default class Model {
   public getData(): defaultOptions {
     return this.sliderData;
   }
+
+  public update(arr: any[]): void {
+    // console.log(this);
+    console.log(`***update model***arr:**${arr}**`);
+  }
 }
