@@ -30,8 +30,9 @@ export default class Model {
     return this.sliderData;
   }
 
-  public update(arr: any[]): void {
+  public update(options: userOptions): void {
     // console.log(this);
-    console.log(`***update model***arr:**${arr}**`);
+    // реализовать апдейт модели и последующее перемещение ползунка
+    console.log(`***update model***options:**${options.values}**`);
   }
 }

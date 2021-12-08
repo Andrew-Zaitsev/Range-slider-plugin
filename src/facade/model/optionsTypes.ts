@@ -11,8 +11,8 @@ export type defaultOptions = {
 };
 
 export type userOptions = {
-  minValue: number;
-  maxValue: number;
+  minValue?: number;
+  maxValue?: number;
   values?: number[];
   isVertical?: boolean;
   hasScale?: boolean;

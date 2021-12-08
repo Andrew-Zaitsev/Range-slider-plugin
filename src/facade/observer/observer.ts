@@ -1,4 +1,7 @@
-type ObserverCallback = (arr: number[]) => void;
+import { userOptions } from '../model/optionsTypes';
+
+// type ObserverCallbackArgs = Record<string, unknown>;
+type ObserverCallback = (data: userOptions) => void;
 
 export default class Observer {
   private callbacks: ObserverCallback[];
@@ -15,9 +18,9 @@ export default class Observer {
     this.callbacks = this.callbacks.filter((callback) => callback !== fn);
   }
 
-  public execute(...args: any[]): void {
+  public execute(data: userOptions): void {
     // console.log(args[0]);
-    this.callbacks.forEach((callback: ObserverCallback) => callback(args));
+    this.callbacks.forEach((callback: ObserverCallback) => callback(data));
   }
 
   public getCallbacks(): ObserverCallback[] {

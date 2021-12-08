@@ -1,5 +1,6 @@
 import bind from 'bind-decorator';
 import Model from '../model/model';
+import { userOptions } from '../model/optionsTypes';
 import View from '../view/view';
 
 export default class Presenter {
@@ -26,8 +27,8 @@ export default class Presenter {
   }
 
   @bind
-  private updateModel(arr: any[]) {
+  private updateModel(data: userOptions) {
     // console.log('updateModel', this);
-    this.model.update(arr);
+    this.model.update(data);
   }
 }

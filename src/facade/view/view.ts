@@ -19,6 +19,8 @@ export default class View {
 
   private sliderElem!: HTMLElement;
 
+  private targetThumbIndex?: number;
+
   public observer!: Observer;
 
   constructor(
@@ -76,14 +78,14 @@ export default class View {
       this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
     }
 
-    this.thumbs.forEach((thunb: Thumb) => {
-      thunb.setHandle();
+    this.thumbs.forEach((thumb: Thumb) => {
+      thumb.setHandle();
     });
   }
 
   private updateThumbsPosition(options: defaultOptions): void {
-    this.thumbs.forEach((thunb: Thumb, i: number) => {
-      thunb.setPosition(options, i);
+    this.thumbs.forEach((thumb: Thumb, i: number) => {
+      thumb.setPosition(options, i);
     });
   }
 
@@ -97,33 +99,41 @@ export default class View {
   }
 
   private bindListeners() {
-    this.thumbs.forEach((thunb: Thumb) => {
-      thunb.getElem().addEventListener('pointerdown', this.handlePointerDown);
+    this.thumbs.forEach((thumb: Thumb) => {
+      thumb.getElem().addEventListener('pointerdown', this.handlePointerDown);
     });
   }
 
   @bind // this = View
   private handlePointerDown(e: PointerEvent): void {
     e.preventDefault();
+    const target: HTMLElement = e.target as HTMLElement;
+    this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
     (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
     (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
     console.log('down');
-    // const handler = this.handlePointerUp.bind(this);
   }
 
   @bind // this = View
   private handlePointerUp(e: PointerEvent): void {
     (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
     (e.target as HTMLElement).removeEventListener('pointermove', this.handlePointerMove);
-    console.log('up');// , e.type, );// , this);
+    this.targetThumbIndex = undefined;
+    console.log('up');
   }
 
   @bind // this = View
   private handlePointerMove(e: PointerEvent): void {
     const value: number = this.calculateValue(e);
+    let values: [number, number];
+    if (this.targetThumbIndex === 0) {
+      values = [value, this.options.values[1]];
+    } else {
+      values = [this.options.values[0], value];
+    }
 
-    this.observer.execute(value);
-    // console.log(value);
+    this.observer.execute({ values });
+    // console.log(this.targetThumbIndex);
   }
 
   private calculateValue(event: PointerEvent): number {
