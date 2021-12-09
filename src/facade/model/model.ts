@@ -1,3 +1,4 @@
+import Observer from '../observer/observer';
 import type { defaultOptions, userOptions } from './optionsTypes';
 
 export default class Model {
@@ -15,8 +16,41 @@ export default class Model {
 
   private sliderData!: defaultOptions;
 
+  public observer!: Observer;
+
   constructor(initOptions: userOptions) {
-    this.setData(initOptions);
+    this.init(initOptions);
+  }
+
+  public update(options: userOptions): void {
+    // console.log(this);
+    const {
+      minValue,
+      maxValue,
+      values,
+      isVertical,
+      hasScale,
+      hasRange,
+      hasLabels,
+      scaleDivisionsNumber,
+      step,
+    } = options;
+
+    if (values !== undefined) {
+      this.updateValues(values);
+      this.emitUpdates({ values: this.sliderData.values });
+    }
+    console.log(`***update model***options:**${options.values}**`);
+    // реализовать апдейт модели и последующее перемещение ползунка
+  }
+
+  public getData(): defaultOptions {
+    return this.sliderData;
+  }
+
+  private init(options: userOptions) {
+    this.observer = new Observer();
+    this.setData(options);
   }
 
   private setData(initData: userOptions): void {
@@ -26,13 +60,11 @@ export default class Model {
     };
   }
 
-  public getData(): defaultOptions {
-    return this.sliderData;
+  private updateValues(data: number[]): void {
+    this.sliderData.values = data;
   }
 
-  public update(options: userOptions): void {
-    // console.log(this);
-    // реализовать апдейт модели и последующее перемещение ползунка
-    console.log(`***update model***options:**${options.values}**`);
+  private emitUpdates(options: userOptions) {
+    this.observer.emit(options);
   }
 }

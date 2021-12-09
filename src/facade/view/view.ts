@@ -30,6 +30,11 @@ export default class View {
     this.init(parent, options);
   }
 
+  public update(updatedOptions: userOptions): void {
+    console.log(`***view.update**${updatedOptions.values}`);
+    // реализовать метод view.update
+  }
+
   private init(parent: HTMLElement, options: defaultOptions) {
     this.parent = parent;
     this.options = options;
@@ -132,7 +137,7 @@ export default class View {
       values = [this.options.values[0], value];
     }
 
-    this.observer.execute({ values });
+    this.observer.emit({ values });
     // console.log(this.targetThumbIndex);
   }
 

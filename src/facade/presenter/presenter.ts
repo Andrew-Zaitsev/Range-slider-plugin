@@ -18,17 +18,25 @@ export default class Presenter {
     this.model = model;
     this.view = new View(parent, model.getData());
 
-    this.subscribeModelToView();
+    this.subscribeToView(this.updateModel);
+    this.subscribeToModel(this.updateView);
   }
 
-  private subscribeModelToView() {
-    // console.log(this.updateModel);
-    this.view.observer.subscribe(this.updateModel);
+  private subscribeToView(fn: (options: userOptions) => void) {
+    this.view.observer.subscribe(fn);
+  }
+
+  private subscribeToModel(fn: (options: userOptions) => void) {
+    this.model.observer.subscribe(fn);
   }
 
   @bind
   private updateModel(data: userOptions) {
-    // console.log('updateModel', this);
     this.model.update(data);
+  }
+
+  @bind
+  private updateView(data: userOptions) {
+    this.view.update(data);
   }
 }

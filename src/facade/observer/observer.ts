@@ -18,7 +18,7 @@ export default class Observer {
     this.callbacks = this.callbacks.filter((callback) => callback !== fn);
   }
 
-  public execute(data: userOptions): void {
+  public emit(data: userOptions): void {
     // console.log(args[0]);
     this.callbacks.forEach((callback: ObserverCallback) => callback(data));
   }
