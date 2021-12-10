@@ -23,7 +23,6 @@ export default class Model {
   }
 
   public update(options: userOptions): void {
-    // console.log(this);
     const {
       minValue,
       maxValue,
@@ -40,7 +39,7 @@ export default class Model {
       this.updateValues(values);
       this.emitUpdates({ values: this.sliderData.values });
     }
-    console.log(`***update model***options:**${options.values}**`);
+    console.log('***update model***', this.sliderData.values);
     // реализовать апдейт модели и последующее перемещение ползунка
   }
 

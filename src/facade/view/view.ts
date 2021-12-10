@@ -31,7 +31,24 @@ export default class View {
   }
 
   public update(updatedOptions: userOptions): void {
-    console.log(`***view.update**${updatedOptions.values}`);
+    const {
+      minValue,
+      maxValue,
+      values,
+      isVertical,
+      hasScale,
+      hasRange,
+      hasLabels,
+      scaleDivisionsNumber,
+      step,
+    } = updatedOptions;
+
+    if (values !== undefined) {
+      this.updateThumbsPosition(this.options);
+      this.updateSelectBarPosition();
+    }
+    // console.log(`***view.update**${updatedOptions.values}`);
+    console.log('***view.update**', this.options.values);
     // реализовать метод view.update
   }
 
@@ -138,7 +155,6 @@ export default class View {
     }
 
     this.observer.emit({ values });
-    // console.log(this.targetThumbIndex);
   }
 
   private calculateValue(event: PointerEvent): number {
@@ -147,9 +163,7 @@ export default class View {
     const scaleValuesRange = maxValue - minValue;
     const scaleCoordsRange = scaleDomRect.width;
     const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
-    const value: number = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange));
-
-    // console.log(scaleCoordsRange, pointerMinScaleCoordsRange);
+    const value: number = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
 
     return value;
   }

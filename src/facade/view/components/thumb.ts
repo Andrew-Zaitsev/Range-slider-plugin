@@ -29,10 +29,6 @@ export default class Thumb {
       maxValue,
       values,
       hasRange,
-      // isVertical,
-      // hasScale,
-      // hasLabels,
-      // step
     } = options;
 
     const scaleRange: number = maxValue - minValue; // диапазон значений шкалы
