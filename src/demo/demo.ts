@@ -1,5 +1,7 @@
 import './demo.scss';
 import type { userOptions } from '../facade/model/optionsTypes';
+import Facade from '../facade/facade';
+import ControlPanel from '../control-panel/control-panel';
 
 const demoSliderConfigs: userOptions[] = [
   {
@@ -24,18 +26,25 @@ const demoSliderConfigs: userOptions[] = [
     hasRange: false,
     step: 12,
   },
+  {
+    minValue: 10,
+    maxValue: 30,
+    hasLabels: false,
+    scaleDivisionsNumber: 5,
+    step: 5,
+  },
 ];
 
 class DemoSliderInit {
-  private demoSliders: HTMLElement = <HTMLElement>document.querySelector('.demo');
+  private demo: HTMLElement = <HTMLElement>document.querySelector('.demo');
 
   private demoSliderSection: HTMLElement = document.createElement('section');
 
   private demoSliderWrapper: HTMLElement = document.createElement('div');
 
-  private demoSliderWrapperForControls: HTMLElement = document.createElement('div');
+  private demoSliderWrapperForControlPanel: HTMLElement = document.createElement('div');
 
-  private demoSliderControls: HTMLElement = document.createElement('div');
+  private demoSliderControlPanel: HTMLElement = document.createElement('div');
 
   private demoSlider: HTMLElement = document.createElement('div');
 
@@ -46,17 +55,18 @@ class DemoSliderInit {
   private init(options: userOptions) {
     this.demoSliderSection.classList.add('demo__slider-section');
     this.demoSliderWrapper.classList.add('demo__slider-wrapper');
-    this.demoSliderWrapperForControls.classList.add('demo__slider-wrapper', 'demo__slider-wrapper_for-controls');
-    this.demoSliderControls.classList.add('demo__slider-controls');
+    this.demoSliderWrapperForControlPanel.classList.add('demo__slider-wrapper', 'demo__slider-wrapper_for-control-panel');
+    this.demoSliderControlPanel.classList.add('demo__slider-control-panel');// slider-controls
     this.demoSlider.classList.add('demo__slider', 'js-demo__slider');
 
     this.demoSliderWrapper.append(this.demoSlider);
-    this.demoSliderWrapperForControls.append(this.demoSliderControls);
+    this.demoSliderWrapperForControlPanel.append(this.demoSliderControlPanel);
     this.demoSliderSection.append(this.demoSliderWrapper);
-    this.demoSliderSection.append(this.demoSliderWrapperForControls);
-    this.demoSliders.append(this.demoSliderSection);
+    this.demoSliderSection.append(this.demoSliderWrapperForControlPanel);
+    this.demo.append(this.demoSliderSection);
 
-    $(this.demoSlider).rangeSlider(options);
+    const facade: Facade = $(this.demoSlider).rangeSlider(options).data('facade');
+    const controlPanel = new ControlPanel(this.demoSliderControlPanel, facade);
   }
 }
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));

@@ -5,7 +5,8 @@ export default class Model {
   static readonly defaultOptions: defaultOptions = {
     minValue: 10,
     maxValue: 70,
-    values: [18, 50], // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
+    values: [15, 20],
+    // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
     isVertical: false,
     hasScale: false,
     hasRange: true,

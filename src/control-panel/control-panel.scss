@@ -1,0 +1,47 @@
+@import '../assets/scss/main.scss';
+
+.control-panel {
+
+  &__field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;    
+    font-size: 0.8rem;    
+  }
+
+  &__title {
+    padding: 3px;
+  }
+
+  &__input {
+    appearance: none;
+    max-width: 60px;
+    height: 15px;
+    padding-left: 5px;
+    border: none;
+    border-radius: 5px;
+    // border: 1px solid $lightgrey;
+    text-align: start;
+    font-weight: bold;
+    color: $green;
+    cursor: pointer;
+    
+    &[type="checkbox"] {
+      width: 15px;
+      padding-left: 0;
+      border: 1px solid $lightgrey;
+      transition-property: border-color;
+      transition-duration: 0.3s;
+
+      &:hover {
+        border-color: $green;
+          border-width: 2px;
+      }
+  
+      &:checked {
+        border-color: $green;
+        border-width: 3px;
+      }
+    }
+  }
+}

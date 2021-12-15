@@ -146,6 +146,7 @@ export default class View {
 
   @bind // this = View
   private handlePointerMove(e: PointerEvent): void {
+    console.log('move');
     const value: number = this.calculateValue(e);
     let values: [number, number];
     if (this.targetThumbIndex === 0) {
