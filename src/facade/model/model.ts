@@ -40,7 +40,7 @@ export default class Model {
       this.updateValues(values);
       this.emitUpdates({ values: this.sliderData.values });
     }
-    console.log('***update model***', this.sliderData.values);
+    console.log('***update model***', this.sliderData);
     // реализовать апдейт модели и последующее перемещение ползунка
   }
 

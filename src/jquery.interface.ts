@@ -1,3 +1,7 @@
+// import { userOptions } from './facade/model/optionsTypes';
+
+// import { userOptions } from './facade/model/optionsTypes';
+
 interface JQuery {
-    rangeSlider(options: any): any;
+    rangeSlider(pluginParams: any, options?: any): any;
 }

@@ -40,15 +40,6 @@ export default class ControlPanel {
     this.showLabelsInput = this.createField('show labels', 'checkbox');
     this.scaleDivisionsNumberInput = this.createField('scale divisions number');
     this.stepInput = this.createField('step value');
-    //   maxValueInput
-    //   valueFromInput
-    //   valueToInput
-    //   directionInput
-    //   showRangeInput
-    //   showScaleInput
-    //   showLabelsInput
-    //   scaleDivisionsNumberInput
-    //   stepInput
   }
 
   private createField(titleElemText: string, inputElemType = 'number'): HTMLInputElement {

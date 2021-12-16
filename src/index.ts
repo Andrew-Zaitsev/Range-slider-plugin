@@ -5,10 +5,11 @@ import type { userOptions } from './facade/model/optionsTypes';
 import Facade from './facade/facade';
 
 (function ($) {
-  jQuery.fn.rangeSlider = function (pluginOptions: any): JQuery {
+  jQuery.fn.rangeSlider = function (pluginParams, ...rest): JQuery<HTMLElement> {
     const pluginAPI: any = {
-      init(options: userOptions|undefined): JQuery {
-        return this.each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, options as userOptions)));
+      init(initOptions: userOptions|undefined): JQuery<HTMLElement> {
+        return this
+          .each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, initOptions as userOptions)));
       },
       show() {
         //
@@ -16,18 +17,26 @@ import Facade from './facade/facade';
       hide() {
         //
       },
-      update() {
-        //
+      update(updateOptions: userOptions): JQuery<HTMLElement> {
+        return this
+          .each((index: number, elem: HTMLElement) => {
+            console.log($(elem).data('facade').presenter.updateModel(updateOptions));
+            console.log('updateOptions:', updateOptions);
+          });
+        // , new Facade(elem, initOptions as userOptions)));
       },
       delete() {
         //
       },
     };
+    // if ((typeof pluginParams === 'string') && (pluginAPI[pluginParams])) return pluginAPI[pluginParams].call(this);
+    // console.log(Array.prototype.slice.call(arguments, 1)[0]);
     // this = $(elem), this[0] = elem
     switch (true) {
-      case ((typeof pluginOptions === 'string') && (pluginAPI[pluginOptions])): return pluginAPI[pluginOptions].call(this);
-      case (typeof pluginOptions === 'object'): return pluginAPI.init.call(this, pluginOptions);
-      default: throw new Error('Не правильные аргументы вызова метода "rangeSlider"');
+      case (Boolean((typeof pluginParams === 'string') && (pluginAPI[pluginParams]))):
+        return pluginAPI[pluginParams].apply(this, Array.prototype.slice.call(rest));
+      case (typeof pluginParams === 'object'): return pluginAPI.init.call(this, pluginParams);
+      default: throw new Error('Неверные аргументы вызова метода "rangeSlider"');
     }
   };
 }(jQuery));
