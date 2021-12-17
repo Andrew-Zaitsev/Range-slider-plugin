@@ -31,6 +31,7 @@ export default class View {
   }
 
   public update(updatedOptions: userOptions): void {
+    console.log('*update view*');
     const {
       minValue,
       maxValue,
@@ -48,7 +49,6 @@ export default class View {
       this.updateSelectBarPosition();
     }
     // console.log(`***view.update**${updatedOptions.values}`);
-    console.log('***view.update**', this.options.values);
     // реализовать метод view.update
   }
 
@@ -130,7 +130,9 @@ export default class View {
   private handlePointerDown(e: PointerEvent): void {
     e.preventDefault();
     const target: HTMLElement = e.target as HTMLElement;
+    target.setPointerCapture(e.pointerId);
     this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
+
     (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
     (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
     console.log('down');
@@ -146,7 +148,7 @@ export default class View {
 
   @bind // this = View
   private handlePointerMove(e: PointerEvent): void {
-    console.log('move');
+    console.log('start - move');
     const value: number = this.calculateValue(e);
     let values: [number, number];
     if (this.targetThumbIndex === 0) {
@@ -154,7 +156,6 @@ export default class View {
     } else {
       values = [this.options.values[0], value];
     }
-
     this.observer.emit({ values });
   }
 

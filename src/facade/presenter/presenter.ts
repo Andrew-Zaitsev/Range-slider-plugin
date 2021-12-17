@@ -14,6 +14,10 @@ export default class Presenter {
     this.init(parent, sliderModel);
   }
 
+  public subscribeToModel(fn: (options: userOptions) => void) {
+    this.model.observer.subscribe(fn);
+  }
+
   private init(parent: HTMLElement, model: Model) {
     this.model = model;
     this.view = new View(parent, model.getData());
@@ -24,10 +28,6 @@ export default class Presenter {
 
   private subscribeToView(fn: (options: userOptions) => void) {
     this.view.observer.subscribe(fn);
-  }
-
-  private subscribeToModel(fn: (options: userOptions) => void) {
-    this.model.observer.subscribe(fn);
   }
 
   @bind

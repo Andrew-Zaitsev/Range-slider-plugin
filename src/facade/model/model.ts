@@ -36,12 +36,12 @@ export default class Model {
       step,
     } = options;
 
+    // реализовать апдейт модели и последующее перемещение ползунка
     if (values !== undefined) {
+      console.log('***update model - values***');
       this.updateValues(values);
       this.emitUpdates({ values: this.sliderData.values });
     }
-    console.log('***update model***', this.sliderData);
-    // реализовать апдейт модели и последующее перемещение ползунка
   }
 
   public getData(): defaultOptions {

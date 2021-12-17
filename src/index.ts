@@ -1,5 +1,4 @@
 import './scss/slider.scss';
-
 import './jquery.interface.ts';
 import type { userOptions } from './facade/model/optionsTypes';
 import Facade from './facade/facade';
@@ -19,18 +18,12 @@ import Facade from './facade/facade';
       },
       update(updateOptions: userOptions): JQuery<HTMLElement> {
         return this
-          .each((index: number, elem: HTMLElement) => {
-            console.log($(elem).data('facade').presenter.updateModel(updateOptions));
-            console.log('updateOptions:', updateOptions);
-          });
-        // , new Facade(elem, initOptions as userOptions)));
+          .each((index: number, elem: HTMLElement) => $(elem).data('facade').presenter.updateModel(updateOptions));
       },
       delete() {
         //
       },
     };
-    // if ((typeof pluginParams === 'string') && (pluginAPI[pluginParams])) return pluginAPI[pluginParams].call(this);
-    // console.log(Array.prototype.slice.call(arguments, 1)[0]);
     // this = $(elem), this[0] = elem
     switch (true) {
       case (Boolean((typeof pluginParams === 'string') && (pluginAPI[pluginParams]))):
@@ -40,5 +33,3 @@ import Facade from './facade/facade';
     }
   };
 }(jQuery));
-
-// console.log('from init \n ______________ \n', 'options: \n', options, 'this \n', this, '\n ______________');

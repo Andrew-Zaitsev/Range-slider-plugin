@@ -1,5 +1,8 @@
 import './control-panel.scss';
+import bind from 'bind-decorator';
 import Facade from '../facade/facade';
+import { userOptions } from '../facade/model/optionsTypes';
+import { ObserverCallback } from '../facade/observer/observer';
 
 export default class ControlPanel {
   private minValueInput!: HTMLInputElement;
@@ -29,6 +32,24 @@ export default class ControlPanel {
     this.init();
   }
 
+  @bind
+  public updateControlPanel(newOptions: userOptions):void {
+    const {
+      minValue,
+      maxValue,
+      values: newValues,
+      isVertical,
+      hasScale,
+      hasRange,
+      hasLabels,
+      scaleDivisionsNumber,
+      step,
+    } = newOptions;
+
+    // console.log('*updatePanel*');
+    if (newValues) this.setValues(newValues);
+  }
+
   private init(): void {
     this.minValueInput = this.createField('min value');
     this.maxValueInput = this.createField('max value');
@@ -40,6 +61,8 @@ export default class ControlPanel {
     this.showLabelsInput = this.createField('show labels', 'checkbox');
     this.scaleDivisionsNumberInput = this.createField('scale divisions number');
     this.stepInput = this.createField('step value');
+
+    this.subscribeToSlider(this.updateControlPanel);
   }
 
   private createField(titleElemText: string, inputElemType = 'number'): HTMLInputElement {
@@ -52,7 +75,6 @@ export default class ControlPanel {
 
     const inputElem: HTMLInputElement = document.createElement('input');
     inputElem.classList.add('control-panel__input');
-    // if (inputElemType === 'checkbox') inputElem.classList.add('control-panel__input_type-checkbox');
     inputElem.setAttribute('type', inputElemType);
 
     fieldElem.append(titleElem, inputElem);
@@ -60,15 +82,14 @@ export default class ControlPanel {
     // console.log(this);
     return inputElem;
   }
-}
 
-//     minValue: 10,
-//     maxValue: 70,
-//     values: [15, 20],
-//     // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
-//     isVertical: false,
-//     hasScale: false,
-//     hasRange: true,
-//     hasLabels: false,
-//     scaleDivisionsNumber: 4,
-//     step: 5,
+  private subscribeToSlider(fn: ObserverCallback):void {
+    this.facade.subscribeToOptionsUpdate(fn);
+  }
+
+  private setValues(values: number[]): void {
+    const [valueFrom, valueTo] = values;
+    this.valueFromInput.value = String(valueFrom);
+    this.valueToInput.value = String(valueTo);
+  }
+}

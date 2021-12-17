@@ -19,7 +19,6 @@ export default class Observer {
   }
 
   public emit(data: userOptions): void {
-    // console.log(args[0]);
     this.callbacks.forEach((callback: ObserverCallback) => callback(data));
   }
 
@@ -27,3 +26,5 @@ export default class Observer {
     return this.callbacks;
   }
 }
+
+export type { ObserverCallback };
