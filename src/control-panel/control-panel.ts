@@ -25,11 +25,14 @@ export default class ControlPanel {
 
   private stepInput: HTMLInputElement = document.createElement('input');
 
+  private $demoSliderElem: JQuery<HTMLElement>;
+
   constructor(
     private parentElem: HTMLElement,
-    // private facade: Facade,
     private demoSliderElem: HTMLElement,
   ) {
+    this.$demoSliderElem = $(this.demoSliderElem);
+
     this.init();
   }
 
@@ -87,7 +90,7 @@ export default class ControlPanel {
 
   private subscribeToSlider(fn: ObserverCallback):void {
     // реализовать подписку на апдейт модели через апи слайдера
-    $(this.demoSliderElem).rangeSlider('subscribeToSliderUpdates', fn);
+    this.$demoSliderElem.rangeSlider('subscribeToSliderUpdates', fn);
     // this.facade.subscribeToModel(fn);
   }
 
@@ -109,6 +112,6 @@ export default class ControlPanel {
     ];
     // получили новые values
     // реализовать апдейт слайдера, см. ниже
-    // ${this.parent}.rengeSlider('update', {values: newValues});
+    this.$demoSliderElem.rangeSlider('update', { values: newValues });
   }
 }
