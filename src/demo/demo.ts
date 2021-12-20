@@ -67,7 +67,8 @@ class DemoSliderInit {
 
     const facade: Facade = $(this.demoSlider).rangeSlider(options).data('facade');
     // $(this.demoSlider).rangeSlider('update', { step: 2 });
-    const controlPanel = new ControlPanel(this.demoSliderControlPanel, facade);
+    // const controlPanel = new ControlPanel(this.demoSliderControlPanel, facade);
+    const controlPanel = new ControlPanel(this.demoSliderControlPanel, this.demoSlider);
   }
 }
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));

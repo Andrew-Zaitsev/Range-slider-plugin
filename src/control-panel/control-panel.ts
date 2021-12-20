@@ -27,7 +27,8 @@ export default class ControlPanel {
 
   constructor(
     private parentElem: HTMLElement,
-    private facade: Facade,
+    // private facade: Facade,
+    private demoSliderElem: HTMLElement,
   ) {
     this.init();
   }
@@ -63,6 +64,7 @@ export default class ControlPanel {
     this.stepInput = this.createField('step value');
 
     this.subscribeToSlider(this.updateControlPanel);
+    this.bindEvents();
   }
 
   private createField(titleElemText: string, inputElemType = 'number'): HTMLInputElement {
@@ -84,12 +86,29 @@ export default class ControlPanel {
   }
 
   private subscribeToSlider(fn: ObserverCallback):void {
-    this.facade.subscribeToOptionsUpdate(fn);
+    // реализовать подписку на апдейт модели через апи слайдера
+    $(this.demoSliderElem).rangeSlider('subscribeToSliderUpdates', fn);
+    // this.facade.subscribeToModel(fn);
   }
 
   private setValues(values: number[]): void {
     const [valueFrom, valueTo] = values;
     this.valueFromInput.value = String(valueFrom);
     this.valueToInput.value = String(valueTo);
+  }
+
+  private bindEvents(): void {
+    this.valueFromInput.addEventListener('change', this.handleValueFromInputChange);
+  }
+
+  @bind
+  private handleValueFromInputChange(): void {
+    const newValues: number[] = [
+      +(this.valueFromInput.value),
+      +(this.valueToInput.value),
+    ];
+    // получили новые values
+    // реализовать апдейт слайдера, см. ниже
+    // ${this.parent}.rengeSlider('update', {values: newValues});
   }
 }

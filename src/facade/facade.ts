@@ -12,7 +12,7 @@ export default class Facade {
     this.init(parentElem, options);
   }
 
-  public subscribeToOptionsUpdate(fn: ObserverCallback): void {
+  public subscribeToModel(fn: ObserverCallback): void {
     this.presenter.subscribeToModel(fn);
   }
 
