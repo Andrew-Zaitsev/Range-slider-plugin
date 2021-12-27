@@ -36,11 +36,16 @@ export default class Model {
       step,
     } = options;
 
-    // реализовать апдейт модели и последующее перемещение ползунка
     if (values !== undefined) {
       console.log('***update model - values***');
       this.updateValues(values);
       this.emitUpdates({ values: this.sliderData.values });
+    }
+    // реализовать апдейт мин мак значений и последующее изменение на виде
+    if (minValue !== undefined) {
+      console.log('***update model - min***');
+      this.updateMinValue(minValue);
+      this.emitUpdates({ minValue: this.sliderData.minValue });
     }
   }
 
@@ -62,6 +67,10 @@ export default class Model {
 
   private updateValues(data: number[]): void {
     this.sliderData.values = data;
+  }
+
+  private updateMinValue(data: number): void {
+    this.sliderData.minValue = data;
   }
 
   private emitUpdates(options: userOptions) {

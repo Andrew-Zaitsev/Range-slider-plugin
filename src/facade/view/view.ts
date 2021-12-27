@@ -30,8 +30,14 @@ export default class View {
     this.init(parent, options);
   }
 
-  public update(updatedOptions: userOptions): void {
+  public update(newOptions: userOptions): void {
     console.log('*update view*');
+    // реализовать метод view.update
+    // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
+    this.updateOptions(newOptions);
+
+    // console.log(Object.keys(newOptions).length === 1);
+    // console.log('only values', isOnlyValuesGot);
     const {
       minValue,
       maxValue,
@@ -42,14 +48,28 @@ export default class View {
       hasLabels,
       scaleDivisionsNumber,
       step,
-    } = updatedOptions;
+    } = newOptions;
 
-    if (values !== undefined) {
-      this.updateThumbsPosition(this.options);
-      this.updateSelectBarPosition();
+    const isOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
+      && (Object.prototype.hasOwnProperty.call(newOptions, 'values'));
+
+    if (isOnlyValuesGot) {
+      if (values !== undefined) {
+        this.updateThumbsPosition(this.options);// надо брать полностью новые опции!
+        this.updateSelectBarPosition();
+      }
+    } else {
+      console.log('отрисовать заново слайдер');
+      this.updateScale();
+      // обновить положение ползунков, значение их ярлыков, положение селектбара
     }
-    // console.log(`***view.update**${updatedOptions.values}`);
-    // реализовать метод view.update
+  }
+
+  public updateOptions(newOptions: userOptions): void {
+    this.options = {
+      ...this.options,
+      ...newOptions,
+    };
   }
 
   private init(parent: HTMLElement, options: defaultOptions) {
@@ -77,6 +97,11 @@ export default class View {
   private setScale(slider: HTMLElement, options: defaultOptions): void {
     this.scale = new Scale(slider, options);
     this.scale.set();
+  }
+
+  private updateScale() {
+    this.scale.getScaleElem().remove();
+    this.setScale(this.sliderElem, this.options);
   }
 
   private calculateScaleIndent(): number {

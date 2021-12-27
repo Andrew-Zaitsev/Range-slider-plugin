@@ -20,7 +20,7 @@ export default class Scale {
   }
 
   public set():void {
-    this.parent.append(this.scaleElem);
+    this.parent.prepend(this.scaleElem);
   }
 
   private init(parent: HTMLElement):void {

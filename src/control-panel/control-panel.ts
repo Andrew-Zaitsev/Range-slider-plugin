@@ -66,8 +66,12 @@ export default class ControlPanel {
     this.scaleDivisionsNumberInput = this.createField('scale divisions number');
     this.stepInput = this.createField('step value');
 
+    // this.updateControlPanel();
+
+    // }
     this.subscribeToSlider(this.updateControlPanel);
     this.bindEvents();
+    // проапдейтить значения, взяв у модели
   }
 
   private createField(titleElemText: string, inputElemType = 'number'): HTMLInputElement {
@@ -101,17 +105,38 @@ export default class ControlPanel {
   }
 
   private bindEvents(): void {
-    this.valueFromInput.addEventListener('change', this.handleValueFromInputChange);
+    this.valueFromInput.addEventListener('change', this.handleValueInputChange);
+    this.valueToInput.addEventListener('change', this.handleValueInputChange);
+    this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
+    this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
   }
 
   @bind
-  private handleValueFromInputChange(): void {
+  private handleValueInputChange(): void {
     const newValues: number[] = [
       +(this.valueFromInput.value),
       +(this.valueToInput.value),
     ];
     // получили новые values
     // реализовать апдейт слайдера, см. ниже
-    this.$demoSliderElem.rangeSlider('update', { values: newValues });
+    this.updateSlider({ values: newValues });
+  }
+
+  @bind
+  private handleMinValueInputChange(): void {
+    const newMinValue: number = +(this.minValueInput.value);
+
+    this.updateSlider({ minValue: newMinValue });
+  }
+
+  @bind
+  private handleMaxValueInputChange(): void {
+    const newMaxValue: number = +(this.maxValueInput.value);
+
+    this.updateSlider({ maxValue: newMaxValue });
+  }
+
+  private updateSlider(newOptions: userOptions): void {
+    this.$demoSliderElem.rangeSlider('update', newOptions);
   }
 }
