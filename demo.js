@@ -10955,22 +10955,42 @@ class ControlPanel {
         this.init();
     }
     updateControlPanel(newOptions) {
-        const { minValue, maxValue, values: newValues, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
-        // console.log('*updatePanel*');
-        if (newValues)
+        console.log('*updatePanel*');
+        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
+        // если передан minValue и оно не равно существующему - установить новое
+        if ((newMinValue !== undefined)
+            && (newMinValue !== +this.minValueInput.value)) {
+            this.setMinValue(newMinValue);
+        }
+        // если передан maxValue и оно не равно существующему - установить новое
+        if ((newMaxValue !== undefined)
+            && (newMaxValue !== +this.maxValueInput.value)) {
+            this.setMaxValue(newMaxValue);
+        }
+        // если переданы values и они не равны существующим - установить новые
+        if ((newValues !== undefined)
+            && ((newValues[0] !== +this.valueFromInput.value)
+                || ((newValues[1] !== +this.valueToInput.value)))) {
             this.setValues(newValues);
+        }
+    }
+    getSliderOptions() {
+        return this.$demoSliderElem.rangeSlider('getOptions');
     }
     init() {
         this.minValueInput = this.createField('min value');
         this.maxValueInput = this.createField('max value');
         this.valueFromInput = this.createField('value From');
         this.valueToInput = this.createField('value To');
-        this.directionInput = this.createField('direction');
+        this.directionInput = this.createField('direction', 'checkbox');
         this.showRangeInput = this.createField('show range', 'checkbox');
         this.showScaleInput = this.createField('show scale', 'checkbox');
         this.showLabelsInput = this.createField('show labels', 'checkbox');
         this.scaleDivisionsNumberInput = this.createField('scale divisions number');
         this.stepInput = this.createField('step value');
+        this.updateControlPanel(this.getSliderOptions());
+        // this.updateControlPanel();
+        // }
         this.subscribeToSlider(this.updateControlPanel);
         this.bindEvents();
         // проапдейтить значения, взяв у модели
@@ -10984,6 +11004,7 @@ class ControlPanel {
         const inputElem = document.createElement('input');
         inputElem.classList.add('control-panel__input');
         inputElem.setAttribute('type', inputElemType);
+        inputElem.value = (inputElemType === 'number') ? '0' : '';
         fieldElem.append(titleElem, inputElem);
         this.parentElem.append(fieldElem);
         // console.log(this);
@@ -10998,6 +11019,12 @@ class ControlPanel {
         const [valueFrom, valueTo] = values;
         this.valueFromInput.value = String(valueFrom);
         this.valueToInput.value = String(valueTo);
+    }
+    setMinValue(value) {
+        this.minValueInput.value = (value !== 0) ? String(value) : '0';
+    }
+    setMaxValue(value) {
+        this.maxValueInput.value = (value !== 0) ? String(value) : '0';
     }
     bindEvents() {
         this.valueFromInput.addEventListener('change', this.handleValueInputChange);
@@ -11024,6 +11051,7 @@ class ControlPanel {
     }
     updateSlider(newOptions) {
         this.$demoSliderElem.rangeSlider('update', newOptions);
+        console.log('upd slider', newOptions);
     }
 }
 __decorate([
@@ -11096,8 +11124,6 @@ class DemoSliderInit {
         this.demoSliderSection.append(this.demoSliderWrapperForControlPanel);
         this.demo.append(this.demoSliderSection);
         const facade = demo_$(this.demoSlider).rangeSlider(options).data('facade');
-        // $(this.demoSlider).rangeSlider('update', { step: 2 });
-        // const controlPanel = new ControlPanel(this.demoSliderControlPanel, facade);
         const controlPanel = new ControlPanel(this.demoSliderControlPanel, this.demoSlider);
     }
 }

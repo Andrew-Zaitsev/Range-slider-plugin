@@ -10968,6 +10968,11 @@ class Model {
             this.updateMinValue(minValue);
             this.emitUpdates({ minValue: this.sliderData.minValue });
         }
+        if (maxValue !== undefined) {
+            console.log('***update model - max***');
+            this.updateMaxValue(maxValue);
+            this.emitUpdates({ maxValue: this.sliderData.maxValue });
+        }
     }
     getData() {
         return this.sliderData;
@@ -10984,6 +10989,9 @@ class Model {
     }
     updateMinValue(data) {
         this.sliderData.minValue = data;
+    }
+    updateMaxValue(data) {
+        this.sliderData.maxValue = data;
     }
     emitUpdates(options) {
         this.observer.emit(options);
@@ -11060,7 +11068,7 @@ class Scale {
         return this.scaleElem;
     }
     set() {
-        this.parent.append(this.scaleElem);
+        this.parent.prepend(this.scaleElem);
     }
     init(parent) {
         this.parent = parent;
@@ -11167,18 +11175,30 @@ class View {
         this.thumbs = [];
         this.init(parent, options);
     }
-    update(updatedOptions) {
-        // реализовать метод view.update
+    update(newOptions) {
         console.log('*update view*');
-        const { minValue, maxValue, values, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = updatedOptions;
-        if (values !== undefined) {
+        // реализовать метод view.update
+        // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
+        const { minValue, maxValue, values, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
+        this.updateOptions(newOptions);
+        const isOnlyValuesGot = (Object.keys(newOptions).length === 1)
+            && (Object.prototype.hasOwnProperty.call(newOptions, 'values'));
+        if (isOnlyValuesGot) {
+            if (values !== undefined) {
+                this.updateThumbsPosition(this.options);
+                this.updateSelectBarPosition();
+            }
+        }
+        else {
+            console.log('отрисовать слайдер полностью');
+            this.updateScale();
             this.updateThumbsPosition(this.options);
             this.updateSelectBarPosition();
+            // обновить  значение ярлыков ползунков, положение селектбара
         }
-        if (minValue !== undefined) {
-            // this.updateScale // сделать апдейт шкалы
-        }
-        // console.log(`***view.update**${updatedOptions.values}`);
+    }
+    updateOptions(newOptions) {
+        this.options = Object.assign(Object.assign({}, this.options), newOptions);
     }
     init(parent, options) {
         this.parent = parent;
@@ -11199,6 +11219,10 @@ class View {
     setScale(slider, options) {
         this.scale = new Scale(slider, options);
         this.scale.set();
+    }
+    updateScale() {
+        this.scale.getScaleElem().remove();
+        this.setScale(this.sliderElem, this.options);
     }
     calculateScaleIndent() {
         const scaleRect = this.scale.getScaleElem().getBoundingClientRect();
@@ -11372,8 +11396,17 @@ class Facade {
             delete() {
                 //
             },
-            // ПОДУМАТЬ О ЗАМЕНЕ ПОДПИСКИ ПАНЕЛИ НА МОДЕЛЬ  - ЧЕРЕЗ pluginAPI  слайдера(нет еще метода) например subscribeTo в АПИ
-            // и апдейтить слайдер через АПИ слайдера(метод есть)
+            getOptions() {
+                if (this.length === 1) {
+                    const options = $(this.get(0)).data('facade').presenter.model.getData();
+                    return options;
+                }
+                const optionsArray = this
+                    .each((i, sliderElem) => {
+                    optionsArray.push($(sliderElem).data('facade').presenter.model.getData());
+                });
+                return optionsArray;
+            },
         };
         // this = $(elem), this[0] = elem
         switch (true) {
