@@ -47,6 +47,11 @@ export default class Model {
       this.updateMinValue(minValue);
       this.emitUpdates({ minValue: this.sliderData.minValue });
     }
+    if (maxValue !== undefined) {
+      console.log('***update model - max***');
+      this.updateMaxValue(maxValue);
+      this.emitUpdates({ maxValue: this.sliderData.maxValue });
+    }
   }
 
   public getData(): defaultOptions {
@@ -71,6 +76,10 @@ export default class Model {
 
   private updateMinValue(data: number): void {
     this.sliderData.minValue = data;
+  }
+
+  private updateMaxValue(data: number): void {
+    this.sliderData.maxValue = data;
   }
 
   private emitUpdates(options: userOptions) {

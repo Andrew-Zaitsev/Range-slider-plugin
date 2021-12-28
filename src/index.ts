@@ -41,8 +41,6 @@ import { ObserverCallback } from './facade/observer/observer';
 
         return optionsArray;
       },
-      // ПОДУМАТЬ О ЗАМЕНЕ ПОДПИСКИ ПАНЕЛИ НА МОДЕЛЬ  - ЧЕРЕЗ pluginAPI  слайдера(нет еще метода) например subscribeTo в АПИ
-      // и апдейтить слайдер через АПИ слайдера(метод есть)
     };
     // this = $(elem), this[0] = elem
     switch (true) {

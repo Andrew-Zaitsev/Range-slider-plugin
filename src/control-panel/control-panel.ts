@@ -1,7 +1,7 @@
 import './control-panel.scss';
 import bind from 'bind-decorator';
 import Facade from '../facade/facade';
-import { userOptions } from '../facade/model/optionsTypes';
+import { defaultOptions, userOptions } from '../facade/model/optionsTypes';
 import { ObserverCallback } from '../facade/observer/observer';
 
 export default class ControlPanel {
@@ -38,9 +38,11 @@ export default class ControlPanel {
 
   @bind
   public updateControlPanel(newOptions: userOptions):void {
+    console.log('*updatePanel*');
+
     const {
-      minValue,
-      maxValue,
+      minValue: newMinValue,
+      maxValue: newMaxValue,
       values: newValues,
       isVertical,
       hasScale,
@@ -50,8 +52,26 @@ export default class ControlPanel {
       step,
     } = newOptions;
 
-    // console.log('*updatePanel*');
-    if (newValues) this.setValues(newValues);
+    // если передан minValue и оно не равно существующему - установить новое
+    if ((newMinValue !== undefined)
+        && (newMinValue !== +this.minValueInput.value)) {
+      this.setMinValue(newMinValue);
+    }
+    // если передан maxValue и оно не равно существующему - установить новое
+    if ((newMaxValue !== undefined)
+        && (newMaxValue !== +this.maxValueInput.value)) {
+      this.setMaxValue(newMaxValue);
+    }
+    // если переданы values и они не равны существующим - установить новые
+    if ((newValues !== undefined)
+      && ((newValues[0] !== +this.valueFromInput.value)
+        || ((newValues[1] !== +this.valueToInput.value)))) {
+      this.setValues(newValues);
+    }
+  }
+
+  private getSliderOptions(): defaultOptions {
+    return this.$demoSliderElem.rangeSlider('getOptions');
   }
 
   private init(): void {
@@ -59,13 +79,14 @@ export default class ControlPanel {
     this.maxValueInput = this.createField('max value');
     this.valueFromInput = this.createField('value From');
     this.valueToInput = this.createField('value To');
-    this.directionInput = this.createField('direction');
+    this.directionInput = this.createField('direction', 'checkbox');
     this.showRangeInput = this.createField('show range', 'checkbox');
     this.showScaleInput = this.createField('show scale', 'checkbox');
     this.showLabelsInput = this.createField('show labels', 'checkbox');
     this.scaleDivisionsNumberInput = this.createField('scale divisions number');
     this.stepInput = this.createField('step value');
 
+    this.updateControlPanel(this.getSliderOptions());
     // this.updateControlPanel();
 
     // }
@@ -85,6 +106,7 @@ export default class ControlPanel {
     const inputElem: HTMLInputElement = document.createElement('input');
     inputElem.classList.add('control-panel__input');
     inputElem.setAttribute('type', inputElemType);
+    inputElem.value = (inputElemType === 'number') ? '0' : '';
 
     fieldElem.append(titleElem, inputElem);
     this.parentElem.append(fieldElem);
@@ -102,6 +124,14 @@ export default class ControlPanel {
     const [valueFrom, valueTo] = values;
     this.valueFromInput.value = String(valueFrom);
     this.valueToInput.value = String(valueTo);
+  }
+
+  private setMinValue(value: number): void {
+    this.minValueInput.value = (value !== 0) ? String(value) : '0';
+  }
+
+  private setMaxValue(value: number): void {
+    this.maxValueInput.value = (value !== 0) ? String(value) : '0';
   }
 
   private bindEvents(): void {
@@ -138,5 +168,6 @@ export default class ControlPanel {
 
   private updateSlider(newOptions: userOptions): void {
     this.$demoSliderElem.rangeSlider('update', newOptions);
+    console.log('upd slider', newOptions);
   }
 }

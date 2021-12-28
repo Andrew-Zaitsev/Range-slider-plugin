@@ -55,13 +55,15 @@ export default class View {
 
     if (isOnlyValuesGot) {
       if (values !== undefined) {
-        this.updateThumbsPosition(this.options);// надо брать полностью новые опции!
+        this.updateThumbsPosition(this.options);
         this.updateSelectBarPosition();
       }
     } else {
-      console.log('отрисовать заново слайдер');
+      console.log('отрисовать слайдер полностью');
       this.updateScale();
-      // обновить положение ползунков, значение их ярлыков, положение селектбара
+      this.updateThumbsPosition(this.options);
+      this.updateSelectBarPosition();
+      // обновить  значение ярлыков ползунков, положение селектбара
     }
   }
 
