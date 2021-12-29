@@ -34,10 +34,6 @@ export default class View {
     console.log('*update view*');
     // реализовать метод view.update
     // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
-    this.updateOptions(newOptions);
-
-    // console.log(Object.keys(newOptions).length === 1);
-    // console.log('only values', isOnlyValuesGot);
     const {
       minValue,
       maxValue,
@@ -49,6 +45,8 @@ export default class View {
       scaleDivisionsNumber,
       step,
     } = newOptions;
+
+    this.updateOptions(newOptions);
 
     const isOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
       && (Object.prototype.hasOwnProperty.call(newOptions, 'values'));

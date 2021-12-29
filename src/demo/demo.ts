@@ -66,8 +66,6 @@ class DemoSliderInit {
     this.demo.append(this.demoSliderSection);
 
     const facade: Facade = $(this.demoSlider).rangeSlider(options).data('facade');
-    // console.log($(this.demoSlider).rangeSlider('getOptions'));
-    // const controlPanel = new ControlPanel(this.demoSliderControlPanel, facade);
     const controlPanel = new ControlPanel(this.demoSliderControlPanel, this.demoSlider);
   }
 }
