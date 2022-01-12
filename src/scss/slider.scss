@@ -97,4 +97,34 @@
     background-color: $green;
     cursor: pointer;
   }
+// ******************************************
+  &_vertical {
+    
+    .slider {
+
+      &__scale {
+
+      }
+
+      &__scale-label {
+        
+      }
+
+      &__scale-text {
+        
+      }
+
+      &__scale-pin {
+        
+      }
+
+      &__handle {
+        
+      }
+
+      &__select-bar {
+        
+      }
+    }
+  }
 }

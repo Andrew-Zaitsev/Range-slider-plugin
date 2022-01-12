@@ -20,6 +20,10 @@ export default class selectBar {
     this.parent.append(this.selectBarElem);
   }
 
+  public setScaleIndent(scaleIndent: number): void {
+    this.scaleIndent = scaleIndent;
+  }
+
   public setPosition(options: defaultOptions):void {
     const { minValue, maxValue, values } = options;
 

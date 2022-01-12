@@ -57,11 +57,11 @@ export default class View {
         this.updateSelectBarPosition();
       }
     } else {
+      // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
       console.log('отрисовать слайдер полностью');
       this.updateScale();
       this.updateThumbsPosition(this.options);
       this.updateSelectBarPosition();
-      // обновить  значение ярлыков ползунков, положение селектбара
     }
   }
 
@@ -76,17 +76,19 @@ export default class View {
     this.parent = parent;
     this.options = options;
     this.observer = new Observer();
+    // console.log(options);
     this.main = new Main();
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
 
     this.setScale(this.sliderElem, this.options);
-
-    this.scaleIndent = this.calculateScaleIndent();
-
     this.setThumbs(options);
-    this.updateThumbsPosition(options);
     this.setSelectBar();
+    this.setScaleIndent();
+
+    // this.scaleIndent = this.calculateScaleIndent();
+
+    this.updateThumbsPosition(options);
     this.updateSelectBarPosition();
 
     // подумать над валидацией переданных значений
@@ -94,7 +96,7 @@ export default class View {
     this.bindListeners();
   }
 
-  private setScale(slider: HTMLElement, options: defaultOptions): void {
+  private setScale(slider: HTMLElement, options: defaultOptions): void { // значения в параметрах уже доступны через this, поредавать не нужно наверное?
     this.scale = new Scale(slider, options);
     this.scale.set();
   }
@@ -126,7 +128,7 @@ export default class View {
     }
 
     this.thumbs.forEach((thumb: Thumb) => {
-      thumb.setHandle();
+      thumb.setHandle(); // изменить название метода на setThumb
     });
   }
 
@@ -139,6 +141,13 @@ export default class View {
   private setSelectBar(): void {
     this.selectBar = new SelectBar(this.sliderElem, this.options, this.scaleIndent);
     this.selectBar.set();
+  }
+
+  private setScaleIndent(): void {
+    const scaleIndent: number = this.calculateScaleIndent();
+
+    this.thumbs.forEach((thumb: Thumb) => thumb.setScaleIndent(scaleIndent));
+    this.selectBar.setScaleIndent(scaleIndent);
   }
 
   private updateSelectBarPosition(): void {

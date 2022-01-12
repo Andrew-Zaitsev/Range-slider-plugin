@@ -23,6 +23,10 @@ export default class Thumb {
     this.parent.append(this.thumbElem);
   }
 
+  public setScaleIndent(scaleIndent: number): void {
+    this.scaleIndent = scaleIndent;
+  }
+
   public setPosition(options: defaultOptions, i: number): void {
     const {
       minValue,

@@ -23,44 +23,49 @@ export default class Model {
     this.init(initOptions);
   }
 
-  public update(options: userOptions): void {
+  public update(newOptions: userOptions): void {
     const {
-      minValue,
-      maxValue,
-      values,
+      minValue: newMinValue,
+      maxValue: newMaxValue,
+      values: newValues,
       isVertical,
       hasScale,
       hasRange,
       hasLabels,
       scaleDivisionsNumber,
       step,
-    } = options;
-
-    if (values !== undefined) {
+    } = newOptions;
+    const emitOptions: userOptions = {};
+    // в условиях производить валидацию значений (если невалидно - не обновлять sliderData и удалять из newOptions)
+    if (newValues !== undefined) {
       console.log('***update model - values***');
-      this.updateValues(values);
-      this.emitUpdates({ values: this.sliderData.values });
+      this.updateValues(newValues);
+      emitOptions.values = newValues;
+      // this.emitUpdates({ values: this.sliderData.values });
     }
     // реализовать апдейт мин мак значений и последующее изменение на виде
-    if (minValue !== undefined) {
+    if (newMinValue !== undefined) {
       console.log('***update model - min***');
-      this.updateMinValue(minValue);
-      this.emitUpdates({ minValue: this.sliderData.minValue });
+      this.updateMinValue(newMinValue);
+      emitOptions.minValue = newMinValue;
+      // this.emitUpdates({ minValue: this.sliderData.minValue });
     }
-    if (maxValue !== undefined) {
+    if (newMaxValue !== undefined) {
       console.log('***update model - max***');
-      this.updateMaxValue(maxValue);
-      this.emitUpdates({ maxValue: this.sliderData.maxValue });
+      this.updateMaxValue(newMaxValue);
+      emitOptions.maxValue = newMaxValue;
+      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
     }
+    if (Object.keys(emitOptions).length > 0) this.emitUpdates(emitOptions);
   }
 
   public getData(): defaultOptions {
     return this.sliderData;
   }
 
-  private init(options: userOptions) {
+  private init(newOptions: userOptions) {
     this.observer = new Observer();
-    this.setData(options);
+    this.setData(newOptions);
   }
 
   private setData(initData: userOptions): void {
@@ -82,7 +87,7 @@ export default class Model {
     this.sliderData.maxValue = data;
   }
 
-  private emitUpdates(options: userOptions) {
-    this.observer.emit(options);
+  private emitUpdates(newOptions: userOptions) {
+    this.observer.emit(newOptions);
   }
 }

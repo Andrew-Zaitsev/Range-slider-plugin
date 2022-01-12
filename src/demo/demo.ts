@@ -9,6 +9,7 @@ const demoSliderConfigs: userOptions[] = [
     maxValue: 50,
     hasLabels: false,
     scaleDivisionsNumber: 5,
+    isVertical: true,
     step: 5,
   },
   {
