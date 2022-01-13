@@ -61,7 +61,6 @@
     width: 70px;
     height: 70px;
     position: absolute;
-    //left: 35px;
     z-index: 1;
     transform: translateX(-50%);
     border-radius: 50%;
@@ -97,33 +96,56 @@
     background-color: $green;
     cursor: pointer;
   }
-// ******************************************
+
   &_vertical {
-    
+    width: 70px;
+    height: 500px;
+    margin: 0 auto;
+      
     .slider {
 
       &__scale {
-
+        flex-direction: column-reverse;
+        width: 10px;
+        height: calc(100% - 70px);
+        top: 35px;
+        left: 50%;
+        transform: translateX(-50%);
       }
 
       &__scale-label {
-        
+        display: inline-block;
+        transform: translate(0, 0);
       }
 
       &__scale-text {
+        left: -29px;
+        top: 0;
+        transform: translate(0, -50%);
+   
         
       }
 
       &__scale-pin {
-        
+        width: 12px;
+        height: 2px;
+        min-height: 26px;
+        padding: 12px 0 12px;
+        left: 17px;
+        top: 0;
+        transform: translate(0, -50%);
       }
 
       &__handle {
-        
+        box-shadow: 3px 0px 5px -1px $darkgrey;
       }
 
       &__select-bar {
-        
+        width: 10px;
+        height: 70%;
+        left: 50%;
+        top: 35px;
+        transform: translateX(-50%);
       }
     }
   }

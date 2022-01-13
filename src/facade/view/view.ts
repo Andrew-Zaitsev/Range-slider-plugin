@@ -11,7 +11,7 @@ export default class View {
 
   private scale!: Scale;
 
-  private scaleIndent!: number;
+  // private scaleIndent!: number;
 
   private thumbs: Thumb[] = [];
 
@@ -60,6 +60,7 @@ export default class View {
       // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
       console.log('отрисовать слайдер полностью');
       this.updateScale();
+      this.setScaleIndent();
       this.updateThumbsPosition(this.options);
       this.updateSelectBarPosition();
     }
@@ -85,6 +86,7 @@ export default class View {
     this.setThumbs(options);
     this.setSelectBar();
     this.setScaleIndent();
+    this.setOrientation();
 
     // this.scaleIndent = this.calculateScaleIndent();
 
@@ -119,17 +121,27 @@ export default class View {
   private setThumbs(options: defaultOptions) {
     if (options.hasRange) {
       options.values.forEach((value: number, i: number) => {
-        this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
+        this.thumbs.push(new Thumb(this.sliderElem));
       });
       this.thumbs[0].getElem().classList.add('slider__handle_min');
       this.thumbs[1].getElem().classList.add('slider__handle_max');
     } else {
-      this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
+      this.thumbs.push(new Thumb(this.sliderElem));
     }
 
     this.thumbs.forEach((thumb: Thumb) => {
       thumb.setHandle(); // изменить название метода на setThumb
     });
+  }
+
+  private setOrientation() {
+    // console.log('view.setOrientation \n', this.options.isVertical, this.main.getElem());
+    if (this.options.isVertical) {
+      this.main.getElem().classList.add('slider_vertical');
+      // console.log(this.main.getElem().classList);
+    } else {
+      this.main.getElem().classList.remove('slider_vertical');
+    }
   }
 
   private updateThumbsPosition(options: defaultOptions): void {
@@ -139,7 +151,7 @@ export default class View {
   }
 
   private setSelectBar(): void {
-    this.selectBar = new SelectBar(this.sliderElem, this.options, this.scaleIndent);
+    this.selectBar = new SelectBar(this.sliderElem, this.options);
     this.selectBar.set();
   }
 

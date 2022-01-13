@@ -28,7 +28,7 @@ export default class Model {
       minValue: newMinValue,
       maxValue: newMaxValue,
       values: newValues,
-      isVertical,
+      isVertical: newIsVertical,
       hasScale,
       hasRange,
       hasLabels,
@@ -45,15 +45,21 @@ export default class Model {
     }
     // реализовать апдейт мин мак значений и последующее изменение на виде
     if (newMinValue !== undefined) {
-      console.log('***update model - min***');
+      console.log('*update model - min*');
       this.updateMinValue(newMinValue);
       emitOptions.minValue = newMinValue;
       // this.emitUpdates({ minValue: this.sliderData.minValue });
     }
     if (newMaxValue !== undefined) {
-      console.log('***update model - max***');
+      console.log('*update model - max*');
       this.updateMaxValue(newMaxValue);
       emitOptions.maxValue = newMaxValue;
+      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
+    }
+    if (newIsVertical !== undefined) {
+      console.log('*update model - isVertical*');
+      this.updateIsVertical(newIsVertical);
+      emitOptions.isVertical = newIsVertical;
       // this.emitUpdates({ maxValue: this.sliderData.maxValue });
     }
     if (Object.keys(emitOptions).length > 0) this.emitUpdates(emitOptions);
@@ -85,6 +91,10 @@ export default class Model {
 
   private updateMaxValue(data: number): void {
     this.sliderData.maxValue = data;
+  }
+
+  private updateIsVertical(data: boolean): void {
+    this.sliderData.isVertical = data;
   }
 
   private emitUpdates(newOptions: userOptions) {

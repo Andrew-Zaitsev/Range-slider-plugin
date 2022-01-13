@@ -3,10 +3,11 @@ import { defaultOptions } from '../../model/optionsTypes';
 export default class selectBar {
   private selectBarElem!: HTMLElement;
 
+  private scaleIndent!: number;
+
   constructor(
     private parent: HTMLElement,
     private options: defaultOptions,
-    private scaleIndent: number,
   ) {
     this.init();
   }
@@ -34,7 +35,7 @@ export default class selectBar {
     const barScaleRate = selectBarRange / scaleRange;
 
     if (options.isVertical) {
-      console.log('* вертикальный селект-бар не рассчитывается *');
+      console.log('* selectBar.setPosition: вертикальный селект-бар не рассчитывается *');
     } else {
       this.selectBarElem.style
         .left = `calc((100% - (${this.scaleIndent}px * 2)) * ${minHandleScaleRate} + ${this.scaleIndent}px)`;

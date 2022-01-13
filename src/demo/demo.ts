@@ -22,7 +22,7 @@ const demoSliderConfigs: userOptions[] = [
     minValue: 500,
     maxValue: -50,
     values: [500],
-    isVertical: true,
+    isVertical: false,
     hasScale: false,
     hasRange: false,
     step: 12,
@@ -72,4 +72,8 @@ class DemoSliderInit {
 }
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 
-// console.log(a.data());
+// пример изменения слайдера через API
+setTimeout(() => {
+  console.log('--------------------------------');
+  $('.js-demo__slider:eq(0)').rangeSlider('update', { maxValue: 41, isVertical: true }); // почему применяется ко всем???
+}, 3000);

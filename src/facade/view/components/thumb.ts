@@ -3,10 +3,9 @@ import { defaultOptions } from '../../model/optionsTypes';
 export default class Thumb {
   private thumbElem!: HTMLElement;
 
-  constructor(
-    private parent: HTMLElement,
-    private scaleIndent: number,
-  ) {
+  private scaleIndent!: number;
+
+  constructor(private parent: HTMLElement) {
     this.init();
   }
 
