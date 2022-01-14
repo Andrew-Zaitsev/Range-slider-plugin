@@ -38,6 +38,14 @@ export default class Thumb {
     const minValueThumbValueDiff: number = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
     const thumbScaleRate: number = (minValueThumbValueDiff / scaleRange);
 
-    this.thumbElem.style.left = `calc((100% - (${this.scaleIndent}px * 2)) * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+    const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
+
+    if (options.isVertical) {
+      // получить формулу для расчета top и height
+      console.log('* selectBar.setPosition: вертикальный селект-бар не рассчитывается *', scaleCssLength);
+      this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
+    } else {
+      this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+    }
   }
 }

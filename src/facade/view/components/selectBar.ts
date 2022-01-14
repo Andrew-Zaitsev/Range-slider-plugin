@@ -34,8 +34,16 @@ export default class selectBar {
     const minHandleScaleRate: number = (minValueMinHandleValueRange / scaleRange);
     const barScaleRate = selectBarRange / scaleRange;
 
+    const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
+
     if (options.isVertical) {
-      console.log('* selectBar.setPosition: вертикальный селект-бар не рассчитывается *');
+      // получить формулу для расчета top и height
+      console.log('* selectBar.setPosition: вертикальный селект-бар не рассчитывается *', scaleCssLength);
+      this.selectBarElem.style
+        .top = `calc(${scaleCssLength} * ${1 - minHandleScaleRate} + ${this.scaleIndent}px
+          - (${scaleCssLength}) * ${barScaleRate} )`;
+      this.selectBarElem.style
+        .height = `calc(${scaleCssLength} * ${barScaleRate})`;
     } else {
       this.selectBarElem.style
         .left = `calc((100% - (${this.scaleIndent}px * 2)) * ${minHandleScaleRate} + ${this.scaleIndent}px)`;

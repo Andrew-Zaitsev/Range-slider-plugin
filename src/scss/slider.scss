@@ -12,7 +12,7 @@
     position: absolute;
     top: 50%;
     left: 35px;
-    transform: translateY(-50%);
+    transform: translate(5, -50%);
     border-radius: 5px;
     background-color: $lightgrey;
     cursor: pointer;
@@ -22,7 +22,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: translateY(-30px);
+    transform: translate(0, -30px);
     position: relative;
 
     &:hover > * {
@@ -62,7 +62,7 @@
     height: 70px;
     position: absolute;
     z-index: 1;
-    transform: translateX(-50%);
+    transform: translate(-50%, 0);
     border-radius: 50%;
     border: 2px solid $green;
     background-color: $white;
@@ -91,7 +91,7 @@
     position: absolute;
     top: 50%;
     left: 35px;
-    transform: translateY(-50%);
+    transform: translate(0, -50%);
     border-radius: 5px;
     background-color: $green;
     cursor: pointer;
@@ -110,7 +110,7 @@
         height: calc(100% - 70px);
         top: 35px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, 0);
       }
 
       &__scale-label {
@@ -137,7 +137,16 @@
       }
 
       &__handle {
+        transform: translate(0, -50%);
         box-shadow: 3px 0px 5px -1px $darkgrey;
+
+        &_min {
+          left: auto;
+        }
+
+        &_max {
+          left: auto;
+        }
       }
 
       &__select-bar {

@@ -60,6 +60,7 @@ export default class View {
       // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
       console.log('отрисовать слайдер полностью');
       this.updateScale();
+      this.setOrientation();
       this.setScaleIndent();
       this.updateThumbsPosition(this.options);
       this.updateSelectBarPosition();
@@ -85,8 +86,8 @@ export default class View {
     this.setScale(this.sliderElem, this.options);
     this.setThumbs(options);
     this.setSelectBar();
-    this.setScaleIndent();
     this.setOrientation();
+    this.setScaleIndent();
 
     // this.scaleIndent = this.calculateScaleIndent();
 
@@ -109,12 +110,21 @@ export default class View {
   }
 
   private calculateScaleIndent(): number {
+    let scaleIndent: number;
     const scaleRect: DOMRect = this.scale.getScaleElem().getBoundingClientRect();
-    const scaleMinXCoord: number = scaleRect.left;
     const sliderRect: DOMRect = this.sliderElem.getBoundingClientRect();
-    const sliderMinXCoord: number = sliderRect.left;
-    const scaleIndent: number = scaleMinXCoord - sliderMinXCoord;
 
+    if (this.options.isVertical) {
+      const scaleMinYCoord: number = scaleRect.top;
+      const sliderMinYCoord: number = sliderRect.top;
+      scaleIndent = scaleMinYCoord - sliderMinYCoord;
+    } else {
+      const scaleMinXCoord: number = scaleRect.left;
+      const sliderMinXCoord: number = sliderRect.left;
+      scaleIndent = scaleMinXCoord - sliderMinXCoord;
+    }
+    console.log(scaleIndent);
+    // console.log(this.options.isVertical, scaleIndent = (scaleRect.left - sliderRect.left));
     return scaleIndent;
   }
 
