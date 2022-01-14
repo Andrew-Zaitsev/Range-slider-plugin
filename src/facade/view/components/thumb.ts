@@ -41,8 +41,6 @@ export default class Thumb {
     const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
 
     if (options.isVertical) {
-      // получить формулу для расчета top и height
-      console.log('* selectBar.setPosition: вертикальный селект-бар не рассчитывается *', scaleCssLength);
       this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
     } else {
       this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
