@@ -10955,31 +10955,44 @@ class Model {
     constructor(initOptions) {
         this.init(initOptions);
     }
-    update(options) {
-        const { minValue, maxValue, values, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = options;
-        if (values !== undefined) {
+    update(newOptions) {
+        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
+        const emitOptions = {};
+        // в условиях производить валидацию значений (если невалидно - не обновлять sliderData и удалять из newOptions)
+        if (newValues !== undefined) {
             console.log('***update model - values***');
-            this.updateValues(values);
-            this.emitUpdates({ values: this.sliderData.values });
+            this.updateValues(newValues);
+            emitOptions.values = newValues;
+            // this.emitUpdates({ values: this.sliderData.values });
         }
         // реализовать апдейт мин мак значений и последующее изменение на виде
-        if (minValue !== undefined) {
-            console.log('***update model - min***');
-            this.updateMinValue(minValue);
-            this.emitUpdates({ minValue: this.sliderData.minValue });
+        if (newMinValue !== undefined) {
+            console.log('*update model - min*');
+            this.updateMinValue(newMinValue);
+            emitOptions.minValue = newMinValue;
+            // this.emitUpdates({ minValue: this.sliderData.minValue });
         }
-        if (maxValue !== undefined) {
-            console.log('***update model - max***');
-            this.updateMaxValue(maxValue);
-            this.emitUpdates({ maxValue: this.sliderData.maxValue });
+        if (newMaxValue !== undefined) {
+            console.log('*update model - max*');
+            this.updateMaxValue(newMaxValue);
+            emitOptions.maxValue = newMaxValue;
+            // this.emitUpdates({ maxValue: this.sliderData.maxValue });
         }
+        if (newIsVertical !== undefined) {
+            console.log('*update model - isVertical*');
+            this.updateIsVertical(newIsVertical);
+            emitOptions.isVertical = newIsVertical;
+            // this.emitUpdates({ maxValue: this.sliderData.maxValue });
+        }
+        if (Object.keys(emitOptions).length > 0)
+            this.emitUpdates(emitOptions);
     }
     getData() {
         return this.sliderData;
     }
-    init(options) {
+    init(newOptions) {
         this.observer = new Observer();
-        this.setData(options);
+        this.setData(newOptions);
     }
     setData(initData) {
         this.sliderData = Object.assign(Object.assign({}, Model.defaultOptions), initData);
@@ -10993,8 +11006,11 @@ class Model {
     updateMaxValue(data) {
         this.sliderData.maxValue = data;
     }
-    emitUpdates(options) {
-        this.observer.emit(options);
+    updateIsVertical(data) {
+        this.sliderData.isVertical = data;
+    }
+    emitUpdates(newOptions) {
+        this.observer.emit(newOptions);
     }
 }
 Model.defaultOptions = {
@@ -11097,9 +11113,8 @@ class Scale {
 
 ;// CONCATENATED MODULE: ./facade/view/components/thumb.ts
 class Thumb {
-    constructor(parent, scaleIndent) {
+    constructor(parent) {
         this.parent = parent;
-        this.scaleIndent = scaleIndent;
         this.init();
     }
     init() {
@@ -11112,21 +11127,29 @@ class Thumb {
     setHandle() {
         this.parent.append(this.thumbElem);
     }
+    setScaleIndent(scaleIndent) {
+        this.scaleIndent = scaleIndent;
+    }
     setPosition(options, i) {
         const { minValue, maxValue, values, hasRange, } = options;
         const scaleRange = maxValue - minValue; // диапазон значений шкалы
         const minValueThumbValueDiff = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
         const thumbScaleRate = (minValueThumbValueDiff / scaleRange);
-        this.thumbElem.style.left = `calc((100% - (${this.scaleIndent}px * 2)) * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+        const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
+        if (options.isVertical) {
+            this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
+        }
+        else {
+            this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+        }
     }
 }
 
 ;// CONCATENATED MODULE: ./facade/view/components/selectBar.ts
 class selectBar {
-    constructor(parent, options, scaleIndent) {
+    constructor(parent, options) {
         this.parent = parent;
         this.options = options;
-        this.scaleIndent = scaleIndent;
         this.init();
     }
     init() {
@@ -11136,6 +11159,9 @@ class selectBar {
     set() {
         this.parent.append(this.selectBarElem);
     }
+    setScaleIndent(scaleIndent) {
+        this.scaleIndent = scaleIndent;
+    }
     setPosition(options) {
         const { minValue, maxValue, values } = options;
         const scaleRange = maxValue - minValue; // диапазон значений шкалы
@@ -11143,8 +11169,13 @@ class selectBar {
         const selectBarRange = values[1] - values[0];
         const minHandleScaleRate = (minValueMinHandleValueRange / scaleRange);
         const barScaleRate = selectBarRange / scaleRange;
+        const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
         if (options.isVertical) {
-            console.log('* вертикальный селект-бар не рассчитывается *');
+            this.selectBarElem.style
+                .top = `calc(${scaleCssLength} * ${1 - minHandleScaleRate} + ${this.scaleIndent}px
+          - (${scaleCssLength}) * ${barScaleRate} )`;
+            this.selectBarElem.style
+                .height = `calc(${scaleCssLength} * ${barScaleRate})`;
         }
         else {
             this.selectBarElem.style
@@ -11172,6 +11203,7 @@ class View {
     constructor(parent, options) {
         this.parent = parent;
         this.options = options;
+        // private scaleIndent!: number;
         this.thumbs = [];
         this.init(parent, options);
     }
@@ -11190,11 +11222,13 @@ class View {
             }
         }
         else {
+            // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
             console.log('отрисовать слайдер полностью');
             this.updateScale();
+            this.setOrientation();
+            this.setScaleIndent();
             this.updateThumbsPosition(this.options);
             this.updateSelectBarPosition();
-            // обновить  значение ярлыков ползунков, положение селектбара
         }
     }
     updateOptions(newOptions) {
@@ -11204,14 +11238,17 @@ class View {
         this.parent = parent;
         this.options = options;
         this.observer = new Observer();
+        // console.log(options);
         this.main = new Main();
         this.sliderElem = this.main.getElem();
         this.parent.append(this.main.getElem());
         this.setScale(this.sliderElem, this.options);
-        this.scaleIndent = this.calculateScaleIndent();
         this.setThumbs(options);
-        this.updateThumbsPosition(options);
         this.setSelectBar();
+        this.setOrientation();
+        this.setScaleIndent();
+        // this.scaleIndent = this.calculateScaleIndent();
+        this.updateThumbsPosition(options);
         this.updateSelectBarPosition();
         // подумать над валидацией переданных значений
         this.bindListeners();
@@ -11225,27 +11262,47 @@ class View {
         this.setScale(this.sliderElem, this.options);
     }
     calculateScaleIndent() {
+        let scaleIndent;
         const scaleRect = this.scale.getScaleElem().getBoundingClientRect();
-        const scaleMinXCoord = scaleRect.left;
         const sliderRect = this.sliderElem.getBoundingClientRect();
-        const sliderMinXCoord = sliderRect.left;
-        const scaleIndent = scaleMinXCoord - sliderMinXCoord;
+        if (this.options.isVertical) {
+            const scaleMinYCoord = scaleRect.top;
+            const sliderMinYCoord = sliderRect.top;
+            scaleIndent = scaleMinYCoord - sliderMinYCoord;
+        }
+        else {
+            const scaleMinXCoord = scaleRect.left;
+            const sliderMinXCoord = sliderRect.left;
+            scaleIndent = scaleMinXCoord - sliderMinXCoord;
+        }
+        console.log(scaleIndent);
+        // console.log(this.options.isVertical, scaleIndent = (scaleRect.left - sliderRect.left));
         return scaleIndent;
     }
     setThumbs(options) {
         if (options.hasRange) {
             options.values.forEach((value, i) => {
-                this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
+                this.thumbs.push(new Thumb(this.sliderElem));
             });
             this.thumbs[0].getElem().classList.add('slider__handle_min');
             this.thumbs[1].getElem().classList.add('slider__handle_max');
         }
         else {
-            this.thumbs.push(new Thumb(this.sliderElem, this.scaleIndent));
+            this.thumbs.push(new Thumb(this.sliderElem));
         }
         this.thumbs.forEach((thumb) => {
-            thumb.setHandle();
+            thumb.setHandle(); // изменить название метода на setThumb
         });
+    }
+    setOrientation() {
+        // console.log('view.setOrientation \n', this.options.isVertical, this.main.getElem());
+        if (this.options.isVertical) {
+            this.main.getElem().classList.add('slider_vertical');
+            // console.log(this.main.getElem().classList);
+        }
+        else {
+            this.main.getElem().classList.remove('slider_vertical');
+        }
     }
     updateThumbsPosition(options) {
         this.thumbs.forEach((thumb, i) => {
@@ -11253,8 +11310,13 @@ class View {
         });
     }
     setSelectBar() {
-        this.selectBar = new selectBar(this.sliderElem, this.options, this.scaleIndent);
+        this.selectBar = new selectBar(this.sliderElem, this.options);
         this.selectBar.set();
+    }
+    setScaleIndent() {
+        const scaleIndent = this.calculateScaleIndent();
+        this.thumbs.forEach((thumb) => thumb.setScaleIndent(scaleIndent));
+        this.selectBar.setScaleIndent(scaleIndent);
     }
     updateSelectBarPosition() {
         this.selectBar.setPosition(this.options);
@@ -11292,12 +11354,20 @@ class View {
         this.observer.emit({ values });
     }
     calculateValue(event) {
+        let value;
         const { minValue, maxValue } = this.options;
         const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
         const scaleValuesRange = maxValue - minValue;
-        const scaleCoordsRange = scaleDomRect.width;
-        const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
-        const value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+        if (this.options.isVertical) {
+            const scaleCoordsRange = scaleDomRect.height;
+            const pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
+            value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+        }
+        else {
+            const scaleCoordsRange = scaleDomRect.width;
+            const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
+            value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+        }
         return value;
     }
 }

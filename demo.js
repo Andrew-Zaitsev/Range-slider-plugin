@@ -11075,8 +11075,10 @@ const demoSliderConfigs = [
     {
         minValue: 10,
         maxValue: 50,
+        values: [10, 25],
         hasLabels: false,
         scaleDivisionsNumber: 5,
+        isVertical: true,
         step: 5,
     },
     {
@@ -11089,7 +11091,7 @@ const demoSliderConfigs = [
         minValue: 500,
         maxValue: -50,
         values: [500],
-        isVertical: true,
+        isVertical: false,
         hasScale: false,
         hasRange: false,
         step: 12,
@@ -11128,7 +11130,11 @@ class DemoSliderInit {
     }
 }
 demoSliderConfigs.forEach((config) => new DemoSliderInit(config));
-// console.log(a.data());
+// пример изменения слайдера через API
+// setTimeout(() => {
+// console.log('--------------------------------');
+// $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: true }); // почему применяется ко всем???
+// }, 1000);
 
 
 /***/ })
