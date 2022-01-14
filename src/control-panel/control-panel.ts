@@ -44,7 +44,7 @@ export default class ControlPanel {
       minValue: newMinValue,
       maxValue: newMaxValue,
       values: newValues,
-      isVertical,
+      isVertical: newIsVertical,
       hasScale,
       hasRange,
       hasLabels,
@@ -68,6 +68,11 @@ export default class ControlPanel {
         || ((newValues[1] !== +this.valueToInput.value)))) {
       this.setValues(newValues);
     }
+    // если передан direction и он не равно существующиму - установить новый
+    if ((newIsVertical !== undefined)
+      && (newIsVertical !== this.directionInput.checked)) {
+      this.setDirection(newIsVertical);
+    }
   }
 
   private getSliderOptions(): defaultOptions {
@@ -79,7 +84,7 @@ export default class ControlPanel {
     this.maxValueInput = this.createField('max value');
     this.valueFromInput = this.createField('value From');
     this.valueToInput = this.createField('value To');
-    this.directionInput = this.createField('direction', 'checkbox');
+    this.directionInput = this.createField('is vertical', 'checkbox');
     this.showRangeInput = this.createField('show range', 'checkbox');
     this.showScaleInput = this.createField('show scale', 'checkbox');
     this.showLabelsInput = this.createField('show labels', 'checkbox');
@@ -87,12 +92,8 @@ export default class ControlPanel {
     this.stepInput = this.createField('step value');
 
     this.updateControlPanel(this.getSliderOptions());
-    // this.updateControlPanel();
-
-    // }
     this.subscribeToSlider(this.updateControlPanel);
     this.bindEvents();
-    // проапдейтить значения, взяв у модели
   }
 
   private createField(titleElemText: string, inputElemType = 'number'): HTMLInputElement {
@@ -117,7 +118,6 @@ export default class ControlPanel {
   private subscribeToSlider(fn: ObserverCallback):void {
     // реализовать подписку на апдейт модели через апи слайдера
     this.$demoSliderElem.rangeSlider('subscribeToSliderUpdates', fn);
-    // this.facade.subscribeToModel(fn);
   }
 
   private setValues(values: number[]): void {
@@ -134,11 +134,16 @@ export default class ControlPanel {
     this.maxValueInput.value = (value !== 0) ? String(value) : '0';
   }
 
+  private setDirection(value: boolean): void {
+    this.directionInput.checked = value;
+  }
+
   private bindEvents(): void {
     this.valueFromInput.addEventListener('change', this.handleValueInputChange);
     this.valueToInput.addEventListener('change', this.handleValueInputChange);
     this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
     this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
+    this.directionInput.addEventListener('change', this.handleDirectionInputChange);
   }
 
   @bind
@@ -148,7 +153,6 @@ export default class ControlPanel {
       +(this.valueToInput.value),
     ];
     // получили новые values
-    // реализовать апдейт слайдера, см. ниже
     this.updateSlider({ values: newValues });
   }
 
@@ -164,6 +168,13 @@ export default class ControlPanel {
     const newMaxValue: number = +(this.maxValueInput.value);
 
     this.updateSlider({ maxValue: newMaxValue });
+  }
+
+  @bind
+  private handleDirectionInputChange(): void {
+    const newIsVertical: boolean = this.directionInput.checked;
+
+    this.updateSlider({ isVertical: newIsVertical });
   }
 
   private updateSlider(newOptions: userOptions): void {
