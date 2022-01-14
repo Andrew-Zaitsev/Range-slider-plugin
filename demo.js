@@ -10956,7 +10956,7 @@ class ControlPanel {
     }
     updateControlPanel(newOptions) {
         console.log('*updatePanel*');
-        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
+        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
         // если передан minValue и оно не равно существующему - установить новое
         if ((newMinValue !== undefined)
             && (newMinValue !== +this.minValueInput.value)) {
@@ -10973,6 +10973,11 @@ class ControlPanel {
                 || ((newValues[1] !== +this.valueToInput.value)))) {
             this.setValues(newValues);
         }
+        // если передан direction и он не равно существующиму - установить новый
+        if ((newIsVertical !== undefined)
+            && (newIsVertical !== this.directionInput.checked)) {
+            this.setDirection(newIsVertical);
+        }
     }
     getSliderOptions() {
         return this.$demoSliderElem.rangeSlider('getOptions');
@@ -10982,18 +10987,15 @@ class ControlPanel {
         this.maxValueInput = this.createField('max value');
         this.valueFromInput = this.createField('value From');
         this.valueToInput = this.createField('value To');
-        this.directionInput = this.createField('direction', 'checkbox');
+        this.directionInput = this.createField('is vertical', 'checkbox');
         this.showRangeInput = this.createField('show range', 'checkbox');
         this.showScaleInput = this.createField('show scale', 'checkbox');
         this.showLabelsInput = this.createField('show labels', 'checkbox');
         this.scaleDivisionsNumberInput = this.createField('scale divisions number');
         this.stepInput = this.createField('step value');
         this.updateControlPanel(this.getSliderOptions());
-        // this.updateControlPanel();
-        // }
         this.subscribeToSlider(this.updateControlPanel);
         this.bindEvents();
-        // проапдейтить значения, взяв у модели
     }
     createField(titleElemText, inputElemType = 'number') {
         const fieldElem = document.createElement('div');
@@ -11013,7 +11015,6 @@ class ControlPanel {
     subscribeToSlider(fn) {
         // реализовать подписку на апдейт модели через апи слайдера
         this.$demoSliderElem.rangeSlider('subscribeToSliderUpdates', fn);
-        // this.facade.subscribeToModel(fn);
     }
     setValues(values) {
         const [valueFrom, valueTo] = values;
@@ -11026,11 +11027,15 @@ class ControlPanel {
     setMaxValue(value) {
         this.maxValueInput.value = (value !== 0) ? String(value) : '0';
     }
+    setDirection(value) {
+        this.directionInput.checked = value;
+    }
     bindEvents() {
         this.valueFromInput.addEventListener('change', this.handleValueInputChange);
         this.valueToInput.addEventListener('change', this.handleValueInputChange);
         this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
         this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
+        this.directionInput.addEventListener('change', this.handleDirectionInputChange);
     }
     handleValueInputChange() {
         const newValues = [
@@ -11038,7 +11043,6 @@ class ControlPanel {
             +(this.valueToInput.value),
         ];
         // получили новые values
-        // реализовать апдейт слайдера, см. ниже
         this.updateSlider({ values: newValues });
     }
     handleMinValueInputChange() {
@@ -11048,6 +11052,10 @@ class ControlPanel {
     handleMaxValueInputChange() {
         const newMaxValue = +(this.maxValueInput.value);
         this.updateSlider({ maxValue: newMaxValue });
+    }
+    handleDirectionInputChange() {
+        const newIsVertical = this.directionInput.checked;
+        this.updateSlider({ isVertical: newIsVertical });
     }
     updateSlider(newOptions) {
         this.$demoSliderElem.rangeSlider('update', newOptions);
@@ -11066,6 +11074,9 @@ __decorate([
 __decorate([
     bind_decorator/* default */.ZP
 ], ControlPanel.prototype, "handleMaxValueInputChange", null);
+__decorate([
+    bind_decorator/* default */.ZP
+], ControlPanel.prototype, "handleDirectionInputChange", null);
 
 ;// CONCATENATED MODULE: ./demo/demo.ts
 /* provided dependency */ var demo_$ = __webpack_require__(638);
@@ -11131,10 +11142,13 @@ class DemoSliderInit {
 }
 demoSliderConfigs.forEach((config) => new DemoSliderInit(config));
 // пример изменения слайдера через API
-// setTimeout(() => {
-// console.log('--------------------------------');
-// $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: true }); // почему применяется ко всем???
-// }, 1000);
+setTimeout(() => {
+    console.log('--------------------------------');
+    demo_$('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: false }); //
+    setTimeout(() => {
+        demo_$('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true }); //
+    }, 2000);
+}, 1000);
 
 
 /***/ })

@@ -11138,9 +11138,11 @@ class Thumb {
         const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
         if (options.isVertical) {
             this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
+            this.thumbElem.style.left = 'auto';
         }
         else {
             this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+            this.thumbElem.style.top = 'auto';
         }
     }
 }
@@ -11176,12 +11178,16 @@ class selectBar {
           - (${scaleCssLength}) * ${barScaleRate} )`;
             this.selectBarElem.style
                 .height = `calc(${scaleCssLength} * ${barScaleRate})`;
+            this.selectBarElem.style.left = '';
+            this.selectBarElem.style.width = '';
         }
         else {
             this.selectBarElem.style
-                .left = `calc((100% - (${this.scaleIndent}px * 2)) * ${minHandleScaleRate} + ${this.scaleIndent}px)`;
+                .left = `calc(${scaleCssLength} * ${minHandleScaleRate} + ${this.scaleIndent}px)`;
             this.selectBarElem.style
-                .width = `calc((100% - (${this.scaleIndent}px * 2)) * ${barScaleRate})`;
+                .width = `calc(${scaleCssLength} * ${barScaleRate})`;
+            this.selectBarElem.style.top = '';
+            this.selectBarElem.style.height = '';
         }
     }
 }
@@ -11275,8 +11281,6 @@ class View {
             const sliderMinXCoord = sliderRect.left;
             scaleIndent = scaleMinXCoord - sliderMinXCoord;
         }
-        console.log(scaleIndent);
-        // console.log(this.options.isVertical, scaleIndent = (scaleRect.left - sliderRect.left));
         return scaleIndent;
     }
     setThumbs(options) {
