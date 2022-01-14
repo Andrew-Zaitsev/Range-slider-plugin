@@ -42,11 +42,15 @@ export default class selectBar {
           - (${scaleCssLength}) * ${barScaleRate} )`;
       this.selectBarElem.style
         .height = `calc(${scaleCssLength} * ${barScaleRate})`;
+      this.selectBarElem.style.left = '';
+      this.selectBarElem.style.width = '';
     } else {
       this.selectBarElem.style
-        .left = `calc((100% - (${this.scaleIndent}px * 2)) * ${minHandleScaleRate} + ${this.scaleIndent}px)`;
+        .left = `calc(${scaleCssLength} * ${minHandleScaleRate} + ${this.scaleIndent}px)`;
       this.selectBarElem.style
-        .width = `calc((100% - (${this.scaleIndent}px * 2)) * ${barScaleRate})`;
+        .width = `calc(${scaleCssLength} * ${barScaleRate})`;
+      this.selectBarElem.style.top = '';
+      this.selectBarElem.style.height = '';
     }
   }
 }

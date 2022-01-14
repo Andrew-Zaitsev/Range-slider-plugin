@@ -42,8 +42,10 @@ export default class Thumb {
 
     if (options.isVertical) {
       this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
+      this.thumbElem.style.left = 'auto';
     } else {
       this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
+      this.thumbElem.style.top = 'auto';
     }
   }
 }

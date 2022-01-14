@@ -74,7 +74,10 @@ class DemoSliderInit {
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 
 // пример изменения слайдера через API
-// setTimeout(() => {
-// console.log('--------------------------------');
-// $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: true }); // почему применяется ко всем???
-// }, 1000);
+setTimeout(() => {
+  console.log('--------------------------------');
+  $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: false }); //
+  setTimeout(() => {
+    $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true }); //
+  }, 2000);
+}, 1000);

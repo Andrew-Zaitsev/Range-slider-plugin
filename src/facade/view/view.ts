@@ -123,8 +123,7 @@ export default class View {
       const sliderMinXCoord: number = sliderRect.left;
       scaleIndent = scaleMinXCoord - sliderMinXCoord;
     }
-    console.log(scaleIndent);
-    // console.log(this.options.isVertical, scaleIndent = (scaleRect.left - sliderRect.left));
+
     return scaleIndent;
   }
 
