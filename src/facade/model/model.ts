@@ -32,7 +32,7 @@ export default class Model {
       hasScale: newHasScale,
       hasRange,
       hasLabels,
-      scaleDivisionsNumber,
+      scaleDivisionsNumber: newScaleDivisionsNumber,
       step,
     } = newOptions;
     const emitOptions: userOptions = {};
@@ -45,28 +45,25 @@ export default class Model {
     }
     // реализовать апдейт мин мак значений и последующее изменение на виде
     if (newMinValue !== undefined) {
-      console.log('*update model - min*');
       this.updateMinValue(newMinValue);
       emitOptions.minValue = newMinValue;
-      // this.emitUpdates({ minValue: this.sliderData.minValue });
     }
     if (newMaxValue !== undefined) {
-      console.log('*update model - max*');
       this.updateMaxValue(newMaxValue);
       emitOptions.maxValue = newMaxValue;
-      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
     }
     if (newIsVertical !== undefined) {
-      console.log('*update model - isVertical*');
       this.updateIsVertical(newIsVertical);
       emitOptions.isVertical = newIsVertical;
-      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
     }
     if (newHasScale !== undefined) {
-      console.log('*update model - hasScale*');
       this.updateHasScale(newHasScale);
       emitOptions.hasScale = newHasScale;
-      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
+    }
+    if (newScaleDivisionsNumber !== undefined) {
+      // предусмотреть случай повторяющихся номеров делений при (число делений => maxValue - minValue)
+      this.updateScaleDivisionsNumber(newScaleDivisionsNumber);
+      emitOptions.scaleDivisionsNumber = newScaleDivisionsNumber;
     }
     if (Object.keys(emitOptions).length > 0) this.emitUpdates(emitOptions);
   }
@@ -105,6 +102,10 @@ export default class Model {
 
   private updateHasScale(data: boolean): void {
     this.sliderData.hasScale = data;
+  }
+
+  private updateScaleDivisionsNumber(data: number): void {
+    this.sliderData.scaleDivisionsNumber = data;
   }
 
   private emitUpdates(newOptions: userOptions) {
