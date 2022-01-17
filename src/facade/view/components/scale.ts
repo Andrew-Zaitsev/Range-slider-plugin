@@ -28,8 +28,10 @@ export default class Scale {
     this.scaleElem = document.createElement('div');
     this.scaleElem.classList.add('slider__scale');
 
-    this.setScaleLabels();
-    this.updateLabelsValue();
+    if (this.options.hasScale) {
+      this.setScaleLabels();
+      this.updateLabelsValue();
+    }
   }
 
   private setScaleLabels(): void {

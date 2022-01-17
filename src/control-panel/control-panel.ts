@@ -45,7 +45,7 @@ export default class ControlPanel {
       maxValue: newMaxValue,
       values: newValues,
       isVertical: newIsVertical,
-      hasScale,
+      hasScale: newHasScale,
       hasRange,
       hasLabels,
       scaleDivisionsNumber,
@@ -72,6 +72,10 @@ export default class ControlPanel {
     if ((newIsVertical !== undefined)
       && (newIsVertical !== this.directionInput.checked)) {
       this.setDirection(newIsVertical);
+    }
+    if ((newHasScale !== undefined)
+      && (newHasScale !== this.showScaleInput.checked)) {
+      this.setScaleVisibility(newHasScale);
     }
   }
 
@@ -138,12 +142,17 @@ export default class ControlPanel {
     this.directionInput.checked = value;
   }
 
+  private setScaleVisibility(value: boolean): void {
+    this.showScaleInput.checked = value;
+  }
+
   private bindEvents(): void {
     this.valueFromInput.addEventListener('change', this.handleValueInputChange);
     this.valueToInput.addEventListener('change', this.handleValueInputChange);
     this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
     this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
     this.directionInput.addEventListener('change', this.handleDirectionInputChange);
+    this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
   }
 
   @bind
@@ -175,6 +184,12 @@ export default class ControlPanel {
     const newIsVertical: boolean = this.directionInput.checked;
 
     this.updateSlider({ isVertical: newIsVertical });
+  }
+
+  @bind
+  private handleShowScaleInputChange(): void {
+    const newHasScale: boolean = this.showScaleInput.checked;
+    this.updateSlider({ hasScale: newHasScale });
   }
 
   private updateSlider(newOptions: userOptions): void {

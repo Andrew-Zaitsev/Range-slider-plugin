@@ -8,7 +8,7 @@ export default class Model {
     values: [15, 20],
     // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
     isVertical: false,
-    hasScale: false,
+    hasScale: true,
     hasRange: true,
     hasLabels: false,
     scaleDivisionsNumber: 4,
@@ -29,7 +29,7 @@ export default class Model {
       maxValue: newMaxValue,
       values: newValues,
       isVertical: newIsVertical,
-      hasScale,
+      hasScale: newHasScale,
       hasRange,
       hasLabels,
       scaleDivisionsNumber,
@@ -60,6 +60,12 @@ export default class Model {
       console.log('*update model - isVertical*');
       this.updateIsVertical(newIsVertical);
       emitOptions.isVertical = newIsVertical;
+      // this.emitUpdates({ maxValue: this.sliderData.maxValue });
+    }
+    if (newHasScale !== undefined) {
+      console.log('*update model - hasScale*');
+      this.updateHasScale(newHasScale);
+      emitOptions.hasScale = newHasScale;
       // this.emitUpdates({ maxValue: this.sliderData.maxValue });
     }
     if (Object.keys(emitOptions).length > 0) this.emitUpdates(emitOptions);
@@ -95,6 +101,10 @@ export default class Model {
 
   private updateIsVertical(data: boolean): void {
     this.sliderData.isVertical = data;
+  }
+
+  private updateHasScale(data: boolean): void {
+    this.sliderData.hasScale = data;
   }
 
   private emitUpdates(newOptions: userOptions) {
