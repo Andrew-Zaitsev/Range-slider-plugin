@@ -31,8 +31,6 @@ export default class View {
   }
 
   public update(newOptions: userOptions): void {
-    console.log('*update view*');
-    // реализовать метод view.update
     // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
     const {
       minValue,
@@ -45,7 +43,6 @@ export default class View {
       scaleDivisionsNumber,
       step,
     } = newOptions;
-
     this.updateOptions(newOptions);
 
     const isOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
@@ -78,7 +75,6 @@ export default class View {
     this.parent = parent;
     this.options = options;
     this.observer = new Observer();
-    // console.log(options);
     this.main = new Main();
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
@@ -93,8 +89,6 @@ export default class View {
 
     this.updateThumbsPosition(options);
     this.updateSelectBarPosition();
-
-    // подумать над валидацией переданных значений
 
     this.bindListeners();
   }
@@ -139,15 +133,13 @@ export default class View {
     }
 
     this.thumbs.forEach((thumb: Thumb) => {
-      thumb.setHandle(); // изменить название метода на setThumb
+      thumb.setThumb();
     });
   }
 
   private setOrientation() {
-    // console.log('view.setOrientation \n', this.options.isVertical, this.main.getElem());
     if (this.options.isVertical) {
       this.main.getElem().classList.add('slider_vertical');
-      // console.log(this.main.getElem().classList);
     } else {
       this.main.getElem().classList.remove('slider_vertical');
     }

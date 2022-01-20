@@ -18,7 +18,7 @@ export default class Thumb {
     return this.thumbElem;
   }
 
-  public setHandle(): void {
+  public setThumb(): void {
     this.parent.append(this.thumbElem);
   }
 

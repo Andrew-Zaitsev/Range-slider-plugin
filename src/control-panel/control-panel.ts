@@ -38,7 +38,7 @@ export default class ControlPanel {
 
   @bind
   public updateControlPanel(newOptions: userOptions):void {
-    console.log('*updatePanel*');
+    // console.log('---updatePanel---');
 
     const {
       minValue: newMinValue,
@@ -119,7 +119,7 @@ export default class ControlPanel {
 
     fieldElem.append(titleElem, inputElem);
     this.parentElem.append(fieldElem);
-    // console.log(this);
+
     return inputElem;
   }
 
@@ -208,7 +208,7 @@ export default class ControlPanel {
   }
 
   private updateSlider(newOptions: userOptions): void {
+    console.log('ControlPanel.updateSlider', newOptions);
     this.$demoSliderElem.rangeSlider('update', newOptions);
-    console.log('upd slider', newOptions);
   }
 }

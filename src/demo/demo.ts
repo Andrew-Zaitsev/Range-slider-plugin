@@ -7,10 +7,10 @@ const demoSliderConfigs: userOptions[] = [
   {
     minValue: 10,
     maxValue: 50,
-    values: [10, 25],
+    values: [15.5, 60],
     hasLabels: false,
-    scaleDivisionsNumber: 6,
     isVertical: true,
+    scaleDivisionsNumber: 6,
     step: 6,
   },
   {
@@ -22,18 +22,11 @@ const demoSliderConfigs: userOptions[] = [
   {
     minValue: 500,
     maxValue: -50,
-    values: [500],
+    values: [450, 4],
     isVertical: false,
     hasScale: true,
     hasRange: false,
     step: 12,
-  },
-  {
-    minValue: 10,
-    maxValue: 30,
-    hasLabels: false,
-    scaleDivisionsNumber: 5,
-    step: 5,
   },
 ];
 
@@ -75,9 +68,10 @@ demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 
 // пример изменения слайдера через API
 setTimeout(() => {
+  console.log('-------------------------------- \n changed using API');
+  // $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: false }); //
+  // setTimeout(() => {
+  // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
+  // }, 2000);
   console.log('--------------------------------');
-  $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: false, hasScale: false }); //
-  setTimeout(() => {
-    $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
-  }, 2000);
-}, 1000);
+}, 2000);
