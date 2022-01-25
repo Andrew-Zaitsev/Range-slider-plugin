@@ -1,7 +1,7 @@
 import { defaultOptions, userOptions } from './optionsTypes';
 
 type Validators = {
-    readonly verifyOptions: (
+    readonly getValidatedOptions: (
         currentOptions: defaultOptions,
         newOptions: userOptions,
       ) => userOptions;
@@ -11,7 +11,8 @@ type Validators = {
       ) => userOptions;
     readonly verifyMinMaxValues: (
         currentOptions: defaultOptions,
-        newOptions: userOptions,
+        newMinValue: number | undefined,
+        newMaxValue: number | undefined, // newOptions: userOptions,
       ) => {minValue: number, maxValue: number};
     readonly verifyScaleDivisionsNumber: (
         validatedMinMaxValues: {minValue: number, maxValue: number},
@@ -22,7 +23,18 @@ type Validators = {
 }
 
 const validators: Validators = {
-  verifyOptions(currentOptions: defaultOptions, newOptions: userOptions): userOptions {
+  getValidatedOptions(currentOptions: defaultOptions, newOptions: userOptions): userOptions {
+    const {
+      minValue,
+      maxValue,
+      values,
+      isVertical,
+      hasScale,
+      hasRange,
+      hasLabels,
+      scaleDivisionsNumber,
+      step,
+    } = currentOptions;
     const {
       minValue: newMinValue,
       maxValue: newMaxValue,
@@ -34,71 +46,99 @@ const validators: Validators = {
       scaleDivisionsNumber: newScaleDivisionsNumber,
       step: newStep,
     } = newOptions;
+
+    // если методу валидации опций переданы только значения, то в возвращаемом объекте только свойство values
     const areOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
       && (Object.prototype.hasOwnProperty.call(newOptions, 'values') && (newValues !== undefined));
 
-    // если методу валидации опций переданы только значения, то в возвращаемом объекте только свойство values
-    if (areOnlyValuesGot && (newValues !== undefined)) {
-      return this.verifyValues(currentOptions, newValues);
+    if (areOnlyValuesGot && (newValues !== undefined)) { // если не диапазон, то ручка МИН не должна меняться
+      const validatedValues: {values?: number[] | undefined} = this.verifyValues(currentOptions, newValues);
+
+      return validatedValues;
     }
 
+    // ___________________________________________________________________
+    const validatedOptions: userOptions = {};
+
+    if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
+      validatedOptions.hasRange = newHasRange; // придумать как корректно обновить range и value[0]
+    }
+    if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
+      validatedOptions.isVertical = newIsVertical;
+    }
+    if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
+      validatedOptions.hasScale = newHasScale;
+    }
+    // ___________________________________________________________________
+
+    // Object.assign(validatedOptions, this.verifyOptions(currentOptions, newOptions));
     // если методу валидации опций передано что либо другое в объекте
     const validatedMinMaxValues: {minValue: number, maxValue: number} = this.verifyMinMaxValues(
       currentOptions,
-      newOptions,
+      newMinValue,
+      newMaxValue,
     );
+    Object.assign(validatedOptions, validatedMinMaxValues);
+
     const validatedValues: userOptions = this.verifyValues(
-      { ...currentOptions, ...validatedMinMaxValues },
+      { ...currentOptions, ...validatedOptions },
       newValues,
     );
     const validatedScaleDivisionsNumber: userOptions = this.verifyScaleDivisionsNumber(
       validatedMinMaxValues,
       newScaleDivisionsNumber,
     );
-    const validatedOptions: userOptions = { ...validatedMinMaxValues, ...validatedValues, ...validatedScaleDivisionsNumber };
+    Object.assign(validatedOptions, validatedMinMaxValues, validatedValues, validatedScaleDivisionsNumber);
 
     return validatedOptions;
   },
 
   verifyValues(currentOpt, userValues): userOptions {
-    const { values: currentValues, minValue, maxValue } = currentOpt;
+    const {
+      values, minValue, maxValue, hasRange,
+    } = currentOpt;
     let from: number|undefined;
     let to: number|undefined;
+    let verifiedValues: number[];
 
     if (userValues !== undefined) [from, to] = userValues;
     if (((from === undefined) && (to === undefined)) || (userValues === undefined)) {
-      return {
-        values: [
-          this.moveToMinMaxRange(minValue, maxValue, currentValues[0]),
-          this.moveToMinMaxRange(minValue, maxValue, currentValues[1]),
-        ],
-      };
+      verifiedValues = [
+        this.moveToMinMaxRange(minValue, maxValue, values[0]),
+        this.moveToMinMaxRange(minValue, maxValue, values[1]),
+      ];
+    } else {
+      if ((from !== undefined) && (!this.isValidNumber(from))) from = 0;
+      if ((to !== undefined) && (!this.isValidNumber(to))) to = 0;
+      if (from === undefined) [from] = values;
+      if (to === undefined) [, to] = values;
+      if (from > to) [from, to] = [to, from];
+
+      from = this.moveToMinMaxRange(minValue, maxValue, from);
+      to = this.moveToMinMaxRange(minValue, maxValue, to);
+
+      verifiedValues = [from, to];
     }
 
-    if ((from !== undefined) && (!this.isValidNumber(from))) from = 0;
-    if ((to !== undefined) && (!this.isValidNumber(to))) to = 0;
-    if (from === undefined) [from] = currentValues;
-    if (to === undefined) [, to] = currentValues;
-    if (from > to) [from, to] = [to, from];
+    if (!hasRange) verifiedValues[0] = minValue;
 
-    from = this.moveToMinMaxRange(minValue, maxValue, from);
-    to = this.moveToMinMaxRange(minValue, maxValue, to);
-    return { values: [from, to] };
+    return { values: verifiedValues };
   },
 
-  verifyMinMaxValues(currentOpt, newOpt): {minValue: number, maxValue: number} {
+  verifyMinMaxValues(currentOpt, newMin, newMax): {minValue: number, maxValue: number} {
     const { minValue: min, maxValue: max } = currentOpt;
-    let { minValue: newMin, maxValue: newMax } = newOpt;
+    let newMinValue = newMin;
+    let newMaxValue = newMax;
 
-    if ((newMin === undefined) && (newMax === undefined)) return { minValue: min, maxValue: max };
-    if ((newMin !== undefined) && (!this.isValidNumber(newMin))) newMin = 0;
-    if ((newMax !== undefined) && (!this.isValidNumber(newMax))) newMax = 0;
-    if (newMin === undefined) newMin = min;
-    if (newMax === undefined) newMax = max;
-    if (newMin === newMax) newMax += 1;
-    if (newMin > newMax) return { minValue: newMax, maxValue: newMin };
+    if ((newMinValue === undefined) && (newMaxValue === undefined)) return { minValue: min, maxValue: max };
+    if ((newMinValue !== undefined) && (!this.isValidNumber(newMinValue))) newMinValue = 0;
+    if ((newMaxValue !== undefined) && (!this.isValidNumber(newMaxValue))) newMaxValue = 0;
+    if (newMinValue === undefined) newMinValue = min;
+    if (newMaxValue === undefined) newMaxValue = max;
+    if (newMinValue === newMaxValue) newMaxValue += 1;
+    if (newMinValue > newMaxValue) return { minValue: newMaxValue, maxValue: newMinValue };
 
-    return { minValue: newMin, maxValue: newMax };
+    return { minValue: newMinValue, maxValue: newMaxValue };
   },
 
   verifyScaleDivisionsNumber(minMaxValues, number): userOptions {

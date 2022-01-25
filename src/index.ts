@@ -30,13 +30,13 @@ import { ObserverCallback } from './facade/observer/observer';
       },
       getOptions(): defaultOptions|defaultOptions[] {
         if (this.length === 1) {
-          const options: defaultOptions = $(this.get(0)).data('facade').presenter.model.getData();
+          const options: defaultOptions = $(this.get(0)).data('facade').presenter.model.getOptions();
           return options;
         }
 
         const optionsArray: defaultOptions[] = this
           .each((i: number, sliderElem: JQuery<HTMLElement>) => {
-            optionsArray.push($(sliderElem).data('facade').presenter.model.getData());
+            optionsArray.push($(sliderElem).data('facade').presenter.model.getOptions());
           });
 
         return optionsArray;

@@ -20,7 +20,7 @@ export default class Presenter {
 
   private init(parent: HTMLElement, model: Model) {
     this.model = model;
-    this.view = new View(parent, model.getData());
+    this.view = new View(parent, model.getOptions());
 
     this.subscribeToView(this.updateModel);
     this.subscribeToModel(this.updateView);

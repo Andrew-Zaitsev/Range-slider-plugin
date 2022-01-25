@@ -16,7 +16,7 @@ export default class Model {
     step: 5,
   };
 
-  private sliderOptions!: defaultOptions;
+  private sliderOptions: defaultOptions = Model.defaultOptions;
 
   public observer!: Observer;
 
@@ -26,41 +26,13 @@ export default class Model {
   }
 
   public update(newOptions: userOptions): void {
-    const emitOptions: userOptions = this.updateOptions(this.sliderOptions, newOptions);
+    const emitOptions: userOptions = validators.getValidatedOptions(this.sliderOptions, newOptions);
+    this.updateOptions(this.sliderOptions, emitOptions);
 
     if (Object.keys(emitOptions).length > 0) this.emitUpdates(emitOptions);
-    // this.updateVerifiedOptions(validators.verifyOptions(this.sliderOptions, newOptions));// {};
-
-    // if (newValues !== undefined) {
-    // console.log('***update model - values***');
-    // this.updateValues(newValues);
-    // emitOptions.values = newValues;
-    // this.emitUpdates({ values: this.sliderOptions.values });
-    // }
-    // if (newMinValue !== undefined) {
-    // this.updateMinValue(newMinValue);
-    // emitOptions.minValue = newMinValue;
-    // }
-    // if (newMaxValue !== undefined) {
-    // this.updateMaxValue(newMaxValue);
-    // emitOptions.maxValue = newMaxValue;
-    // }
-    // if (newIsVertical !== undefined) {
-    // this.updateIsVertical(newIsVertical);
-    // emitOptions.isVertical = newIsVertical;
-    // }
-    // if (newHasScale !== undefined) {
-    // this.updateHasScale(newHasScale);
-    // emitOptions.hasScale = newHasScale;
-    // }
-    // if (newScaleDivisionsNumber !== undefined) {
-    // предусмотреть случай повторяющихся номеров делений при (число делений => maxValue - minValue)
-    // this.updateScaleDivisionsNumber(newScaleDivisionsNumber);
-    // emitOptions.scaleDivisionsNumber = newScaleDivisionsNumber;
-    // }
   }
 
-  public getData(): defaultOptions {
+  public getOptions(): defaultOptions {
     return this.sliderOptions;
   }
 
@@ -69,21 +41,8 @@ export default class Model {
     this.updateOptions(Model.defaultOptions, newOpts);
   }
 
-  private updateOptions(currentOptions: defaultOptions, newOptions: userOptions): userOptions {
-    const { isVertical, hasScale } = newOptions;
-    const updatedOptions: userOptions = validators.verifyOptions(currentOptions, newOptions);
-    this.sliderOptions = { ...currentOptions, ...updatedOptions };
-
-    if (isVertical !== undefined) {
-      this.updateIsVertical(isVertical);
-      updatedOptions.isVertical = isVertical;
-    }
-    if (hasScale !== undefined) {
-      this.updateHasScale(hasScale);
-      updatedOptions.hasScale = hasScale;
-    }
-
-    return updatedOptions; // возврат либо values, либо типа degaultoptions
+  private updateOptions(currentOptions: defaultOptions, newOptions: userOptions): void {
+    this.sliderOptions = { ...currentOptions, ...validators.getValidatedOptions(this.sliderOptions, newOptions) };
   }
 
   private updateIsVertical(data: boolean): void {
@@ -94,7 +53,34 @@ export default class Model {
     this.sliderOptions.hasScale = data;
   }
 
+  private updateHasRange(data: boolean): void {
+    console.log(this.sliderOptions);
+    this.sliderOptions.hasRange = data;
+  }
+
   private emitUpdates(newOptions: userOptions) {
     this.observer.emit(newOptions);
   }
+  /*
+  static getValidatedOptions(currentOptions: defaultOptions, newOptions: userOptions): userOptions { // возвращает объект
+    const { isVertical, hasScale, hasRange } = currentOptions;
+    const { isVertical: newIsVertical, hasScale: newHasScale, hasRange: newHasRange } = newOptions;
+    const validatedOptions: userOptions = {};
+
+    if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
+      validatedOptions.hasRange = newHasRange; // придумать как корректно обновить rengre и value[0]
+    }
+
+    if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
+      validatedOptions.isVertical = newIsVertical;
+    }
+    if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
+      validatedOptions.hasScale = newHasScale;
+    }
+
+    Object.assign(validatedOptions, validators.verifyOptions(currentOptions, newOptions));
+
+    return validatedOptions; // возврат либо values, либо типа degaultoptions
+  }
+  */
 }
