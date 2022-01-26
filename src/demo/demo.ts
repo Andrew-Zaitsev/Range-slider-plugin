@@ -9,7 +9,7 @@ const demoSliderConfigs: userOptions[] = [
     maxValue: 50,
     values: [15.5, 60],
     hasLabels: false,
-    isVertical: true,
+    isVertical: false,
     scaleDivisionsNumber: 6,
     step: 6,
   },
@@ -69,9 +69,10 @@ demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 // пример изменения слайдера через API
 setTimeout(() => {
   console.log('-------------------------------- \n changed using API');
-  $('.js-demo__slider:eq(0)').rangeSlider('update', { hasRange: false, isVertical: false }); //
+  $('.js-demo__slider:eq(0)').rangeSlider('update', { hasRange: false }); //
   // setTimeout(() => {
   // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
   // }, 2000);
+  $('.js-demo__slider:eq(2)').rangeSlider('update', { values: [100, 200] });
   console.log('--------------------------------');
 }, 2000);

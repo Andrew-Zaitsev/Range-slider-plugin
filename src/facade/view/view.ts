@@ -55,10 +55,12 @@ export default class View {
       }
     } else {
       // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
-      console.log('отрисовать слайдер полностью');
+      console.log('обновить весь слайдер');
+
       this.updateScale();
       this.setOrientation();
       this.setScaleIndent();
+      this.setRange();
       this.updateThumbsPosition(this.options);
       this.updateSelectBarPosition();
     }
@@ -80,12 +82,10 @@ export default class View {
     this.parent.append(this.main.getElem());
 
     this.setScale(this.sliderElem, this.options);
-    this.setThumbs(options);
+    this.setThumbs();
     this.setSelectBar();
     this.setOrientation();
     this.setScaleIndent();
-
-    // this.scaleIndent = this.calculateScaleIndent();
 
     this.updateThumbsPosition(options);
     this.updateSelectBarPosition();
@@ -121,20 +121,26 @@ export default class View {
     return scaleIndent;
   }
 
-  private setThumbs(options: defaultOptions) {
-    if (options.hasRange) {
-      options.values.forEach((value: number, i: number) => {
-        this.thumbs.push(new Thumb(this.sliderElem));
-      });
-      this.thumbs[0].getElem().classList.add('slider__handle_min');
-      this.thumbs[1].getElem().classList.add('slider__handle_max');
-    } else {
+  private setThumbs(): void {
+    this.options.values.forEach((value: number, i: number) => {
       this.thumbs.push(new Thumb(this.sliderElem));
-    }
-
-    this.thumbs.forEach((thumb: Thumb) => {
-      thumb.setThumb();
     });
+
+    this.thumbs[0].getElem().classList.add('slider__handle_min');
+    this.thumbs[1].getElem().classList.add('slider__handle_max');
+
+    if (this.options.hasRange) this.thumbs[0].setThumb();
+    this.thumbs[1].setThumb();
+  }
+
+  private setRange(): void {
+    const { hasRange } = this.options;
+
+    if (hasRange) {
+      this.thumbs[0].setThumb();
+    } else {
+      this.thumbs[0].removeThumb();
+    }
   }
 
   private setOrientation() {

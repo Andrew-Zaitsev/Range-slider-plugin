@@ -38,49 +38,14 @@ export default class Model {
 
   private init(newOpts: userOptions) {
     this.observer = new Observer();
-    this.updateOptions(Model.defaultOptions, newOpts);
+    this.updateOptions(Model.defaultOptions, validators.getValidatedOptions(this.sliderOptions, newOpts));
   }
 
-  private updateOptions(currentOptions: defaultOptions, newOptions: userOptions): void {
-    this.sliderOptions = { ...currentOptions, ...validators.getValidatedOptions(this.sliderOptions, newOptions) };
-  }
-
-  private updateIsVertical(data: boolean): void {
-    this.sliderOptions.isVertical = data;
-  }
-
-  private updateHasScale(data: boolean): void {
-    this.sliderOptions.hasScale = data;
-  }
-
-  private updateHasRange(data: boolean): void {
-    console.log(this.sliderOptions);
-    this.sliderOptions.hasRange = data;
+  private updateOptions(currentOptions: defaultOptions, validatedOptions: userOptions): void {
+    this.sliderOptions = { ...currentOptions, ...validatedOptions };
   }
 
   private emitUpdates(newOptions: userOptions) {
     this.observer.emit(newOptions);
   }
-  /*
-  static getValidatedOptions(currentOptions: defaultOptions, newOptions: userOptions): userOptions { // возвращает объект
-    const { isVertical, hasScale, hasRange } = currentOptions;
-    const { isVertical: newIsVertical, hasScale: newHasScale, hasRange: newHasRange } = newOptions;
-    const validatedOptions: userOptions = {};
-
-    if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
-      validatedOptions.hasRange = newHasRange; // придумать как корректно обновить rengre и value[0]
-    }
-
-    if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
-      validatedOptions.isVertical = newIsVertical;
-    }
-    if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
-      validatedOptions.hasScale = newHasScale;
-    }
-
-    Object.assign(validatedOptions, validators.verifyOptions(currentOptions, newOptions));
-
-    return validatedOptions; // возврат либо values, либо типа degaultoptions
-  }
-  */
 }

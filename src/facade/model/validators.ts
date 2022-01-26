@@ -12,7 +12,7 @@ type Validators = {
     readonly verifyMinMaxValues: (
         currentOptions: defaultOptions,
         newMinValue: number | undefined,
-        newMaxValue: number | undefined, // newOptions: userOptions,
+        newMaxValue: number | undefined,
       ) => {minValue: number, maxValue: number};
     readonly verifyScaleDivisionsNumber: (
         validatedMinMaxValues: {minValue: number, maxValue: number},
@@ -51,17 +51,16 @@ const validators: Validators = {
     const areOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
       && (Object.prototype.hasOwnProperty.call(newOptions, 'values') && (newValues !== undefined));
 
-    if (areOnlyValuesGot && (newValues !== undefined)) { // если не диапазон, то ручка МИН не должна меняться
+    if (areOnlyValuesGot && (newValues !== undefined)) {
       const validatedValues: {values?: number[] | undefined} = this.verifyValues(currentOptions, newValues);
 
       return validatedValues;
     }
 
-    // ___________________________________________________________________
     const validatedOptions: userOptions = {};
 
     if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
-      validatedOptions.hasRange = newHasRange; // придумать как корректно обновить range и value[0]
+      validatedOptions.hasRange = newHasRange;
     }
     if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
       validatedOptions.isVertical = newIsVertical;
@@ -69,9 +68,7 @@ const validators: Validators = {
     if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
       validatedOptions.hasScale = newHasScale;
     }
-    // ___________________________________________________________________
 
-    // Object.assign(validatedOptions, this.verifyOptions(currentOptions, newOptions));
     // если методу валидации опций передано что либо другое в объекте
     const validatedMinMaxValues: {minValue: number, maxValue: number} = this.verifyMinMaxValues(
       currentOptions,
@@ -88,7 +85,7 @@ const validators: Validators = {
       validatedMinMaxValues,
       newScaleDivisionsNumber,
     );
-    Object.assign(validatedOptions, validatedMinMaxValues, validatedValues, validatedScaleDivisionsNumber);
+    Object.assign(validatedOptions, validatedValues, validatedScaleDivisionsNumber);
 
     return validatedOptions;
   },

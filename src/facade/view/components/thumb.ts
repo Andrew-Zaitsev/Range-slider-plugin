@@ -22,6 +22,10 @@ export default class Thumb {
     this.parent.append(this.thumbElem);
   }
 
+  public removeThumb(): void {
+    this.getElem().remove();
+  }
+
   public setScaleIndent(scaleIndent: number): void {
     this.scaleIndent = scaleIndent;
   }
