@@ -214,18 +214,18 @@ export default class View {
 
   private calculateValue(event: PointerEvent): number {
     let value: number;
-    const { minValue, maxValue } = this.options;
+    const { minValue, maxValue, step } = this.options;
     const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
     const scaleValuesRange = maxValue - minValue;
 
     if (this.options.isVertical) {
       const scaleCoordsRange = scaleDomRect.height;
       const pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
-      value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+      value = Math.round((scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue) / step) * step;
     } else {
       const scaleCoordsRange = scaleDomRect.width;
       const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
-      value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+      value = Math.round((scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue) / step) * step;
     }
 
     return value;

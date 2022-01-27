@@ -49,7 +49,7 @@ export default class ControlPanel {
       hasRange: newHasRange,
       hasLabels,
       scaleDivisionsNumber: newScaleDivisionsNamber,
-      step,
+      step: newStep,
     } = newOptions;
 
     // если передан minValue и оно не равно существующему - установить новое
@@ -84,6 +84,10 @@ export default class ControlPanel {
     if ((newScaleDivisionsNamber !== undefined)
       && (newScaleDivisionsNamber !== +this.scaleDivisionsNumberInput.value)) {
       this.setScaleDivisionsNumber(newScaleDivisionsNamber);
+    }
+    if ((newStep !== undefined)
+      && (newStep !== +this.stepInput.value)) {
+      this.setStep(newStep);
     }
   }
 
@@ -162,6 +166,10 @@ export default class ControlPanel {
     this.scaleDivisionsNumberInput.value = String(value);
   }
 
+  private setStep(value: number): void {
+    this.stepInput.value = String(value);
+  }
+
   private bindEvents(): void {
     this.valueFromInput.addEventListener('change', this.handleValueInputChange);
     this.valueToInput.addEventListener('change', this.handleValueInputChange);
@@ -171,6 +179,7 @@ export default class ControlPanel {
     this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
     this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
     this.scaleDivisionsNumberInput.addEventListener('change', this.handleScaleDivisionsNumberInputChange);
+    this.stepInput.addEventListener('change', this.handleStepInputChange);
   }
 
   @bind
@@ -221,6 +230,12 @@ export default class ControlPanel {
   private handleScaleDivisionsNumberInputChange(): void {
     const newScaleDivisionsNumber: number = +this.scaleDivisionsNumberInput.value;
     this.updateSlider({ scaleDivisionsNumber: newScaleDivisionsNumber });
+  }
+
+  @bind
+  private handleStepInputChange(): void {
+    const newStep: number = +this.stepInput.value;
+    this.updateSlider({ step: newStep });
   }
 
   private updateSlider(newOptions: userOptions): void {

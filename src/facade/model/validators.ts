@@ -18,6 +18,10 @@ type Validators = {
         validatedMinMaxValues: {minValue: number, maxValue: number},
         newScaleDivisionsNumber: number | undefined,
       ) => userOptions;
+    readonly verifyStep: (
+        validatedMinMaxValues: {minValue: number, maxValue: number},
+        newStep: number | undefined,
+      ) => userOptions;
     readonly isValidNumber: (value: any) => boolean;
     readonly moveToMinMaxRange: (min: number, max: number, value: number) => number;
 }
@@ -85,9 +89,29 @@ const validators: Validators = {
       validatedMinMaxValues,
       newScaleDivisionsNumber,
     );
-    Object.assign(validatedOptions, validatedValues, validatedScaleDivisionsNumber);
+    const validatedStep: userOptions = this.verifyStep(
+      validatedMinMaxValues,
+      newStep,
+    );
+    Object.assign(validatedOptions, validatedValues, validatedScaleDivisionsNumber, validatedStep);
 
     return validatedOptions;
+  },
+
+  verifyMinMaxValues(currentOpt, newMin, newMax): {minValue: number, maxValue: number} {
+    const { minValue: min, maxValue: max } = currentOpt;
+    let newMinValue = newMin;
+    let newMaxValue = newMax;
+
+    if ((newMinValue === undefined) && (newMaxValue === undefined)) return { minValue: min, maxValue: max };
+    if ((newMinValue !== undefined) && (!this.isValidNumber(newMinValue))) newMinValue = 0;
+    if ((newMaxValue !== undefined) && (!this.isValidNumber(newMaxValue))) newMaxValue = 0;
+    if (newMinValue === undefined) newMinValue = min;
+    if (newMaxValue === undefined) newMaxValue = max;
+    if (newMinValue === newMaxValue) newMaxValue += 1;
+    if (newMinValue > newMaxValue) return { minValue: newMaxValue, maxValue: newMinValue };
+
+    return { minValue: newMinValue, maxValue: newMaxValue };
   },
 
   verifyValues(currentOpt, userValues): userOptions {
@@ -122,22 +146,6 @@ const validators: Validators = {
     return { values: verifiedValues };
   },
 
-  verifyMinMaxValues(currentOpt, newMin, newMax): {minValue: number, maxValue: number} {
-    const { minValue: min, maxValue: max } = currentOpt;
-    let newMinValue = newMin;
-    let newMaxValue = newMax;
-
-    if ((newMinValue === undefined) && (newMaxValue === undefined)) return { minValue: min, maxValue: max };
-    if ((newMinValue !== undefined) && (!this.isValidNumber(newMinValue))) newMinValue = 0;
-    if ((newMaxValue !== undefined) && (!this.isValidNumber(newMaxValue))) newMaxValue = 0;
-    if (newMinValue === undefined) newMinValue = min;
-    if (newMaxValue === undefined) newMaxValue = max;
-    if (newMinValue === newMaxValue) newMaxValue += 1;
-    if (newMinValue > newMaxValue) return { minValue: newMaxValue, maxValue: newMinValue };
-
-    return { minValue: newMinValue, maxValue: newMaxValue };
-  },
-
   verifyScaleDivisionsNumber(minMaxValues, number): userOptions {
     const { minValue, maxValue } = minMaxValues;
     const maxNumber: number = maxValue - minValue + 1;
@@ -148,6 +156,16 @@ const validators: Validators = {
     if (number > maxNumber) return { scaleDivisionsNumber: maxNumber };
 
     return { scaleDivisionsNumber: number };
+  },
+
+  verifyStep(minMaxValues, step): userOptions {
+    const { minValue, maxValue } = minMaxValues;
+    const scaleLength: number = maxValue - minValue;
+
+    if ((step === undefined) || (!this.isValidNumber(step))) return {};
+    if (step > scaleLength) return { step: scaleLength };
+
+    return { step };
   },
 
   isValidNumber(value: any): boolean {

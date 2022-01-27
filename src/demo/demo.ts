@@ -6,7 +6,7 @@ import ControlPanel from '../control-panel/control-panel';
 const demoSliderConfigs: userOptions[] = [
   {
     minValue: 10,
-    maxValue: 50,
+    maxValue: 12,
     values: [15.5, 60],
     hasLabels: false,
     isVertical: false,
@@ -69,10 +69,10 @@ demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 // пример изменения слайдера через API
 setTimeout(() => {
   console.log('-------------------------------- \n changed using API');
-  $('.js-demo__slider:eq(0)').rangeSlider('update', { hasRange: false }); //
+  $('.js-demo__slider:eq(0)').rangeSlider('update', { minValue: 5, step: 3 }); //
   // setTimeout(() => {
   // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
   // }, 2000);
-  $('.js-demo__slider:eq(2)').rangeSlider('update', { values: [100, 200] });
+  // $('.js-demo__slider:eq(2)').rangeSlider('update', { hasRange: true, values: [8, 12] });
   console.log('--------------------------------');
 }, 2000);

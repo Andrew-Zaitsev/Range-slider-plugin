@@ -13,7 +13,7 @@ export default class Model {
     hasRange: true,
     hasLabels: true,
     scaleDivisionsNumber: 4,
-    step: 5,
+    step: 1,
   };
 
   private sliderOptions: defaultOptions = Model.defaultOptions;
