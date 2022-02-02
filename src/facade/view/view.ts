@@ -19,7 +19,7 @@ export default class View {
 
   private sliderElem!: HTMLElement;
 
-  private targetThumbIndex?: number;
+  private targetThumbIndex = 2;
 
   public observer!: Observer;
 
@@ -129,8 +129,8 @@ export default class View {
     this.thumbs[0].getElem().classList.add('slider__handle_min');
     this.thumbs[1].getElem().classList.add('slider__handle_max');
 
-    if (this.options.hasRange) this.thumbs[0].setThumb();
     this.thumbs[1].setThumb();
+    if (this.options.hasRange) this.thumbs[0].setThumb();
   }
 
   private setRange(): void {
@@ -195,7 +195,7 @@ export default class View {
   private handlePointerUp(e: PointerEvent): void {
     (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
     (e.target as HTMLElement).removeEventListener('pointermove', this.handlePointerMove);
-    this.targetThumbIndex = undefined;
+    this.targetThumbIndex = 2;// undefined;
     console.log('up');
   }
 
@@ -204,30 +204,42 @@ export default class View {
     console.log('start - move');
     const value: number = this.calculateValue(e);
     let values: [number, number];
+
     if (this.targetThumbIndex === 0) {
       values = [value, this.options.values[1]];
     } else {
       values = [this.options.values[0], value];
     }
+
     this.observer.emit({ values });
   }
 
   private calculateValue(event: PointerEvent): number {
-    let value: number;
-    const { minValue, maxValue, step } = this.options;
+    const {
+      minValue,
+      maxValue,
+      values,
+      isVertical,
+      step,
+    } = this.options;
+    const currentValue: number = values[this.targetThumbIndex];
     const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
     const scaleValuesRange = maxValue - minValue;
+    let scaleCoordsRange: number;
+    let pointerMinScaleCoordsRange: number;
 
-    if (this.options.isVertical) {
-      const scaleCoordsRange = scaleDomRect.height;
-      const pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
-      value = Math.round((scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue) / step) * step;
+    if (isVertical) {
+      scaleCoordsRange = scaleDomRect.height;
+      pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
     } else {
-      const scaleCoordsRange = scaleDomRect.width;
-      const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
-      value = Math.round((scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue) / step) * step;
+      scaleCoordsRange = scaleDomRect.width;
+      pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
     }
 
-    return value;
+    const pointerValue = (scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+    const delta = Math.round((pointerValue - currentValue) / step) * step;
+    const calculatedValue = currentValue + delta;
+
+    return calculatedValue;
   }
 }

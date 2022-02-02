@@ -35,6 +35,20 @@ export default class Scale {
   }
 
   private setScaleLabels(): void {
+    // расчет числа целочисленных отрезков шкалы и их длины в единицах измерения значения слайдера
+    // scaleDivisionsNamber >= 2
+    // integerScaleSectionLength - целое
+    // scaleSectionLength
+    // ___________________________________
+    const { minValue, maxValue, scaleDivisionsNumber } = this.options;
+    const scaleValuesRange: number = maxValue - minValue;
+    const scaleSectionsNumber: number = scaleDivisionsNumber - 1;
+    const scaleSectionLength: number = scaleValuesRange / scaleSectionsNumber;
+
+    console.log(minValue, maxValue, scaleDivisionsNumber);
+    console.log('длина секции шкалы: ', scaleSectionLength);
+    // ___________________________________
+    // конец расчета делений
     for (let i = 0; i < this.options.scaleDivisionsNumber; i += 1) {
       this.scaleLabels.push(new ScaleLabel(this.scaleElem));
     }

@@ -19,7 +19,8 @@ export default class Thumb {
   }
 
   public setThumb(): void {
-    this.parent.append(this.thumbElem);
+    this.parent.prepend(this.thumbElem);
+    // this.parent.append(this.thumbElem);
   }
 
   public removeThumb(): void {

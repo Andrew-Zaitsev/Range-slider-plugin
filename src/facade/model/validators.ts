@@ -16,10 +16,12 @@ type Validators = {
       ) => {minValue: number, maxValue: number};
     readonly verifyScaleDivisionsNumber: (
         validatedMinMaxValues: {minValue: number, maxValue: number},
+        scaleDivisionsNamber: number,
         newScaleDivisionsNumber: number | undefined,
       ) => userOptions;
     readonly verifyStep: (
         validatedMinMaxValues: {minValue: number, maxValue: number},
+        step: number,
         newStep: number | undefined,
       ) => userOptions;
     readonly isValidNumber: (value: any) => boolean;
@@ -87,10 +89,12 @@ const validators: Validators = {
     );
     const validatedScaleDivisionsNumber: userOptions = this.verifyScaleDivisionsNumber(
       validatedMinMaxValues,
+      scaleDivisionsNumber,
       newScaleDivisionsNumber,
     );
     const validatedStep: userOptions = this.verifyStep(
       validatedMinMaxValues,
+      step,
       newStep,
     );
     Object.assign(validatedOptions, validatedValues, validatedScaleDivisionsNumber, validatedStep);
@@ -146,31 +150,37 @@ const validators: Validators = {
     return { values: verifiedValues };
   },
 
-  verifyScaleDivisionsNumber(minMaxValues, number): userOptions {
+  verifyScaleDivisionsNumber(minMaxValues, number, newNumber): userOptions {
     const { minValue, maxValue } = minMaxValues;
     const maxNumber: number = maxValue - minValue + 1;
+    let numberToVerify: number | undefined = newNumber;
 
-    if (number === undefined) return {};
-    if (!this.isValidNumber(number)) return { scaleDivisionsNumber: 2 };
-    if (number < 2) return { scaleDivisionsNumber: 2 };
-    if (number > maxNumber) return { scaleDivisionsNumber: maxNumber };
+    if (numberToVerify === undefined) numberToVerify = number;
+    if (!this.isValidNumber(numberToVerify)) return { scaleDivisionsNumber: 2 };
+    if (numberToVerify < 2) return { scaleDivisionsNumber: 2 };
+    if (numberToVerify > maxNumber) return { scaleDivisionsNumber: maxNumber };
 
-    return { scaleDivisionsNumber: number };
+    const validatedNumber = numberToVerify;
+
+    return { scaleDivisionsNumber: validatedNumber };
   },
 
-  verifyStep(minMaxValues, step): userOptions {
+  verifyStep(minMaxValues, step, newStep): userOptions {
     const { minValue, maxValue } = minMaxValues;
     const scaleLength: number = maxValue - minValue;
+    let stepToVerify: number | undefined = newStep;
 
-    if ((step === undefined) || (!this.isValidNumber(step))) return {};
-    if (step > scaleLength) return { step: scaleLength };
+    if ((stepToVerify === undefined) || (!this.isValidNumber(newStep))) stepToVerify = step;
+    if (stepToVerify < 1) return { step: 1 };
+    if (stepToVerify > scaleLength) return { step: scaleLength };
+    const validatedStep: number = stepToVerify;
 
-    return { step };
+    return { step: validatedStep };
   },
 
   isValidNumber(value: any): boolean {
     if (Number.isInteger(value)) return true;
-    console.log('unvalid data (isValidNumber), value = ', value);
+    console.log('invalid data (isValidNumber), value = ', value);
 
     return false;
   },
