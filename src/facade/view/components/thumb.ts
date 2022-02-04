@@ -36,6 +36,7 @@ export default class Thumb {
       minValue,
       maxValue,
       values,
+      isVertical,
       hasRange,
     } = options;
 
@@ -45,7 +46,7 @@ export default class Thumb {
 
     const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
 
-    if (options.isVertical) {
+    if (isVertical) {
       this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
       this.thumbElem.style.left = 'auto';
     } else {
