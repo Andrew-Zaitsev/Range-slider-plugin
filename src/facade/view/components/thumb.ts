@@ -1,7 +1,10 @@
 import { defaultOptions } from '../../model/optionsTypes';
+import ThumbLabel from './thumbLabel';
 
 export default class Thumb {
   private thumbElem!: HTMLElement;
+
+  private thumbLabel!: ThumbLabel;
 
   private scaleIndent!: number;
 
@@ -11,7 +14,27 @@ export default class Thumb {
 
   private init(): void {
     this.thumbElem = document.createElement('div');
-    this.thumbElem.classList.add('slider__handle');
+    this.thumbElem.classList.add('slider__thumb');
+
+    this.thumbLabel = new ThumbLabel(this.getElem());
+    this.setLabel();
+  }
+
+  public setLabel(): void {
+    this.thumbElem.append(this.thumbLabel.getElem());
+  }
+
+  public updateLabel(options: defaultOptions, thumbIndex: number): void {
+    const { values, hasLabels } = options;
+    const value: number = values[thumbIndex];
+
+    if (hasLabels) {
+      if (!this.hasLabel()) this.setLabel();
+
+      this.updateLabelValue(value);
+    } else {
+      this.removeLabel();
+    }
   }
 
   public getElem(): HTMLElement {
@@ -52,5 +75,17 @@ export default class Thumb {
       this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
       this.thumbElem.style.top = 'auto';
     }
+  }
+
+  private hasLabel(): boolean {
+    return (this.getElem().querySelector('.slider__thumb-label') !== null);
+  }
+
+  private removeLabel(): void {
+    this.thumbLabel.getElem().remove();
+  }
+
+  private updateLabelValue(value: number): void {
+    this.thumbLabel.setLabelText(String(value));
   }
 }

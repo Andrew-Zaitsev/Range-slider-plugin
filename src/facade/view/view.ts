@@ -50,7 +50,8 @@ export default class View {
 
     if (isOnlyValuesGot) {
       if (values !== undefined) {
-        this.updateThumbsPosition(this.options);
+        this.updateThumbsPosition();
+        this.updateThumbsLabels();
         this.updateSelectBarPosition();
       }
     } else {
@@ -61,7 +62,8 @@ export default class View {
       this.setOrientation();
       this.setScaleIndent();
       this.setRange();
-      this.updateThumbsPosition(this.options);
+      this.updateThumbsPosition();
+      this.updateThumbsLabels();
       this.updateSelectBarPosition();
     }
   }
@@ -87,7 +89,8 @@ export default class View {
     this.setOrientation();
     this.setScaleIndent();
 
-    this.updateThumbsPosition(options);
+    this.updateThumbsPosition();
+    this.updateThumbsLabels();
     this.updateSelectBarPosition();
 
     this.bindListeners();
@@ -122,7 +125,8 @@ export default class View {
   }
 
   private setThumbs(): void {
-    this.options.values.forEach((value: number, i: number) => {
+    const { values, hasLabels, hasRange } = this.options;
+    values.forEach((value: number, i: number) => {
       this.thumbs.push(new Thumb(this.sliderElem));
     });
 
@@ -130,7 +134,7 @@ export default class View {
     this.thumbs[1].getElem().classList.add('slider__handle_max');
 
     this.thumbs[1].setThumb();
-    if (this.options.hasRange) this.thumbs[0].setThumb();
+    if (hasRange) this.thumbs[0].setThumb();
   }
 
   private setRange(): void {
@@ -151,10 +155,14 @@ export default class View {
     }
   }
 
-  private updateThumbsPosition(options: defaultOptions): void {
+  private updateThumbsPosition(): void {
     this.thumbs.forEach((thumb: Thumb, i: number) => {
-      thumb.setPosition(options, i);
+      thumb.setPosition(this.options, i);
     });
+  }
+
+  private updateThumbsLabels(): void {
+    this.thumbs.forEach((thumb, i) => thumb.updateLabel(this.options, i));
   }
 
   private setSelectBar(): void {
@@ -182,13 +190,15 @@ export default class View {
   @bind // this = View
   private handlePointerDown(e: PointerEvent): void {
     e.preventDefault();
-    const target: HTMLElement = e.target as HTMLElement;
+    const target: HTMLElement = e.currentTarget as HTMLElement;
     target.setPointerCapture(e.pointerId);
     this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
 
-    (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
-    (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
-    console.log('down');
+    // (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
+    // (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
+    (target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
+    (target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
+    console.log('down', target);
   }
 
   @bind // this = View

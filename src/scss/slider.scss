@@ -60,7 +60,7 @@
   }
 
   
-  &__handle {
+  &__thumb {
     width: 70px;
     height: 70px;
     position: absolute;
@@ -71,11 +71,13 @@
     background-color: $white;
     box-shadow: 0px 5px 5px -1px $darkgrey;
     //box-shadow: 0px 2px 5px 2px $green;
+    overflow: hidden;
     cursor: pointer;
     touch-action: none;
 
     &:hover {
       border-width: 3px;
+      font-weight: bold; //***
       //box-shadow: 0px 0px 5px 2px $green;
     }
     
@@ -86,6 +88,18 @@
     &_max {
       left: 70%;
     }
+  }
+
+  &__thumb-label { //***
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    line-height: 66px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.6rem;
+    color: $green;
   }
 
   &__select-bar {
@@ -136,7 +150,7 @@
         transform: translate(0, -50%);
       }
 
-      &__handle {
+      &__thumb {
         transform: translate(0, -50%);
         box-shadow: 3px 0px 5px -1px $darkgrey;
 
