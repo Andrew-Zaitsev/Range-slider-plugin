@@ -5,7 +5,6 @@
   height: 70px;
 
   &__scale {
-    //display: flex; ***
     justify-content: space-between;
     width: calc(100% - 70px);
     height: 10px;
@@ -23,7 +22,7 @@
   }
   
   &__scale-label {
-    width: 0px; //***
+    width: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,7 +41,6 @@
   }
   
   &__scale-text {
-    //width: 100%;
     position: absolute;
     top: 5px;
     padding: 3px 5px;
@@ -57,7 +55,7 @@
     width: 32px;
     min-height: 12px;
     padding: 0px 15px 0px;
-    background-color: $darkgrey;//$lightgrey;
+    background-color: $darkgrey;
     background-clip: content-box;
   }
 
@@ -119,16 +117,13 @@
       }
 
       &__scale-label {
-        // display: inline-block; ***
-        transform: none; //translate(0, 0);
+        transform: none;
       }
 
       &__scale-text {
         right: 2px;
         top: 0;
         transform: translate(0, -50%);
-   
-        
       }
 
       &__scale-pin {

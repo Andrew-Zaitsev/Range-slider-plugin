@@ -1,10 +1,7 @@
 import { defaultOptions } from '../../model/optionsTypes';
-import Scale from './scale';
 
 export default class ScaleLabel {
   private parentElem!: HTMLElement;
-
-  private scale!: Scale;
 
   private scaleLabelElem!: HTMLElement;
 
@@ -24,13 +21,6 @@ export default class ScaleLabel {
     return this.scaleTextElem;
   }
 
-  /*
-  public setScaleLabel(scale: Scale): void {
-    this.scale = scale;
-    this.parentElem.append(this.scaleLabelElem);
-  }
-  */
-
   public setPosition(options: defaultOptions, value: number): void {
     const {
       minValue,
@@ -38,27 +28,16 @@ export default class ScaleLabel {
       isVertical,
     } = options;
     const scaleRange: number = maxValue - minValue; // диапазон значений шкалы
-    const minValueLabelValueDiff: number = value - minValue; // значение от минимальной точки шкалы до ползунка
+    const minValueLabelValueDiff: number = value - minValue; // значение от минимальной точки шкалы до метки
     const thumbScaleRate: number = (minValueLabelValueDiff / scaleRange);
-    // const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
+
     if (isVertical) {
       this.scaleLabelElem.style.top = `${100 * (1 - thumbScaleRate)}%`;
       this.scaleLabelElem.style.left = 'auto';
     } else {
-      console.log(`${100 * thumbScaleRate}%`);
       this.scaleLabelElem.style.left = `${100 * thumbScaleRate}%`;
       this.scaleLabelElem.style.top = 'auto';
     }
-
-    /*
-    const {
-      minValue,
-      maxValue,
-      values,
-      hasRange,
-    } = options;
-
-    */
   }
 
   public setLabelText(text: string) {
