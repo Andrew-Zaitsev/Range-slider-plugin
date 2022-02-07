@@ -119,12 +119,12 @@
       }
 
       &__scale-label {
-        display: inline-block;
-        transform: translate(0, 0);
+        // display: inline-block; ***
+        transform: none; //translate(0, 0);
       }
 
       &__scale-text {
-        right: 11px;
+        right: 2px;
         top: 0;
         transform: translate(0, -50%);
    
