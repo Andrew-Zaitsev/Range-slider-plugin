@@ -11,8 +11,6 @@ export default class View {
 
   private scale!: Scale;
 
-  // private scaleIndent!: number;
-
   private thumbs: Thumb[] = [];
 
   private selectBar!: SelectBar;
@@ -32,17 +30,8 @@ export default class View {
 
   public update(newOptions: userOptions): void {
     // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
-    const {
-      minValue,
-      maxValue,
-      values,
-      isVertical,
-      hasScale,
-      hasRange,
-      hasLabels,
-      scaleDivisionsNumber,
-      step,
-    } = newOptions;
+    const { values } = newOptions;
+
     this.updateOptions(newOptions);
 
     const isOnlyValuesGot: boolean = (Object.keys(newOptions).length === 1)
@@ -83,7 +72,7 @@ export default class View {
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
 
-    this.setScale(this.sliderElem, this.options);
+    this.setScale(this.sliderElem);
     this.setThumbs();
     this.setSelectBar();
     this.setOrientation();
@@ -96,14 +85,14 @@ export default class View {
     this.bindListeners();
   }
 
-  private setScale(slider: HTMLElement, options: defaultOptions): void { // значения в параметрах уже доступны через this, поредавать не нужно наверное?
-    this.scale = new Scale(slider, options);
+  private setScale(slider: HTMLElement): void {
+    this.scale = new Scale(slider, this.options);
     this.scale.set();
   }
 
   private updateScale() {
     this.scale.getScaleElem().remove();
-    this.setScale(this.sliderElem, this.options);
+    this.setScale(this.sliderElem);
   }
 
   private calculateScaleIndent(): number {
@@ -125,8 +114,8 @@ export default class View {
   }
 
   private setThumbs(): void {
-    const { values, hasLabels, hasRange } = this.options;
-    values.forEach((value: number, i: number) => {
+    const { values, hasRange } = this.options;
+    values.forEach(() => {
       this.thumbs.push(new Thumb(this.sliderElem));
     });
 
@@ -194,18 +183,16 @@ export default class View {
     target.setPointerCapture(e.pointerId);
     this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
 
-    // (e.target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
-    // (e.target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
-    (target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);// .bind(this));
+    (target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);
     (target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
-    console.log('down', target);
+    console.log('down');
   }
 
   @bind // this = View
   private handlePointerUp(e: PointerEvent): void {
     (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
     (e.target as HTMLElement).removeEventListener('pointermove', this.handlePointerMove);
-    this.targetThumbIndex = 2;// undefined;
+    this.targetThumbIndex = 2;
     console.log('up');
   }
 
@@ -232,6 +219,7 @@ export default class View {
       isVertical,
       step,
     } = this.options;
+
     const currentValue: number = values[this.targetThumbIndex];
     const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
     const scaleValuesRange = maxValue - minValue;

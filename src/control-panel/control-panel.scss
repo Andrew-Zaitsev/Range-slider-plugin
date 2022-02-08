@@ -25,6 +25,10 @@
     font-weight: bold;
     color: $green;
     cursor: pointer;
+
+    &:disabled {
+      color: $lightgrey;
+    }
     
     &[type="checkbox"] {
       width: 15px;

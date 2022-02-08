@@ -48,7 +48,7 @@ const validators: Validators = {
       isVertical: newIsVertical,
       hasScale: newHasScale,
       hasRange: newHasRange,
-      hasLabels: newHasLabel,
+      hasLabels: newHasLabels,
       scaleDivisionsNumber: newScaleDivisionsNumber,
       step: newStep,
     } = newOptions;
@@ -65,14 +65,17 @@ const validators: Validators = {
 
     const validatedOptions: userOptions = {};
 
-    if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
-      validatedOptions.hasRange = newHasRange;
-    }
     if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
       validatedOptions.isVertical = newIsVertical;
     }
     if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
       validatedOptions.hasScale = newHasScale;
+    }
+    if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
+      validatedOptions.hasRange = newHasRange;
+    }
+    if ((newHasLabels !== undefined) && (newHasLabels !== hasLabels)) {
+      validatedOptions.hasLabels = newHasLabels;
     }
 
     // если методу валидации опций передано что либо другое в объекте

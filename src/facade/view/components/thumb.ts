@@ -59,11 +59,10 @@ export default class Thumb {
       maxValue,
       values,
       isVertical,
-      hasRange,
     } = options;
 
-    const scaleRange: number = maxValue - minValue; // диапазон значений шкалы
-    const minValueThumbValueDiff: number = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
+    const scaleRange: number = maxValue - minValue;
+    const minValueThumbValueDiff: number = values[i] - minValue;
     const thumbScaleRate: number = (minValueThumbValueDiff / scaleRange);
 
     const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;

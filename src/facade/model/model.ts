@@ -7,7 +7,6 @@ export default class Model {
     minValue: 10,
     maxValue: 70,
     values: [15, 20],
-    // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
     isVertical: false,
     hasScale: true,
     hasRange: true,
@@ -22,7 +21,6 @@ export default class Model {
 
   constructor(initOptions: userOptions) {
     this.init(initOptions);
-    console.log('---------------init-----------------');
   }
 
   public update(newOptions: userOptions): void {

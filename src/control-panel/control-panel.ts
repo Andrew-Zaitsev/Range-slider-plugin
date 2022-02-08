@@ -1,6 +1,5 @@
 import './control-panel.scss';
 import bind from 'bind-decorator';
-import Facade from '../facade/facade';
 import { defaultOptions, userOptions } from '../facade/model/optionsTypes';
 import { ObserverCallback } from '../facade/observer/observer';
 
@@ -38,8 +37,6 @@ export default class ControlPanel {
 
   @bind
   public updateControlPanel(newOptions: userOptions):void {
-    // console.log('---updatePanel---');
-
     const {
       minValue: newMinValue,
       maxValue: newMaxValue,
@@ -47,7 +44,7 @@ export default class ControlPanel {
       isVertical: newIsVertical,
       hasScale: newHasScale,
       hasRange: newHasRange,
-      hasLabels,
+      hasLabels: newHasLabels,
       scaleDivisionsNumber: newScaleDivisionsNamber,
       step: newStep,
     } = newOptions;
@@ -62,24 +59,28 @@ export default class ControlPanel {
         && (newMaxValue !== +this.maxValueInput.value)) {
       this.setMaxValue(newMaxValue);
     }
-    // если переданы values и они не равны существующим - установить новые
     if ((newValues !== undefined)
       && ((newValues[0] !== +this.valueFromInput.value)
         || ((newValues[1] !== +this.valueToInput.value)))) {
       this.setValues(newValues);
     }
-    // если передан direction и он не равно существующиму - установить новый
     if ((newIsVertical !== undefined)
       && (newIsVertical !== this.directionInput.checked)) {
       this.setDirection(newIsVertical);
     }
-    if ((newHasRange !== undefined)
-      && (newHasRange !== this.showRangeInput.checked)) {
-      this.setRange(newHasRange);
-    }
     if ((newHasScale !== undefined)
       && (newHasScale !== this.showScaleInput.checked)) {
       this.setScaleVisibility(newHasScale);
+    }
+    if (newHasRange !== undefined) {
+      if (newHasRange !== this.showRangeInput.checked) {
+        this.setRange(newHasRange);
+      }
+      this.updateValueFromFieldAccessibility(newHasRange);
+    }
+    if ((newHasLabels !== undefined)
+      && (newHasLabels !== this.showLabelsInput.checked)) {
+      this.setLabelsVisibility(newHasLabels);
     }
     if ((newScaleDivisionsNamber !== undefined)
       && (newScaleDivisionsNamber !== +this.scaleDivisionsNumberInput.value)) {
@@ -132,7 +133,6 @@ export default class ControlPanel {
   }
 
   private subscribeToSlider(fn: ObserverCallback):void {
-    // реализовать подписку на апдейт модели через апи слайдера
     this.$demoSliderElem.rangeSlider('subscribeToSliderUpdates', fn);
   }
 
@@ -162,6 +162,14 @@ export default class ControlPanel {
     this.showRangeInput.checked = value;
   }
 
+  private updateValueFromFieldAccessibility(value: boolean): void {
+    this.valueFromInput.disabled = !value;
+  }
+
+  private setLabelsVisibility(value: boolean): void {
+    this.showLabelsInput.checked = value;
+  }
+
   private setScaleDivisionsNumber(value: number): void {
     this.scaleDivisionsNumberInput.value = String(value);
   }
@@ -176,8 +184,9 @@ export default class ControlPanel {
     this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
     this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
     this.directionInput.addEventListener('change', this.handleDirectionInputChange);
-    this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
     this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
+    this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
+    this.showLabelsInput.addEventListener('change', this.handleShowLabelsInputChange);
     this.scaleDivisionsNumberInput.addEventListener('change', this.handleScaleDivisionsNumberInputChange);
     this.stepInput.addEventListener('change', this.handleStepInputChange);
   }
@@ -188,7 +197,6 @@ export default class ControlPanel {
       +(this.valueFromInput.value),
       +(this.valueToInput.value),
     ];
-    // получили новые values
     this.updateSlider({ values: newValues });
   }
 
@@ -214,6 +222,12 @@ export default class ControlPanel {
   }
 
   @bind
+  private handleShowScaleInputChange(): void {
+    const newHasScale: boolean = this.showScaleInput.checked;
+    this.updateSlider({ hasScale: newHasScale });
+  }
+
+  @bind
   private handleShowRangeInputChange(): void {
     const newHasRange: boolean = this.showRangeInput.checked;
 
@@ -221,9 +235,10 @@ export default class ControlPanel {
   }
 
   @bind
-  private handleShowScaleInputChange(): void {
-    const newHasScale: boolean = this.showScaleInput.checked;
-    this.updateSlider({ hasScale: newHasScale });
+  private handleShowLabelsInputChange(): void {
+    const newHasLabels: boolean = this.showLabelsInput.checked;
+
+    this.updateSlider({ hasLabels: newHasLabels });
   }
 
   @bind
@@ -239,7 +254,6 @@ export default class ControlPanel {
   }
 
   private updateSlider(newOptions: userOptions): void {
-    console.log('ControlPanel.updateSlider', newOptions);
     this.$demoSliderElem.rangeSlider('update', newOptions);
   }
 }
