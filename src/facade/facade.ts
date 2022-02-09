@@ -21,4 +21,3 @@ export default class Facade {
     this.presenter = new Presenter(parent, this.model);
   }
 }
-// console.log(parent);

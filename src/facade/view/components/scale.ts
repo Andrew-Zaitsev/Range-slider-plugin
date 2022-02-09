@@ -47,8 +47,6 @@ export default class Scale {
     const residualSegmentsNumber = (residualSegmentValue !== undefined) ? 1 : 0;
     const labelsNumber = integerSegmentsNumber + residualSegmentsNumber + 1;
 
-    console.log('предусмотреть валидацию для недопустимости длины шкалы меньше 1');
-
     const segmentsValuesSequence: number[] = (new Array(integerSegmentsNumber)).fill(integerSegmentValue);
 
     if (residualSegmentValue !== undefined) segmentsValuesSequence.push(residualSegmentValue);
@@ -74,7 +72,7 @@ export default class Scale {
     let integerSegmentValue: number;
     let integerSegmentsNumber: number;
 
-    while (scaleDivisionsNumber >= 3) { // Nd
+    while (scaleDivisionsNumber >= 3) {
       const scaleSectionsNumber: number = scaleDivisionsNumber - 1;
       const supposedScaleSectionLength: number = scaleValuesRange / scaleSectionsNumber;
 
@@ -110,7 +108,7 @@ export default class Scale {
         return scaleSegments;
       }
     }
-    scaleSegments.residualSegmentValue = scaleValuesRange; // 'меньше 3х делений, длина отрезка = длине шкалы';
+    scaleSegments.residualSegmentValue = scaleValuesRange;
 
     return scaleSegments;
   }

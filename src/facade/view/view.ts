@@ -119,8 +119,8 @@ export default class View {
       this.thumbs.push(new Thumb(this.sliderElem));
     });
 
-    this.thumbs[0].getElem().classList.add('slider__handle_min');
-    this.thumbs[1].getElem().classList.add('slider__handle_max');
+    this.thumbs[0].getElem().classList.add('slider__thumb_min');
+    this.thumbs[1].getElem().classList.add('slider__thumb_max');
 
     this.thumbs[1].setThumb();
     if (hasRange) this.thumbs[0].setThumb();
@@ -171,21 +171,39 @@ export default class View {
   }
 
   private bindListeners() {
-    this.thumbs.forEach((thumb: Thumb) => {
-      thumb.getElem().addEventListener('pointerdown', this.handlePointerDown);
-    });
+    this.sliderElem.addEventListener('pointerdown', this.handlePointerDown);
   }
 
   @bind // this = View
   private handlePointerDown(e: PointerEvent): void {
-    e.preventDefault();
-    const target: HTMLElement = e.currentTarget as HTMLElement;
-    target.setPointerCapture(e.pointerId);
-    this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
-
-    (target as HTMLElement).addEventListener('pointerup', this.handlePointerUp);
-    (target as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
     console.log('down');
+    e.preventDefault();
+
+    const target: HTMLElement = e.target as HTMLElement;
+    const targetThumb: HTMLElement | null = target?.closest('.slider__thumb');
+    const targetScale: HTMLElement | null = target?.closest('.slider__scale');
+    const targetSelectBar: HTMLElement | null = target?.closest('.slider__select-bar');
+
+    if (targetThumb) {
+      targetThumb.setPointerCapture(e.pointerId);
+      this.targetThumbIndex = (targetThumb.classList.contains('slider__thumb_max')) ? 1 : 0;
+
+      (targetThumb as HTMLElement).addEventListener('pointerup', this.handlePointerUp);
+      (targetThumb as HTMLElement).addEventListener('pointermove', this.handlePointerMove);
+    } else if (targetScale || targetSelectBar) {
+      const closestThumbElem: HTMLElement = this.getClosestThumbElem(e);
+      this.targetThumbIndex = (closestThumbElem.classList.contains('slider__thumb_max')) ? 1 : 0;
+      const value: number = this.calculateValue(e);
+      let values: [number, number];
+
+      if (this.targetThumbIndex === 0) {
+        values = [value, this.options.values[1]];
+      } else {
+        values = [this.options.values[0], value];
+      }
+
+      this.observer.emit({ values });
+    }
   }
 
   @bind // this = View
@@ -239,5 +257,34 @@ export default class View {
     const calculatedValue = currentValue + delta;
 
     return calculatedValue;
+  }
+
+  private getClosestThumbElem(evt: PointerEvent): HTMLElement {
+    const { isVertical, hasRange } = this.options;
+    const [thumbMin, thumbMax] = this.thumbs;
+    let closestThumb: Thumb;
+
+    if (!hasRange) return this.thumbs[1].getElem();
+
+    const thumbMinDomRect: DOMRect = thumbMin.getElem().getBoundingClientRect();
+    const thumbMaxDomRect: DOMRect = thumbMax.getElem().getBoundingClientRect();
+
+    if (isVertical) {
+      const pointerYCoord = evt.clientY;
+      const thumbMinYCoord = thumbMinDomRect.top + thumbMinDomRect.height / 2;
+      const thumbMaxYCoord = thumbMaxDomRect.top + thumbMaxDomRect.height / 2;
+      const pointerThumbMinRange = Math.abs(pointerYCoord - thumbMinYCoord);
+      const pointerThumbMaxRange = Math.abs(pointerYCoord - thumbMaxYCoord);
+      closestThumb = (pointerThumbMinRange < pointerThumbMaxRange) ? thumbMin : thumbMax;
+    } else {
+      const pointerXCoord = evt.clientX;
+      const thumbMinXCoord = thumbMinDomRect.left + thumbMinDomRect.width / 2;
+      const thumbMaxXCoord = thumbMaxDomRect.left + thumbMaxDomRect.width / 2;
+      const pointerThumbMinRange = Math.abs(pointerXCoord - thumbMinXCoord);
+      const pointerThumbMaxRange = Math.abs(pointerXCoord - thumbMaxXCoord);
+      closestThumb = (pointerThumbMinRange < pointerThumbMaxRange) ? thumbMin : thumbMax;
+    }
+
+    return closestThumb.getElem();
   }
 }
