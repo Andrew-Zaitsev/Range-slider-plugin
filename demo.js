@@ -10955,8 +10955,7 @@ class ControlPanel {
         this.init();
     }
     updateControlPanel(newOptions) {
-        // console.log('---updatePanel---');
-        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale: newHasScale, hasRange, hasLabels, scaleDivisionsNumber: newScaleDivisionsNamber, step, } = newOptions;
+        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale: newHasScale, hasRange: newHasRange, hasLabels: newHasLabels, scaleDivisionsNumber: newScaleDivisionsNamber, step: newStep, } = newOptions;
         // если передан minValue и оно не равно существующему - установить новое
         if ((newMinValue !== undefined)
             && (newMinValue !== +this.minValueInput.value)) {
@@ -10967,13 +10966,11 @@ class ControlPanel {
             && (newMaxValue !== +this.maxValueInput.value)) {
             this.setMaxValue(newMaxValue);
         }
-        // если переданы values и они не равны существующим - установить новые
         if ((newValues !== undefined)
             && ((newValues[0] !== +this.valueFromInput.value)
                 || ((newValues[1] !== +this.valueToInput.value)))) {
             this.setValues(newValues);
         }
-        // если передан direction и он не равно существующиму - установить новый
         if ((newIsVertical !== undefined)
             && (newIsVertical !== this.directionInput.checked)) {
             this.setDirection(newIsVertical);
@@ -10982,9 +10979,23 @@ class ControlPanel {
             && (newHasScale !== this.showScaleInput.checked)) {
             this.setScaleVisibility(newHasScale);
         }
+        if (newHasRange !== undefined) {
+            if (newHasRange !== this.showRangeInput.checked) {
+                this.setRange(newHasRange);
+            }
+            this.updateValueFromFieldAccessibility(newHasRange);
+        }
+        if ((newHasLabels !== undefined)
+            && (newHasLabels !== this.showLabelsInput.checked)) {
+            this.setLabelsVisibility(newHasLabels);
+        }
         if ((newScaleDivisionsNamber !== undefined)
             && (newScaleDivisionsNamber !== +this.scaleDivisionsNumberInput.value)) {
             this.setScaleDivisionsNumber(newScaleDivisionsNamber);
+        }
+        if ((newStep !== undefined)
+            && (newStep !== +this.stepInput.value)) {
+            this.setStep(newStep);
         }
     }
     getSliderOptions() {
@@ -11020,7 +11031,6 @@ class ControlPanel {
         return inputElem;
     }
     subscribeToSlider(fn) {
-        // реализовать подписку на апдейт модели через апи слайдера
         this.$demoSliderElem.rangeSlider('subscribeToSliderUpdates', fn);
     }
     setValues(values) {
@@ -11040,8 +11050,20 @@ class ControlPanel {
     setScaleVisibility(value) {
         this.showScaleInput.checked = value;
     }
+    setRange(value) {
+        this.showRangeInput.checked = value;
+    }
+    updateValueFromFieldAccessibility(value) {
+        this.valueFromInput.disabled = !value;
+    }
+    setLabelsVisibility(value) {
+        this.showLabelsInput.checked = value;
+    }
     setScaleDivisionsNumber(value) {
         this.scaleDivisionsNumberInput.value = String(value);
+    }
+    setStep(value) {
+        this.stepInput.value = String(value);
     }
     bindEvents() {
         this.valueFromInput.addEventListener('change', this.handleValueInputChange);
@@ -11050,14 +11072,16 @@ class ControlPanel {
         this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
         this.directionInput.addEventListener('change', this.handleDirectionInputChange);
         this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
+        this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
+        this.showLabelsInput.addEventListener('change', this.handleShowLabelsInputChange);
         this.scaleDivisionsNumberInput.addEventListener('change', this.handleScaleDivisionsNumberInputChange);
+        this.stepInput.addEventListener('change', this.handleStepInputChange);
     }
     handleValueInputChange() {
         const newValues = [
             +(this.valueFromInput.value),
             +(this.valueToInput.value),
         ];
-        // получили новые values
         this.updateSlider({ values: newValues });
     }
     handleMinValueInputChange() {
@@ -11076,12 +11100,23 @@ class ControlPanel {
         const newHasScale = this.showScaleInput.checked;
         this.updateSlider({ hasScale: newHasScale });
     }
+    handleShowRangeInputChange() {
+        const newHasRange = this.showRangeInput.checked;
+        this.updateSlider({ hasRange: newHasRange });
+    }
+    handleShowLabelsInputChange() {
+        const newHasLabels = this.showLabelsInput.checked;
+        this.updateSlider({ hasLabels: newHasLabels });
+    }
     handleScaleDivisionsNumberInputChange() {
         const newScaleDivisionsNumber = +this.scaleDivisionsNumberInput.value;
         this.updateSlider({ scaleDivisionsNumber: newScaleDivisionsNumber });
     }
+    handleStepInputChange() {
+        const newStep = +this.stepInput.value;
+        this.updateSlider({ step: newStep });
+    }
     updateSlider(newOptions) {
-        console.log('ControlPanel.updateSlider', newOptions);
         this.$demoSliderElem.rangeSlider('update', newOptions);
     }
 }
@@ -11105,7 +11140,16 @@ __decorate([
 ], ControlPanel.prototype, "handleShowScaleInputChange", null);
 __decorate([
     bind_decorator/* default */.ZP
+], ControlPanel.prototype, "handleShowRangeInputChange", null);
+__decorate([
+    bind_decorator/* default */.ZP
+], ControlPanel.prototype, "handleShowLabelsInputChange", null);
+__decorate([
+    bind_decorator/* default */.ZP
 ], ControlPanel.prototype, "handleScaleDivisionsNumberInputChange", null);
+__decorate([
+    bind_decorator/* default */.ZP
+], ControlPanel.prototype, "handleStepInputChange", null);
 
 ;// CONCATENATED MODULE: ./demo/demo.ts
 /* provided dependency */ var demo_$ = __webpack_require__(638);
@@ -11114,12 +11158,12 @@ __decorate([
 const demoSliderConfigs = [
     {
         minValue: 10,
-        maxValue: 50,
+        maxValue: 13,
         values: [15.5, 60],
         hasLabels: false,
-        isVertical: true,
+        isVertical: false,
         scaleDivisionsNumber: 6,
-        step: 6,
+        step: 1,
     },
     {
         minValue: 0,
@@ -11166,10 +11210,11 @@ demoSliderConfigs.forEach((config) => new DemoSliderInit(config));
 // пример изменения слайдера через API
 setTimeout(() => {
     console.log('-------------------------------- \n changed using API');
-    // $('.js-demo__slider:eq(0)').rangeSlider('update', { values: [20, 41], isVertical: false }); //
+    demo_$('.js-demo__slider:eq(0)').rangeSlider('update', { hasLabels: true }); //
     // setTimeout(() => {
     // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
     // }, 2000);
+    // $('.js-demo__slider:eq(2)').rangeSlider('update', { hasRange: true, values: [8, 12] });
     console.log('--------------------------------');
 }, 2000);
 

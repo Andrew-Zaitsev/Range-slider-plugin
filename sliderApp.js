@@ -10925,7 +10925,7 @@ return jQuery;
 
 /***/ }),
 
-/***/ 282:
+/***/ 730:
 /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -10951,85 +10951,122 @@ class Observer {
 
 ;// CONCATENATED MODULE: ./facade/model/validators.ts
 const validators = {
-    verifyOptions(currentOptions, newOptions) {
-        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale: newHasScale, hasRange: newHasRange, hasLabels: newHasLabel, scaleDivisionsNumber: newScaleDivisionsNumber, step: newStep, } = newOptions;
+    getValidatedOptions(currentOptions, newOptions) {
+        const { minValue, maxValue, values, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = currentOptions;
+        const { minValue: newMinValue, maxValue: newMaxValue, values: newValues, isVertical: newIsVertical, hasScale: newHasScale, hasRange: newHasRange, hasLabels: newHasLabels, scaleDivisionsNumber: newScaleDivisionsNumber, step: newStep, } = newOptions;
+        // если методу валидации опций переданы только значения, то в возвращаемом объекте только свойство values
         const areOnlyValuesGot = (Object.keys(newOptions).length === 1)
             && (Object.prototype.hasOwnProperty.call(newOptions, 'values') && (newValues !== undefined));
-        // если методу валидации опций переданы только значения, то в возвращаемом объекте только свойство values
         if (areOnlyValuesGot && (newValues !== undefined)) {
-            return this.verifyValues(currentOptions, newValues);
+            const validatedValues = this.verifyValues(currentOptions, newValues);
+            return validatedValues;
+        }
+        const validatedOptions = {};
+        if ((newIsVertical !== undefined) && (newIsVertical !== isVertical)) {
+            validatedOptions.isVertical = newIsVertical;
+        }
+        if ((newHasScale !== undefined) && (newHasScale !== hasScale)) {
+            validatedOptions.hasScale = newHasScale;
+        }
+        if ((newHasRange !== undefined) && (newHasRange !== hasRange)) {
+            validatedOptions.hasRange = newHasRange;
+        }
+        if ((newHasLabels !== undefined) && (newHasLabels !== hasLabels)) {
+            validatedOptions.hasLabels = newHasLabels;
         }
         // если методу валидации опций передано что либо другое в объекте
-        const validatedMinMaxValues = this.verifyMinMaxValues(currentOptions, newOptions);
-        const validatedValues = this.verifyValues(Object.assign(Object.assign({}, currentOptions), validatedMinMaxValues), newValues);
-        const validatedScaleDivisionsNumber = this.verifyScaleDivisionsNumber(validatedMinMaxValues, newScaleDivisionsNumber);
-        const validatedOptions = Object.assign(Object.assign(Object.assign({}, validatedMinMaxValues), validatedValues), validatedScaleDivisionsNumber);
+        const validatedMinMaxValues = this.verifyMinMaxValues(currentOptions, newMinValue, newMaxValue);
+        Object.assign(validatedOptions, validatedMinMaxValues);
+        const validatedValues = this.verifyValues(Object.assign(Object.assign({}, currentOptions), validatedOptions), newValues);
+        const validatedScaleDivisionsNumber = this.verifyScaleDivisionsNumber(validatedMinMaxValues, scaleDivisionsNumber, newScaleDivisionsNumber);
+        const validatedStep = this.verifyStep(validatedMinMaxValues, step, newStep);
+        Object.assign(validatedOptions, validatedValues, validatedScaleDivisionsNumber, validatedStep);
         return validatedOptions;
     },
+    verifyMinMaxValues(currentOpt, newMin, newMax) {
+        const { minValue: min, maxValue: max } = currentOpt;
+        let newMinValue = newMin;
+        let newMaxValue = newMax;
+        if ((newMinValue === undefined) && (newMaxValue === undefined))
+            return { minValue: min, maxValue: max };
+        if ((newMinValue !== undefined) && (!this.isValidNumber(newMinValue)))
+            newMinValue = 0;
+        if ((newMaxValue !== undefined) && (!this.isValidNumber(newMaxValue)))
+            newMaxValue = 0;
+        if (newMinValue === undefined)
+            newMinValue = min;
+        if (newMaxValue === undefined)
+            newMaxValue = max;
+        if (newMinValue === newMaxValue)
+            newMaxValue += 1;
+        if (newMinValue > newMaxValue)
+            return { minValue: newMaxValue, maxValue: newMinValue };
+        return { minValue: newMinValue, maxValue: newMaxValue };
+    },
     verifyValues(currentOpt, userValues) {
-        const { values: currentValues, minValue, maxValue } = currentOpt;
+        const { values, minValue, maxValue, hasRange, } = currentOpt;
         let from;
         let to;
+        let verifiedValues;
         if (userValues !== undefined)
             [from, to] = userValues;
         if (((from === undefined) && (to === undefined)) || (userValues === undefined)) {
-            return {
-                values: [
-                    this.moveToMinMaxRange(minValue, maxValue, currentValues[0]),
-                    this.moveToMinMaxRange(minValue, maxValue, currentValues[1]),
-                ],
-            };
+            verifiedValues = [
+                this.moveToMinMaxRange(minValue, maxValue, values[0]),
+                this.moveToMinMaxRange(minValue, maxValue, values[1]),
+            ];
         }
-        if ((from !== undefined) && (!this.isValidNumber(from)))
-            from = 0;
-        if ((to !== undefined) && (!this.isValidNumber(to)))
-            to = 0;
-        if (from === undefined)
-            [from] = currentValues;
-        if (to === undefined)
-            [, to] = currentValues;
-        if (from > to)
-            [from, to] = [to, from];
-        from = this.moveToMinMaxRange(minValue, maxValue, from);
-        to = this.moveToMinMaxRange(minValue, maxValue, to);
-        return { values: [from, to] };
+        else {
+            if ((from !== undefined) && (!this.isValidNumber(from)))
+                from = 0;
+            if ((to !== undefined) && (!this.isValidNumber(to)))
+                to = 0;
+            if (from === undefined)
+                [from] = values;
+            if (to === undefined)
+                [, to] = values;
+            if (from > to)
+                [from, to] = [to, from];
+            from = this.moveToMinMaxRange(minValue, maxValue, from);
+            to = this.moveToMinMaxRange(minValue, maxValue, to);
+            verifiedValues = [from, to];
+        }
+        if (!hasRange)
+            verifiedValues[0] = minValue;
+        return { values: verifiedValues };
     },
-    verifyMinMaxValues(currentOpt, newOpt) {
-        const { minValue: min, maxValue: max } = currentOpt;
-        let { minValue: newMin, maxValue: newMax } = newOpt;
-        if ((newMin === undefined) && (newMax === undefined))
-            return { minValue: min, maxValue: max };
-        if ((newMin !== undefined) && (!this.isValidNumber(newMin)))
-            newMin = 0;
-        if ((newMax !== undefined) && (!this.isValidNumber(newMax)))
-            newMax = 0;
-        if (newMin === undefined)
-            newMin = min;
-        if (newMax === undefined)
-            newMax = max;
-        if (newMin === newMax)
-            newMax += 1;
-        if (newMin > newMax)
-            return { minValue: newMax, maxValue: newMin };
-        return { minValue: newMin, maxValue: newMax };
-    },
-    verifyScaleDivisionsNumber(minMaxValues, number) {
+    verifyScaleDivisionsNumber(minMaxValues, number, newNumber) {
         const { minValue, maxValue } = minMaxValues;
         const maxNumber = maxValue - minValue + 1;
-        if (number === undefined)
-            return {};
-        if (!this.isValidNumber(number))
+        let numberToVerify = newNumber;
+        if (numberToVerify === undefined)
+            numberToVerify = number;
+        if (!this.isValidNumber(numberToVerify))
             return { scaleDivisionsNumber: 2 };
-        if (number < 2)
+        if (numberToVerify < 2)
             return { scaleDivisionsNumber: 2 };
-        if (number > maxNumber)
+        if (numberToVerify > maxNumber)
             return { scaleDivisionsNumber: maxNumber };
-        return { scaleDivisionsNumber: number };
+        const validatedNumber = numberToVerify;
+        return { scaleDivisionsNumber: validatedNumber };
+    },
+    verifyStep(minMaxValues, step, newStep) {
+        const { minValue, maxValue } = minMaxValues;
+        const scaleLength = maxValue - minValue;
+        let stepToVerify = newStep;
+        if ((stepToVerify === undefined) || (!this.isValidNumber(newStep)))
+            stepToVerify = step;
+        if (stepToVerify < 1)
+            return { step: 1 };
+        if (stepToVerify > scaleLength)
+            return { step: scaleLength };
+        const validatedStep = stepToVerify;
+        return { step: validatedStep };
     },
     isValidNumber(value) {
         if (Number.isInteger(value))
             return true;
-        console.log('unvalid data (isValidNumber), value = ', value);
+        console.log('invalid data (isValidNumber), value = ', value);
         return false;
     },
     moveToMinMaxRange(min, max, value) {
@@ -11047,40 +11084,24 @@ const validators = {
 
 class Model {
     constructor(initOptions) {
+        this.sliderOptions = Model.defaultOptions;
         this.init(initOptions);
-        console.log('---------------init-----------------');
     }
     update(newOptions) {
-        const emitOptions = this.updateOptions(this.sliderOptions, newOptions);
+        const emitOptions = model_validators.getValidatedOptions(this.sliderOptions, newOptions);
+        this.updateOptions(this.sliderOptions, emitOptions);
         if (Object.keys(emitOptions).length > 0)
             this.emitUpdates(emitOptions);
     }
-    getData() {
+    getOptions() {
         return this.sliderOptions;
     }
     init(newOpts) {
         this.observer = new Observer();
-        this.updateOptions(Model.defaultOptions, newOpts);
+        this.updateOptions(Model.defaultOptions, model_validators.getValidatedOptions(this.sliderOptions, newOpts));
     }
-    updateOptions(currentOptions, newOptions) {
-        const { isVertical, hasScale } = newOptions;
-        const updatedOptions = model_validators.verifyOptions(currentOptions, newOptions);
-        this.sliderOptions = Object.assign(Object.assign({}, currentOptions), updatedOptions);
-        if (isVertical !== undefined) {
-            this.updateIsVertical(isVertical);
-            updatedOptions.isVertical = isVertical;
-        }
-        if (hasScale !== undefined) {
-            this.updateHasScale(hasScale);
-            updatedOptions.hasScale = hasScale;
-        }
-        return updatedOptions; // возврат либо values, либо типа degaultoptions
-    }
-    updateIsVertical(data) {
-        this.sliderOptions.isVertical = data;
-    }
-    updateHasScale(data) {
-        this.sliderOptions.hasScale = data;
+    updateOptions(currentOptions, validatedOptions) {
+        this.sliderOptions = Object.assign(Object.assign({}, currentOptions), validatedOptions);
     }
     emitUpdates(newOptions) {
         this.observer.emit(newOptions);
@@ -11090,13 +11111,12 @@ Model.defaultOptions = {
     minValue: 10,
     maxValue: 70,
     values: [15, 20],
-    // добавить проверку на единичное значение при hasrange: false и на нахождение values в пределах между мин-макс
     isVertical: false,
     hasScale: true,
     hasRange: true,
     hasLabels: true,
     scaleDivisionsNumber: 4,
-    step: 5,
+    step: 1,
 };
 
 // EXTERNAL MODULE: ../node_modules/bind-decorator/index.js
@@ -11126,9 +11146,19 @@ class ScaleLabel {
     getTextElem() {
         return this.scaleTextElem;
     }
-    setScaleLabel(scale) {
-        this.scale = scale;
-        this.parentElem.append(this.scaleLabelElem);
+    setPosition(options, value) {
+        const { minValue, maxValue, isVertical, } = options;
+        const scaleRange = maxValue - minValue; // диапазон значений шкалы
+        const minValueLabelValueDiff = value - minValue; // значение от минимальной точки шкалы до метки
+        const thumbScaleRate = (minValueLabelValueDiff / scaleRange);
+        if (isVertical) {
+            this.scaleLabelElem.style.top = `${100 * (1 - thumbScaleRate)}%`;
+            this.scaleLabelElem.style.left = 'auto';
+        }
+        else {
+            this.scaleLabelElem.style.left = `${100 * thumbScaleRate}%`;
+            this.scaleLabelElem.style.top = 'auto';
+        }
     }
     setLabelText(text) {
         this.getTextElem().textContent = text;
@@ -11164,29 +11194,100 @@ class Scale {
         this.scaleElem = document.createElement('div');
         this.scaleElem.classList.add('slider__scale');
         if (this.options.hasScale) {
-            this.setScaleLabels();
-            this.updateLabelsValue();
+            this.createScaleLabels();
+            this.renderScaleLabels();
         }
     }
-    setScaleLabels() {
-        for (let i = 0; i < this.options.scaleDivisionsNumber; i += 1) {
-            this.scaleLabels.push(new ScaleLabel(this.scaleElem));
+    createScaleLabels() {
+        const { minValue } = this.options;
+        const segments = this.calculateScaleSegments();
+        const { integerSegmentsNumber = 0, integerSegmentValue, residualSegmentValue } = segments;
+        const residualSegmentsNumber = (residualSegmentValue !== undefined) ? 1 : 0;
+        const labelsNumber = integerSegmentsNumber + residualSegmentsNumber + 1;
+        const segmentsValuesSequence = (new Array(integerSegmentsNumber)).fill(integerSegmentValue);
+        if (residualSegmentValue !== undefined)
+            segmentsValuesSequence.push(residualSegmentValue);
+        for (let i = 0, labelValue = minValue; i < labelsNumber; i += 1) {
+            const label = new ScaleLabel(this.scaleElem);
+            label.setPosition(this.options, labelValue);
+            label.setLabelText(labelValue.toString());
+            this.scaleLabels.push(label);
+            labelValue += segmentsValuesSequence[i];
         }
+    }
+    renderScaleLabels() {
         this.scaleLabels.forEach((scaleLabel) => this.scaleElem.append(scaleLabel.getElem()));
     }
-    updateLabelsValue() {
-        const { minValue, maxValue, scaleDivisionsNumber } = this.options;
-        const valueRange = maxValue - minValue;
-        const labelValueStep = valueRange / (scaleDivisionsNumber - 1);
-        let labelValue = minValue;
-        this.scaleLabels.forEach((label, i) => {
-            label.setLabelText(`${labelValue.toFixed(0)}`);
-            labelValue += labelValueStep;
-        });
+    calculateScaleSegments() {
+        const { minValue, maxValue } = this.options;
+        let { scaleDivisionsNumber } = this.options;
+        const scaleValuesRange = Math.abs(maxValue - minValue);
+        const scaleSegments = {};
+        let integerSegmentValue;
+        let integerSegmentsNumber;
+        while (scaleDivisionsNumber >= 3) {
+            const scaleSectionsNumber = scaleDivisionsNumber - 1;
+            const supposedScaleSectionLength = scaleValuesRange / scaleSectionsNumber;
+            if (supposedScaleSectionLength < 1) {
+                scaleDivisionsNumber -= 1;
+            }
+            else {
+                if (Number.isInteger(supposedScaleSectionLength)) {
+                    scaleSegments.integerSegmentsNumber = scaleDivisionsNumber - 1;
+                    scaleSegments.integerSegmentValue = supposedScaleSectionLength;
+                    return scaleSegments;
+                }
+                integerSegmentValue = Math.ceil(supposedScaleSectionLength);
+                integerSegmentsNumber = scaleDivisionsNumber - 2;
+                while (integerSegmentValue * integerSegmentsNumber >= scaleValuesRange) {
+                    if ((integerSegmentValue - 1) < 1) {
+                        if ((integerSegmentsNumber - 1) < 1) {
+                            scaleSegments.residualSegmentValue = scaleValuesRange;
+                            return scaleSegments;
+                        }
+                        integerSegmentsNumber -= 1;
+                    }
+                    else {
+                        integerSegmentValue -= 1;
+                    }
+                }
+                scaleSegments.integerSegmentsNumber = integerSegmentsNumber;
+                scaleSegments.integerSegmentValue = integerSegmentValue;
+                scaleSegments.residualSegmentValue = scaleValuesRange - (integerSegmentValue * integerSegmentsNumber);
+                return scaleSegments;
+            }
+        }
+        scaleSegments.residualSegmentValue = scaleValuesRange;
+        return scaleSegments;
+    }
+}
+
+;// CONCATENATED MODULE: ./facade/view/components/thumbLabel.ts
+class ThumbLabel {
+    constructor(parent) {
+        this.parent = parent;
+        this.init();
+    }
+    init() {
+        this.thumbLabelElem = document.createElement('div');
+        this.thumbLabelElem.classList.add('slider__thumb-label');
+    }
+    getElem() {
+        return this.thumbLabelElem;
+    }
+    setThumb() {
+        this.parent.prepend(this.thumbLabelElem);
+    }
+    setLabelText(text) {
+        this.getElem().textContent = text;
+    }
+    removeThumb() {
+        this.getElem().remove();
     }
 }
 
 ;// CONCATENATED MODULE: ./facade/view/components/thumb.ts
+
 class Thumb {
     constructor(parent) {
         this.parent = parent;
@@ -11194,24 +11295,44 @@ class Thumb {
     }
     init() {
         this.thumbElem = document.createElement('div');
-        this.thumbElem.classList.add('slider__handle');
+        this.thumbElem.classList.add('slider__thumb');
+        this.thumbLabel = new ThumbLabel(this.getElem());
+        this.setLabel();
+    }
+    setLabel() {
+        this.thumbElem.append(this.thumbLabel.getElem());
+    }
+    updateLabel(options, thumbIndex) {
+        const { values, hasLabels } = options;
+        const value = values[thumbIndex];
+        if (hasLabels) {
+            if (!this.hasLabel())
+                this.setLabel();
+            this.updateLabelValue(value);
+        }
+        else {
+            this.removeLabel();
+        }
     }
     getElem() {
         return this.thumbElem;
     }
     setThumb() {
-        this.parent.append(this.thumbElem);
+        this.parent.prepend(this.thumbElem);
+    }
+    removeThumb() {
+        this.getElem().remove();
     }
     setScaleIndent(scaleIndent) {
         this.scaleIndent = scaleIndent;
     }
     setPosition(options, i) {
-        const { minValue, maxValue, values, hasRange, } = options;
-        const scaleRange = maxValue - minValue; // диапазон значений шкалы
-        const minValueThumbValueDiff = values[i] - minValue; // значение от минимальной точки шкалы до ползунка
+        const { minValue, maxValue, values, isVertical, } = options;
+        const scaleRange = maxValue - minValue;
+        const minValueThumbValueDiff = values[i] - minValue;
         const thumbScaleRate = (minValueThumbValueDiff / scaleRange);
         const scaleCssLength = `(100% - (${this.scaleIndent}px * 2))`;
-        if (options.isVertical) {
+        if (isVertical) {
             this.thumbElem.style.top = `calc(${scaleCssLength} * ${1 - thumbScaleRate} + ${this.scaleIndent}px)`;
             this.thumbElem.style.left = 'auto';
         }
@@ -11219,6 +11340,15 @@ class Thumb {
             this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
             this.thumbElem.style.top = 'auto';
         }
+    }
+    hasLabel() {
+        return (this.getElem().querySelector('.slider__thumb-label') !== null);
+    }
+    removeLabel() {
+        this.thumbLabel.getElem().remove();
+    }
+    updateLabelValue(value) {
+        this.thumbLabel.setLabelText(String(value));
     }
 }
 
@@ -11284,29 +11414,32 @@ class View {
     constructor(parent, options) {
         this.parent = parent;
         this.options = options;
-        // private scaleIndent!: number;
         this.thumbs = [];
+        this.targetThumbIndex = 2;
         this.init(parent, options);
     }
     update(newOptions) {
         // если передано только values, то только поменять положение ползунков. в противном случае перерисовать весь слайдер
-        const { minValue, maxValue, values, isVertical, hasScale, hasRange, hasLabels, scaleDivisionsNumber, step, } = newOptions;
+        const { values } = newOptions;
         this.updateOptions(newOptions);
         const isOnlyValuesGot = (Object.keys(newOptions).length === 1)
             && (Object.prototype.hasOwnProperty.call(newOptions, 'values'));
         if (isOnlyValuesGot) {
             if (values !== undefined) {
-                this.updateThumbsPosition(this.options);
+                this.updateThumbsPosition();
+                this.updateThumbsLabels();
                 this.updateSelectBarPosition();
             }
         }
         else {
             // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
-            console.log('отрисовать слайдер полностью');
+            console.log('обновить весь слайдер');
             this.updateScale();
             this.setOrientation();
             this.setScaleIndent();
-            this.updateThumbsPosition(this.options);
+            this.setRange();
+            this.updateThumbsPosition();
+            this.updateThumbsLabels();
             this.updateSelectBarPosition();
         }
     }
@@ -11320,23 +11453,23 @@ class View {
         this.main = new Main();
         this.sliderElem = this.main.getElem();
         this.parent.append(this.main.getElem());
-        this.setScale(this.sliderElem, this.options);
-        this.setThumbs(options);
+        this.setScale(this.sliderElem);
+        this.setThumbs();
         this.setSelectBar();
         this.setOrientation();
         this.setScaleIndent();
-        // this.scaleIndent = this.calculateScaleIndent();
-        this.updateThumbsPosition(options);
+        this.updateThumbsPosition();
+        this.updateThumbsLabels();
         this.updateSelectBarPosition();
         this.bindListeners();
     }
-    setScale(slider, options) {
-        this.scale = new Scale(slider, options);
+    setScale(slider) {
+        this.scale = new Scale(slider, this.options);
         this.scale.set();
     }
     updateScale() {
         this.scale.getScaleElem().remove();
-        this.setScale(this.sliderElem, this.options);
+        this.setScale(this.sliderElem);
     }
     calculateScaleIndent() {
         let scaleIndent;
@@ -11354,20 +11487,25 @@ class View {
         }
         return scaleIndent;
     }
-    setThumbs(options) {
-        if (options.hasRange) {
-            options.values.forEach((value, i) => {
-                this.thumbs.push(new Thumb(this.sliderElem));
-            });
-            this.thumbs[0].getElem().classList.add('slider__handle_min');
-            this.thumbs[1].getElem().classList.add('slider__handle_max');
+    setThumbs() {
+        const { values, hasRange } = this.options;
+        values.forEach(() => {
+            this.thumbs.push(new Thumb(this.sliderElem));
+        });
+        this.thumbs[0].getElem().classList.add('slider__thumb_min');
+        this.thumbs[1].getElem().classList.add('slider__thumb_max');
+        this.thumbs[1].setThumb();
+        if (hasRange)
+            this.thumbs[0].setThumb();
+    }
+    setRange() {
+        const { hasRange } = this.options;
+        if (hasRange) {
+            this.thumbs[0].setThumb();
         }
         else {
-            this.thumbs.push(new Thumb(this.sliderElem));
+            this.thumbs[0].removeThumb();
         }
-        this.thumbs.forEach((thumb) => {
-            thumb.setThumb();
-        });
     }
     setOrientation() {
         if (this.options.isVertical) {
@@ -11377,10 +11515,13 @@ class View {
             this.main.getElem().classList.remove('slider_vertical');
         }
     }
-    updateThumbsPosition(options) {
+    updateThumbsPosition() {
         this.thumbs.forEach((thumb, i) => {
-            thumb.setPosition(options, i);
+            thumb.setPosition(this.options, i);
         });
+    }
+    updateThumbsLabels() {
+        this.thumbs.forEach((thumb, i) => thumb.updateLabel(this.options, i));
     }
     setSelectBar() {
         this.selectBar = new selectBar(this.sliderElem, this.options);
@@ -11395,23 +11536,39 @@ class View {
         this.selectBar.setPosition(this.options);
     }
     bindListeners() {
-        this.thumbs.forEach((thumb) => {
-            thumb.getElem().addEventListener('pointerdown', this.handlePointerDown);
-        });
+        this.sliderElem.addEventListener('pointerdown', this.handlePointerDown);
     }
     handlePointerDown(e) {
+        console.log('down');
         e.preventDefault();
         const target = e.target;
-        target.setPointerCapture(e.pointerId);
-        this.targetThumbIndex = (target.classList.contains('slider__handle_max')) ? 1 : 0;
-        e.target.addEventListener('pointerup', this.handlePointerUp); // .bind(this));
-        e.target.addEventListener('pointermove', this.handlePointerMove);
-        console.log('down');
+        const targetThumb = target === null || target === void 0 ? void 0 : target.closest('.slider__thumb');
+        const targetScale = target === null || target === void 0 ? void 0 : target.closest('.slider__scale');
+        const targetSelectBar = target === null || target === void 0 ? void 0 : target.closest('.slider__select-bar');
+        if (targetThumb) {
+            targetThumb.setPointerCapture(e.pointerId);
+            this.targetThumbIndex = (targetThumb.classList.contains('slider__thumb_max')) ? 1 : 0;
+            targetThumb.addEventListener('pointerup', this.handlePointerUp);
+            targetThumb.addEventListener('pointermove', this.handlePointerMove);
+        }
+        else if (targetScale || targetSelectBar) {
+            const closestThumbElem = this.getClosestThumbElem(e);
+            this.targetThumbIndex = (closestThumbElem.classList.contains('slider__thumb_max')) ? 1 : 0;
+            const value = this.calculateValue(e);
+            let values;
+            if (this.targetThumbIndex === 0) {
+                values = [value, this.options.values[1]];
+            }
+            else {
+                values = [this.options.values[0], value];
+            }
+            this.observer.emit({ values });
+        }
     }
     handlePointerUp(e) {
         e.target.removeEventListener('pointerup', this.handlePointerUp);
         e.target.removeEventListener('pointermove', this.handlePointerMove);
-        this.targetThumbIndex = undefined;
+        this.targetThumbIndex = 2;
         console.log('up');
     }
     handlePointerMove(e) {
@@ -11427,21 +11584,50 @@ class View {
         this.observer.emit({ values });
     }
     calculateValue(event) {
-        let value;
-        const { minValue, maxValue } = this.options;
+        const { minValue, maxValue, values, isVertical, step, } = this.options;
+        const currentValue = values[this.targetThumbIndex];
         const scaleDomRect = this.scale.getScaleElem().getBoundingClientRect();
         const scaleValuesRange = maxValue - minValue;
-        if (this.options.isVertical) {
-            const scaleCoordsRange = scaleDomRect.height;
-            const pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
-            value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+        let scaleCoordsRange;
+        let pointerMinScaleCoordsRange;
+        if (isVertical) {
+            scaleCoordsRange = scaleDomRect.height;
+            pointerMinScaleCoordsRange = scaleDomRect.bottom - event.clientY;
         }
         else {
-            const scaleCoordsRange = scaleDomRect.width;
-            const pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
-            value = Math.round(scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+            scaleCoordsRange = scaleDomRect.width;
+            pointerMinScaleCoordsRange = event.clientX - scaleDomRect.left;
         }
-        return value;
+        const pointerValue = (scaleValuesRange * (pointerMinScaleCoordsRange / scaleCoordsRange) + minValue);
+        const delta = Math.round((pointerValue - currentValue) / step) * step;
+        const calculatedValue = currentValue + delta;
+        return calculatedValue;
+    }
+    getClosestThumbElem(evt) {
+        const { isVertical, hasRange } = this.options;
+        const [thumbMin, thumbMax] = this.thumbs;
+        let closestThumb;
+        if (!hasRange)
+            return this.thumbs[1].getElem();
+        const thumbMinDomRect = thumbMin.getElem().getBoundingClientRect();
+        const thumbMaxDomRect = thumbMax.getElem().getBoundingClientRect();
+        if (isVertical) {
+            const pointerYCoord = evt.clientY;
+            const thumbMinYCoord = thumbMinDomRect.top + thumbMinDomRect.height / 2;
+            const thumbMaxYCoord = thumbMaxDomRect.top + thumbMaxDomRect.height / 2;
+            const pointerThumbMinRange = Math.abs(pointerYCoord - thumbMinYCoord);
+            const pointerThumbMaxRange = Math.abs(pointerYCoord - thumbMaxYCoord);
+            closestThumb = (pointerThumbMinRange < pointerThumbMaxRange) ? thumbMin : thumbMax;
+        }
+        else {
+            const pointerXCoord = evt.clientX;
+            const thumbMinXCoord = thumbMinDomRect.left + thumbMinDomRect.width / 2;
+            const thumbMaxXCoord = thumbMaxDomRect.left + thumbMaxDomRect.width / 2;
+            const pointerThumbMinRange = Math.abs(pointerXCoord - thumbMinXCoord);
+            const pointerThumbMaxRange = Math.abs(pointerXCoord - thumbMaxXCoord);
+            closestThumb = (pointerThumbMinRange < pointerThumbMaxRange) ? thumbMin : thumbMax;
+        }
+        return closestThumb.getElem();
     }
 }
 __decorate([
@@ -11472,7 +11658,7 @@ class Presenter {
     }
     init(parent, model) {
         this.model = model;
-        this.view = new View(parent, model.getData());
+        this.view = new View(parent, model.getOptions());
         this.subscribeToView(this.updateModel);
         this.subscribeToModel(this.updateView);
     }
@@ -11508,7 +11694,6 @@ class Facade {
         this.presenter = new Presenter(parent, this.model);
     }
 }
-// console.log(parent);
 
 ;// CONCATENATED MODULE: ./index.ts
 /* provided dependency */ var jQuery = __webpack_require__(638);
@@ -11541,12 +11726,12 @@ class Facade {
             },
             getOptions() {
                 if (this.length === 1) {
-                    const options = $(this.get(0)).data('facade').presenter.model.getData();
+                    const options = $(this.get(0)).data('facade').presenter.model.getOptions();
                     return options;
                 }
                 const optionsArray = this
                     .each((i, sliderElem) => {
-                    optionsArray.push($(sliderElem).data('facade').presenter.model.getData());
+                    optionsArray.push($(sliderElem).data('facade').presenter.model.getOptions());
                 });
                 return optionsArray;
             },
@@ -11568,7 +11753,7 @@ class Facade {
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ __webpack_require__.O(0, [982], () => (__webpack_exec__(282)));
+/******/ __webpack_require__.O(0, [982], () => (__webpack_exec__(730)));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
