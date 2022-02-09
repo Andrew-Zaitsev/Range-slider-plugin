@@ -10946,6 +10946,7 @@ class ControlPanel {
     constructor(parentElem, demoSliderElem) {
         this.parentElem = parentElem;
         this.demoSliderElem = demoSliderElem;
+        this.controlPanel = document.createElement('div');
         this.showRangeInput = document.createElement('input');
         this.showScaleInput = document.createElement('input');
         this.showLabelsInput = document.createElement('input');
@@ -11002,6 +11003,8 @@ class ControlPanel {
         return this.$demoSliderElem.rangeSlider('getOptions');
     }
     init() {
+        this.controlPanel.classList.add('contrpl-panel');
+        this.parentElem.prepend(this.controlPanel);
         this.minValueInput = this.createField('min value');
         this.maxValueInput = this.createField('max value');
         this.valueFromInput = this.createField('value From');
@@ -11026,8 +11029,9 @@ class ControlPanel {
         inputElem.classList.add('control-panel__input');
         inputElem.setAttribute('type', inputElemType);
         inputElem.value = (inputElemType === 'number') ? '0' : '';
+        inputElem.name = titleElemText;
         fieldElem.append(titleElem, inputElem);
-        this.parentElem.append(fieldElem);
+        this.controlPanel.append(fieldElem);
         return inputElem;
     }
     subscribeToSlider(fn) {
@@ -11066,16 +11070,43 @@ class ControlPanel {
         this.stepInput.value = String(value);
     }
     bindEvents() {
-        this.valueFromInput.addEventListener('change', this.handleValueInputChange);
-        this.valueToInput.addEventListener('change', this.handleValueInputChange);
-        this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
-        this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
-        this.directionInput.addEventListener('change', this.handleDirectionInputChange);
-        this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
-        this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
-        this.showLabelsInput.addEventListener('change', this.handleShowLabelsInputChange);
-        this.scaleDivisionsNumberInput.addEventListener('change', this.handleScaleDivisionsNumberInputChange);
-        this.stepInput.addEventListener('change', this.handleStepInputChange);
+        this.controlPanel.addEventListener('change', this.handleControlPanelChange);
+    }
+    handleControlPanelChange(e) {
+        const target = e === null || e === void 0 ? void 0 : e.target;
+        const inputName = target.name;
+        switch (true) {
+            case (inputName === 'min value'):
+                this.handleMinValueInputChange();
+                break;
+            case (inputName === 'max value'):
+                this.handleMaxValueInputChange();
+                break;
+            case (inputName === 'value From'):
+            case (inputName === 'value To'):
+                this.handleValueInputChange();
+                break;
+            case (inputName === 'is vertical'):
+                this.handleDirectionInputChange();
+                break;
+            case (inputName === 'show range'):
+                this.handleShowRangeInputChange();
+                break;
+            case (inputName === 'show scale'):
+                this.handleShowScaleInputChange();
+                break;
+            case (inputName === 'show labels'):
+                this.handleShowLabelsInputChange();
+                break;
+            case (inputName === 'scale divisions number'):
+                this.handleScaleDivisionsNumberInputChange();
+                break;
+            case (inputName === 'step value'):
+                this.handleStepInputChange();
+                break;
+            default:
+                break;
+        }
     }
     handleValueInputChange() {
         const newValues = [
@@ -11125,6 +11156,9 @@ __decorate([
 ], ControlPanel.prototype, "updateControlPanel", null);
 __decorate([
     bind_decorator/* default */.ZP
+], ControlPanel.prototype, "handleControlPanelChange", null);
+__decorate([
+    bind_decorator/* default */.ZP
 ], ControlPanel.prototype, "handleValueInputChange", null);
 __decorate([
     bind_decorator/* default */.ZP
@@ -11158,9 +11192,8 @@ __decorate([
 const demoSliderConfigs = [
     {
         minValue: 10,
-        maxValue: 13,
-        values: [15.5, 60],
-        hasLabels: false,
+        maxValue: 20,
+        values: [15.5, 17],
         isVertical: false,
         scaleDivisionsNumber: 6,
         step: 1,
@@ -11208,15 +11241,13 @@ class DemoSliderInit {
 }
 demoSliderConfigs.forEach((config) => new DemoSliderInit(config));
 // пример изменения слайдера через API
+/*
 setTimeout(() => {
-    console.log('-------------------------------- \n changed using API');
-    demo_$('.js-demo__slider:eq(0)').rangeSlider('update', { hasLabels: true }); //
-    // setTimeout(() => {
-    // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
-    // }, 2000);
-    // $('.js-demo__slider:eq(2)').rangeSlider('update', { hasRange: true, values: [8, 12] });
-    console.log('--------------------------------');
+  console.log('-------------------------------- \n changed using API');
+    $('.js-demo__slider:eq(0)').rangeSlider('update', { hasLabels: true });
+  console.log('--------------------------------');
 }, 2000);
+*/
 
 
 /***/ })
