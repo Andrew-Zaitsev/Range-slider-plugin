@@ -4,6 +4,8 @@ import { defaultOptions, userOptions } from '../facade/model/optionsTypes';
 import { ObserverCallback } from '../facade/observer/observer';
 
 export default class ControlPanel {
+  private controlPanel: HTMLElement = document.createElement('div');
+
   private minValueInput!: HTMLInputElement;
 
   private maxValueInput!: HTMLInputElement;
@@ -97,6 +99,9 @@ export default class ControlPanel {
   }
 
   private init(): void {
+    this.controlPanel.classList.add('contrpl-panel');
+    this.parentElem.prepend(this.controlPanel);
+
     this.minValueInput = this.createField('min value');
     this.maxValueInput = this.createField('max value');
     this.valueFromInput = this.createField('value From');
@@ -125,9 +130,10 @@ export default class ControlPanel {
     inputElem.classList.add('control-panel__input');
     inputElem.setAttribute('type', inputElemType);
     inputElem.value = (inputElemType === 'number') ? '0' : '';
+    inputElem.name = titleElemText;
 
     fieldElem.append(titleElem, inputElem);
-    this.parentElem.append(fieldElem);
+    this.controlPanel.append(fieldElem);
 
     return inputElem;
   }
@@ -179,16 +185,46 @@ export default class ControlPanel {
   }
 
   private bindEvents(): void {
-    this.valueFromInput.addEventListener('change', this.handleValueInputChange);
-    this.valueToInput.addEventListener('change', this.handleValueInputChange);
-    this.minValueInput.addEventListener('change', this.handleMinValueInputChange);
-    this.maxValueInput.addEventListener('change', this.handleMaxValueInputChange);
-    this.directionInput.addEventListener('change', this.handleDirectionInputChange);
-    this.showScaleInput.addEventListener('change', this.handleShowScaleInputChange);
-    this.showRangeInput.addEventListener('change', this.handleShowRangeInputChange);
-    this.showLabelsInput.addEventListener('change', this.handleShowLabelsInputChange);
-    this.scaleDivisionsNumberInput.addEventListener('change', this.handleScaleDivisionsNumberInputChange);
-    this.stepInput.addEventListener('change', this.handleStepInputChange);
+    this.controlPanel.addEventListener('change', this.handleControlPanelChange);
+  }
+
+  @bind
+  private handleControlPanelChange(e: Event): void {
+    const target: HTMLInputElement = e?.target as HTMLInputElement;
+    const inputName: string = target.name;
+
+    switch (true) {
+      case (inputName === 'min value'):
+        this.handleMinValueInputChange();
+        break;
+      case (inputName === 'max value'):
+        this.handleMaxValueInputChange();
+        break;
+      case (inputName === 'value From'):
+      case (inputName === 'value To'):
+        this.handleValueInputChange();
+        break;
+      case (inputName === 'is vertical'):
+        this.handleDirectionInputChange();
+        break;
+      case (inputName === 'show range'):
+        this.handleShowRangeInputChange();
+        break;
+      case (inputName === 'show scale'):
+        this.handleShowScaleInputChange();
+        break;
+      case (inputName === 'show labels'):
+        this.handleShowLabelsInputChange();
+        break;
+      case (inputName === 'scale divisions number'):
+        this.handleScaleDivisionsNumberInputChange();
+        break;
+      case (inputName === 'step value'):
+        this.handleStepInputChange();
+        break;
+      default:
+        break;
+    }
   }
 
   @bind
