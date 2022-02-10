@@ -4,8 +4,6 @@ import { userOptions } from '../model/optionsTypes';
 import View from '../view/view';
 
 export default class Presenter {
-  // private parent: HTMLElement;
-
   private model!: Model;
 
   private view!: View;
@@ -16,6 +14,18 @@ export default class Presenter {
 
   public subscribeToModel(fn: (options: userOptions) => void) {
     this.model.observer.subscribe(fn);
+  }
+
+  public disableSlider(): void {
+    this.view.disableView();
+  }
+
+  public enableSlider(): void {
+    this.view.enableView();
+  }
+
+  public deleteSlider(): void {
+    this.view.deleteView();
   }
 
   private init(parent: HTMLElement, model: Model) {

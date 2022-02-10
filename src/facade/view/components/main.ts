@@ -13,4 +13,12 @@ export default class Main {
   public getElem() {
     return this.sliderElem;
   }
+
+  public makeUnselectable(): void {
+    this.sliderElem.classList.add('slider_unselectable');
+  }
+
+  public makeSelectable(): void {
+    this.sliderElem.classList.remove('slider_unselectable');
+  }
 }

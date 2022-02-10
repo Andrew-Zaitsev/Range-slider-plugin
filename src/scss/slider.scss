@@ -4,6 +4,10 @@
   position: relative;
   height: 70px;
 
+  &_unselectable {
+    user-select: none;
+  }
+
   &__scale {
     justify-content: space-between;
     width: calc(100% - 70px);

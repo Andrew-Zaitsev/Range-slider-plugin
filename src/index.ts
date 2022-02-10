@@ -11,11 +11,13 @@ import { ObserverCallback } from './facade/observer/observer';
         return this
           .each((index: number, elem: HTMLElement) => $(elem).data('facade', new Facade(elem, initOptions as userOptions)));
       },
-      show() {
-        //
+      disable(): JQuery<HTMLElement> {
+        return this
+          .each((index: number, elem: HTMLElement) => $(elem).data('facade').presenter.disableSlider());
       },
-      hide() {
-        //
+      enable(): JQuery<HTMLElement> {
+        return this
+          .each((index: number, elem: HTMLElement) => $(elem).data('facade').presenter.enableSlider());
       },
       update(updateOptions: userOptions): JQuery<HTMLElement> {
         return this
@@ -25,7 +27,12 @@ import { ObserverCallback } from './facade/observer/observer';
         return this
           .each((index: number, elem: HTMLElement) => $(elem).data('facade').presenter.subscribeToModel(fn));
       },
-      delete() {
+      delete(): JQuery<HTMLElement> {
+        return this
+          .each((index: number, elem: HTMLElement) => {
+            $(elem).data('facade').presenter.deleteSlider();
+            $(elem).removeData('facade');
+          });
         //
       },
       getOptions(): defaultOptions|defaultOptions[] {

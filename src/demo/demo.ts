@@ -1,14 +1,12 @@
 import './demo.scss';
 import type { userOptions } from '../facade/model/optionsTypes';
-import Facade from '../facade/facade';
 import ControlPanel from '../control-panel/control-panel';
 
 const demoSliderConfigs: userOptions[] = [
   {
     minValue: 10,
-    maxValue: 13,
-    values: [15.5, 60],
-    hasLabels: false,
+    maxValue: 20,
+    values: [15.5, 17],
     isVertical: false,
     scaleDivisionsNumber: 6,
     step: 1,
@@ -60,19 +58,23 @@ class DemoSliderInit {
     this.demoSliderSection.append(this.demoSliderWrapperForControlPanel);
     this.demo.append(this.demoSliderSection);
 
-    const facade: Facade = $(this.demoSlider).rangeSlider(options).data('facade');
+    $(this.demoSlider).rangeSlider(options);
     const controlPanel = new ControlPanel(this.demoSliderControlPanel, this.demoSlider);
   }
 }
 demoSliderConfigs.forEach((config: userOptions) => new DemoSliderInit(config));
 
 // пример изменения слайдера через API
+
+/*
 setTimeout(() => {
   console.log('-------------------------------- \n changed using API');
-  $('.js-demo__slider:eq(0)').rangeSlider('update', { hasLabels: true }); //
-  // setTimeout(() => {
-  // $('.js-demo__slider:eq(0)').rangeSlider('update', { isVertical: true, hasScale: true }); //
-  // }, 2000);
-  // $('.js-demo__slider:eq(2)').rangeSlider('update', { hasRange: true, values: [8, 12] });
+
+  $('.js-demo__slider:eq(0)').rangeSlider('disable');
+  setTimeout(() => {
+    // $('.js-demo__slider:eq(0)').rangeSlider('delete');
+  }, 2000);
+
   console.log('--------------------------------');
-}, 2000);
+}, 4000);
+*/

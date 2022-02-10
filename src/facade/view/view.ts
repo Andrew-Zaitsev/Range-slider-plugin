@@ -45,8 +45,6 @@ export default class View {
       }
     } else {
       // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
-      console.log('обновить весь слайдер');
-
       this.updateScale();
       this.setOrientation();
       this.setScaleIndent();
@@ -62,6 +60,20 @@ export default class View {
       ...this.options,
       ...newOptions,
     };
+  }
+
+  public disableView(): void {
+    this.unbindListeners();
+    this.main.makeUnselectable();
+  }
+
+  public enableView(): void {
+    this.bindListeners();
+    this.main.makeSelectable();
+  }
+
+  public deleteView(): void { // ***
+    this.main.getElem().remove();
   }
 
   private init(parent: HTMLElement, options: defaultOptions) {
@@ -174,9 +186,12 @@ export default class View {
     this.sliderElem.addEventListener('pointerdown', this.handlePointerDown);
   }
 
+  private unbindListeners() {
+    this.sliderElem.removeEventListener('pointerdown', this.handlePointerDown);
+  }
+
   @bind // this = View
   private handlePointerDown(e: PointerEvent): void {
-    console.log('down');
     e.preventDefault();
 
     const target: HTMLElement = e.target as HTMLElement;
@@ -211,12 +226,10 @@ export default class View {
     (e.target as HTMLElement).removeEventListener('pointerup', this.handlePointerUp);
     (e.target as HTMLElement).removeEventListener('pointermove', this.handlePointerMove);
     this.targetThumbIndex = 2;
-    console.log('up');
   }
 
   @bind // this = View
   private handlePointerMove(e: PointerEvent): void {
-    console.log('start - move');
     const value: number = this.calculateValue(e);
     let values: [number, number];
 
