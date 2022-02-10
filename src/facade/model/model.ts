@@ -4,9 +4,9 @@ import validators from './validators';
 
 export default class Model {
   static readonly defaultOptions: defaultOptions = {
-    minValue: 10,
-    maxValue: 70,
-    values: [15, 20],
+    minValue: 0,
+    maxValue: 100,
+    values: [20, 80],
     isVertical: false,
     hasScale: true,
     hasRange: true,
