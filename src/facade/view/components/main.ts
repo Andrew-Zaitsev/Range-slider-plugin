@@ -5,12 +5,7 @@ export default class Main {
     this.init();
   }
 
-  private init() {
-    this.sliderElem = document.createElement('div');
-    this.sliderElem.classList.add('slider');
-  }
-
-  public getElem() {
+  public getElem(): HTMLElement {
     return this.sliderElem;
   }
 
@@ -20,5 +15,10 @@ export default class Main {
 
   public makeSelectable(): void {
     this.sliderElem.classList.remove('slider_unselectable');
+  }
+
+  private init(): void {
+    this.sliderElem = document.createElement('div');
+    this.sliderElem.classList.add('slider');
   }
 }

@@ -1,24 +1,18 @@
 import { defaultOptions } from '../../model/optionsTypes';
 
 export default class ScaleLabel {
-  private parentElem!: HTMLElement;
-
   private scaleLabelElem!: HTMLElement;
 
   private scalePinElem!: HTMLElement;
 
   private scaleTextElem!: HTMLElement;
 
-  constructor(parent: HTMLElement) {
-    this.init(parent);
+  constructor() {
+    this.init();
   }
 
   public getElem(): HTMLElement {
     return this.scaleLabelElem;
-  }
-
-  public getTextElem(): HTMLElement {
-    return this.scaleTextElem;
   }
 
   public setPosition(options: defaultOptions, value: number): void {
@@ -44,9 +38,7 @@ export default class ScaleLabel {
     this.getTextElem().textContent = text;
   }
 
-  private init(parent: HTMLElement): void {
-    this.parentElem = parent;
-
+  private init(): void {
     this.scaleLabelElem = document.createElement('div');
     this.scaleLabelElem.classList.add('slider__scale-label');
 
@@ -57,5 +49,9 @@ export default class ScaleLabel {
     this.scaleTextElem.classList.add('slider__scale-text');
 
     this.scaleLabelElem.append(this.scaleTextElem, this.scalePinElem);
+  }
+
+  private getTextElem(): HTMLElement {
+    return this.scaleTextElem;
   }
 }

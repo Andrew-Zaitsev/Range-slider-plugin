@@ -34,7 +34,7 @@ export default class Model {
     return this.sliderOptions;
   }
 
-  private init(newOpts: userOptions) {
+  private init(newOpts: userOptions): void {
     this.observer = new Observer();
     this.updateOptions(Model.defaultOptions, validators.getValidatedOptions(this.sliderOptions, newOpts));
   }
@@ -43,7 +43,7 @@ export default class Model {
     this.sliderOptions = { ...currentOptions, ...validatedOptions };
   }
 
-  private emitUpdates(newOptions: userOptions) {
+  private emitUpdates(newOptions: userOptions): void {
     this.observer.emit(newOptions);
   }
 }

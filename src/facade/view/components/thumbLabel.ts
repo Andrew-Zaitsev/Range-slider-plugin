@@ -5,11 +5,6 @@ export default class ThumbLabel {
     this.init();
   }
 
-  private init(): void {
-    this.thumbLabelElem = document.createElement('div');
-    this.thumbLabelElem.classList.add('slider__thumb-label');
-  }
-
   public getElem(): HTMLElement {
     return this.thumbLabelElem;
   }
@@ -18,11 +13,12 @@ export default class ThumbLabel {
     this.parent.prepend(this.thumbLabelElem);
   }
 
-  public setLabelText(text: string) {
+  public setLabelText(text: string): void {
     this.getElem().textContent = text;
   }
 
-  public removeThumb(): void {
-    this.getElem().remove();
+  private init(): void {
+    this.thumbLabelElem = document.createElement('div');
+    this.thumbLabelElem.classList.add('slider__thumb-label');
   }
 }

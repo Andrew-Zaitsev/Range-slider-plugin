@@ -219,3 +219,11 @@
   $('.js-slider').slider('delete');
 
   ```
+## Slider UML diagram
+
+```
+```
+<img src="src/assets/slider-uml-diagram.png">
+
+```
+```

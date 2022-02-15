@@ -55,13 +55,6 @@ export default class View {
     }
   }
 
-  public updateOptions(newOptions: userOptions): void {
-    this.options = {
-      ...this.options,
-      ...newOptions,
-    };
-  }
-
   public disableView(): void {
     this.unbindListeners();
     this.main.makeUnselectable();
@@ -84,7 +77,7 @@ export default class View {
     this.sliderElem = this.main.getElem();
     this.parent.append(this.main.getElem());
 
-    this.setScale(this.sliderElem);
+    this.setScale();
     this.setThumbs();
     this.setSelectBar();
     this.setOrientation();
@@ -97,14 +90,21 @@ export default class View {
     this.bindListeners();
   }
 
-  private setScale(slider: HTMLElement): void {
-    this.scale = new Scale(slider, this.options);
+  private updateOptions(newOptions: userOptions): void {
+    this.options = {
+      ...this.options,
+      ...newOptions,
+    };
+  }
+
+  private setScale(): void {
+    this.scale = new Scale(this.sliderElem, this.options);
     this.scale.set();
   }
 
   private updateScale() {
     this.scale.getScaleElem().remove();
-    this.setScale(this.sliderElem);
+    this.setScale();
   }
 
   private calculateScaleIndent(): number {
@@ -167,7 +167,7 @@ export default class View {
   }
 
   private setSelectBar(): void {
-    this.selectBar = new SelectBar(this.sliderElem, this.options);
+    this.selectBar = new SelectBar(this.sliderElem);
     this.selectBar.set();
   }
 
@@ -182,11 +182,11 @@ export default class View {
     this.selectBar.setPosition(this.options);
   }
 
-  private bindListeners() {
+  private bindListeners(): void {
     this.sliderElem.addEventListener('pointerdown', this.handlePointerDown);
   }
 
-  private unbindListeners() {
+  private unbindListeners(): void {
     this.sliderElem.removeEventListener('pointerdown', this.handlePointerDown);
   }
 

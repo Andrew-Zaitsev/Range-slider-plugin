@@ -1,6 +1,7 @@
 import bind from 'bind-decorator';
 import Model from '../model/model';
 import { userOptions } from '../model/optionsTypes';
+import { ObserverCallback } from '../observer/observer';
 import View from '../view/view';
 
 export default class Presenter {
@@ -12,7 +13,7 @@ export default class Presenter {
     this.init(parent, sliderModel);
   }
 
-  public subscribeToModel(fn: (options: userOptions) => void) {
+  public subscribeToModel(fn: ObserverCallback) {
     this.model.observer.subscribe(fn);
   }
 
@@ -36,7 +37,7 @@ export default class Presenter {
     this.subscribeToModel(this.updateView);
   }
 
-  private subscribeToView(fn: (options: userOptions) => void) {
+  private subscribeToView(fn: ObserverCallback): void {
     this.view.observer.subscribe(fn);
   }
 

@@ -5,16 +5,8 @@ export default class selectBar {
 
   private scaleIndent!: number;
 
-  constructor(
-    private parent: HTMLElement,
-    private options: defaultOptions,
-  ) {
+  constructor(private parent: HTMLElement) {
     this.init();
-  }
-
-  private init(): void {
-    this.selectBarElem = document.createElement('div');
-    this.selectBarElem.classList.add('slider__select-bar');
   }
 
   public set():void {
@@ -52,5 +44,10 @@ export default class selectBar {
       this.selectBarElem.style.top = '';
       this.selectBarElem.style.height = '';
     }
+  }
+
+  private init(): void {
+    this.selectBarElem = document.createElement('div');
+    this.selectBarElem.classList.add('slider__select-bar');
   }
 }

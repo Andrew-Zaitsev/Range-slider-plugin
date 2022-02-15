@@ -52,7 +52,7 @@ export default class Scale {
     if (residualSegmentValue !== undefined) segmentsValuesSequence.push(residualSegmentValue);
 
     for (let i = 0, labelValue: number = minValue; i < labelsNumber; i += 1) {
-      const label = new ScaleLabel(this.scaleElem);
+      const label = new ScaleLabel();
       label.setPosition(this.options, labelValue);
       label.setLabelText(labelValue.toString());
       this.scaleLabels.push(label);

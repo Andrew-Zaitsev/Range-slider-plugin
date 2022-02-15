@@ -12,14 +12,6 @@ export default class Thumb {
     this.init();
   }
 
-  private init(): void {
-    this.thumbElem = document.createElement('div');
-    this.thumbElem.classList.add('slider__thumb');
-
-    this.thumbLabel = new ThumbLabel(this.getElem());
-    this.setLabel();
-  }
-
   public setLabel(): void {
     this.thumbElem.append(this.thumbLabel.getElem());
   }
@@ -74,6 +66,14 @@ export default class Thumb {
       this.thumbElem.style.left = `calc(${scaleCssLength} * ${thumbScaleRate} + ${this.scaleIndent}px)`;
       this.thumbElem.style.top = 'auto';
     }
+  }
+
+  private init(): void {
+    this.thumbElem = document.createElement('div');
+    this.thumbElem.classList.add('slider__thumb');
+
+    this.thumbLabel = new ThumbLabel(this.getElem());
+    this.setLabel();
   }
 
   private hasLabel(): boolean {
