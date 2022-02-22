@@ -1,30 +1,25 @@
-//first.test.js
-
 import '../../../src/index'
 import Facade from '../../../src/facade/facade'
-import { userOptions } from '../../../src/facade/model/optionsTypes';
+import Model from '../../../src/facade/model/model';
+// import { defaultOptions, userOptions } from '../../../src/facade/model/optionsTypes';
+// import { ObserverCallback } from '../../../src/facade/observer/observer';
 
 
 describe('test class Facade', () => {
-  it('instance if Facade shoud be created', () => {
-    beforeAll
-      const parentElem: HTMLElement = document.createElement('div')
-      const options: userOptions = {
-        minValue: 0,
-        maxValue: 100,
-        values: [20, 80],
-        isVertical: false,
-        hasScale: true,
-        hasRange: true,
-        hasLabels: true,
-        scaleDivisionsNumber: 4,
-        step: 1,
-      };
-      
-    // const sliderElem = document.createElement('span')
-    const facade = new Facade(parentElem, options);
-    console.log(Facade, 'hello', '\n', facade)
-    expect(Math.max(1, 5, 10)).toBe(10)
+  const parentElem: HTMLElement = document.createElement('div')
+  const facade = new Facade(parentElem, {});
+
+  it('Facade should be a function', () => {
+    expect(Facade instanceof Function).toBe(true);
   });
+  
+  describe('test getOptions()', () => {
+    it('returned value should be defined', () => {
+      expect(facade.getOptions()).toBeDefined();
+    });
+    it('should return model options', () => {
+      expect(facade.getOptions()).toEqual(Model.defaultOptions);
+    });
+  })
   
 });

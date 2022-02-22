@@ -1,4 +1,4 @@
-import { userOptions } from './model/optionsTypes';
+import { defaultOptions, userOptions } from './model/optionsTypes';
 import Model from './model/model';
 import Presenter from './presenter/presenter';
 import type { ObserverCallback } from './observer/observer';
@@ -14,6 +14,10 @@ export default class Facade {
 
   public subscribeToModel(fn: ObserverCallback): void {
     this.presenter.subscribeToModel(fn);
+  }
+
+  public getOptions(): defaultOptions {
+    return this.model.getOptions();
   }
 
   private init(parent: HTMLElement, userData: userOptions): void {
