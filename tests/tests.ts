@@ -2,4 +2,4 @@
 // components.keys().forEach(components);
 
 const tests = require.context('./src/facade/', true, /\.spec.ts$/);
- tests.keys().forEach(tests);
+tests.keys().forEach(tests);
