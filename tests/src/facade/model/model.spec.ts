@@ -17,6 +17,7 @@ describe('test class Model', () => {
     it('should return an object', () => {
       expect(modelOptions instanceof Object).toBe(true);
     });
+
     it('should return model options', () => {
       expect(modelOptions).toEqual(Model.defaultOptions);
     });
@@ -26,6 +27,7 @@ describe('test class Model', () => {
     it('update method should be defined', () => {
       expect(model.update).toBeDefined();
     });
+
     const modelOptions: defaultOptions = model.getOptions();
     const newOptions: userOptions = { isVertical: true };
     model.update(newOptions);
@@ -41,13 +43,16 @@ describe('test class Model', () => {
       scaleDivisionsNumber: 4,
       step: 1,
     };
+
     it('model options should be changed', () => {
-      expect(modelOptions).not.toEqual(updatedOptions);
+      expect(updatedOptions).not.toEqual(modelOptions);
     });
+
     it('should correctly update model options', () => {
       expect(updatedOptions.isVertical).toBe(true);
       expect(updatedOptions).toEqual(correctOptions);
     });
+
     it('should emit updates', () => {
       spyOn(model.observer, 'emit');
       model.update({ values: [10, 90] });

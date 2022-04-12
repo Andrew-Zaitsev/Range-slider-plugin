@@ -13,6 +13,7 @@ describe('test class Facade', () => {
     it('returned value should be defined', () => {
       expect(facade.getOptions()).toBeDefined();
     });
+
     it('should return model options', () => {
       expect(facade.getOptions()).toEqual(Model.defaultOptions);
     });
