@@ -2,9 +2,6 @@ import { defaultOptions } from '../../../../src/facade/model/optionsTypes';
 import View from '../../../../src/facade/view/view';
 
 describe('test class View', () => {
-  setFixtures('<div class="parent"></div>');
-
-  const parent: HTMLElement = document.querySelector('.parent') || document.createElement('div');
   const options: defaultOptions = {
     minValue: 0,
     maxValue: 100,
@@ -16,11 +13,22 @@ describe('test class View', () => {
     scaleDivisionsNumber: 4,
     step: 1,
   };
-  const view = new View(parent, options);
-  const sliderElem: HTMLElement | null = parent.querySelector('.slider');
-  const thumbMinElem: HTMLElement | null = parent.querySelector('.slider__thumb.slider__thumb_min');
-  const scaleElem: HTMLElement | null = parent.querySelector('.slider__scale');
-  const selectBarElem: HTMLElement | null = parent.querySelector('.slider__select-bar');
+  let parent: HTMLElement;
+  let view: View;
+  let sliderElem: HTMLElement | null;
+  let thumbMinElem: HTMLElement | null;
+  let scaleElem: HTMLElement | null;
+  let selectBarElem: HTMLElement | null;
+
+  function createView(): void {
+    parent = document.querySelector('.parent') || document.createElement('div');
+    view = new View(parent, options);
+    sliderElem = parent.querySelector('.slider');
+    thumbMinElem = parent.querySelector('.slider__thumb.slider__thumb_min');
+    scaleElem = parent.querySelector('.slider__scale');
+    selectBarElem = parent.querySelector('.slider__select-bar');
+  }
+
   const pointerDownEvent = new PointerEvent('pointerdown', { bubbles: true });
   const pointerMoveEvent = new PointerEvent('pointerdown', { bubbles: true });
   const pointerUpEvent = new PointerEvent('pointerup', { bubbles: true });
@@ -30,6 +38,9 @@ describe('test class View', () => {
   });
 
   describe('test View constructor', () => {
+    setFixtures('<div class="parent"></div>');
+    createView();
+
     it('constructor should add required HTML elements to parent element', () => {
       expect(sliderElem && thumbMinElem && scaleElem && selectBarElem).not.toBe(null);
     });
@@ -81,23 +92,20 @@ describe('test class View', () => {
 
   describe('test public methods', () => {
     xdescribe('test update method', () => {
-      it('test 1', () => { expect(false).toBe(true); });
-      it('test 2', () => { expect(false).toBe(true); });
-      it('test 3', () => { expect(false).toBe(true); });
-      it('test 4', () => { expect(false).toBe(true); });
+      it('test orientation changing', () => { expect(false).toBe(true); });
+      it('test values/thumb-labels text changing', () => { expect(false).toBe(true); });
+      it('test min max scale-label text changing', () => { expect(false).toBe(true); });
+      it('test changing range, scale, labels existance', () => { expect(false).toBe(true); });
+      it('test step value changing)', () => { expect(false).toBe(true); });
     });
 
     describe('test disableView method', () => {
-      // public disableView(): void {
-      // this.unbindListeners();
-      // this.main.makeUnselectable();
-      // }
+      setFixtures('<div class="parent"></div>');
+
       beforeAll(() => {
+        createView();
         spyOn(view.observer, 'emit');
         view.disableView();
-      });
-      afterAll(() => {
-        view.enableView();
       });
 
       it('should unbind listeners', () => {
@@ -110,23 +118,38 @@ describe('test class View', () => {
         expect(sliderElem).toHaveClass('slider_unselectable');
       });
     });
-    xdescribe('test enableView method', () => {
-      it('test 1', () => { expect(false).toBe(true); });
-      it('test 2', () => { expect(false).toBe(true); });
-      it('test 3', () => { expect(false).toBe(true); });
-      it('test 4', () => { expect(false).toBe(true); });
+
+    describe('test enableView method', () => {
+      setFixtures('<div class="parent"></div>');
+
+      beforeAll(() => {
+        createView();
+        spyOn(view.observer, 'emit');
+        view.disableView(); // already tested
+        view.enableView();
+      });
+
+      it('should bind listeners', () => {
+        scaleElem?.dispatchEvent(pointerDownEvent);
+        selectBarElem?.dispatchEvent(pointerDownEvent);
+
+        expect(view.observer.emit).toHaveBeenCalledTimes(2);
+      });
+
+      it('should remove slider_unselectable class to slider element', () => {
+        expect(sliderElem).not.toHaveClass('slider_unselectable');
+      });
     });
-    xdescribe('test deleteView method method', () => {
-      it('test 1', () => { expect(false).toBe(true); });
-      it('test 2', () => { expect(false).toBe(true); });
-      it('test 3', () => { expect(false).toBe(true); });
-      it('test 4', () => { expect(false).toBe(true); });
-    });
-    xdescribe('test ******* method', () => {
-      it('test 1', () => { expect(false).toBe(true); });
-      it('test 2', () => { expect(false).toBe(true); });
-      it('test 3', () => { expect(false).toBe(true); });
-      it('test 4', () => { expect(false).toBe(true); });
+
+    describe('test deleteView method method', () => {
+      setFixtures('<div class="parent"></div>');
+      createView();
+
+      it('parent should get rid of slider element', () => {
+        view.deleteView();
+
+        expect(parent.contains(sliderElem)).toBeFalse();
+      });
     });
   });
 });
