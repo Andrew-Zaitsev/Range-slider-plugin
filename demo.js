@@ -11235,7 +11235,7 @@ class DemoSliderInit {
         this.demoSliderSection.append(this.demoSliderWrapper);
         this.demoSliderSection.append(this.demoSliderWrapperForControlPanel);
         this.demo.append(this.demoSliderSection);
-        const facade = demo_$(this.demoSlider).rangeSlider(options).data('facade');
+        demo_$(this.demoSlider).rangeSlider(options);
         const controlPanel = new ControlPanel(this.demoSliderControlPanel, this.demoSlider);
     }
 }
@@ -11244,9 +11244,14 @@ demoSliderConfigs.forEach((config) => new DemoSliderInit(config));
 /*
 setTimeout(() => {
   console.log('-------------------------------- \n changed using API');
-    $('.js-demo__slider:eq(0)').rangeSlider('update', { hasLabels: true });
+
+  $('.js-demo__slider:eq(0)').rangeSlider('disable');
+  setTimeout(() => {
+    // $('.js-demo__slider:eq(0)').rangeSlider('delete');
+  }, 2000);
+
   console.log('--------------------------------');
-}, 2000);
+}, 4000);
 */
 
 

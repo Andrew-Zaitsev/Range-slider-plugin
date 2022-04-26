@@ -11108,9 +11108,9 @@ class Model {
     }
 }
 Model.defaultOptions = {
-    minValue: 10,
-    maxValue: 70,
-    values: [15, 20],
+    minValue: 0,
+    maxValue: 100,
+    values: [20, 80],
     isVertical: false,
     hasScale: true,
     hasRange: true,
@@ -11126,25 +11126,28 @@ class Main {
     constructor() {
         this.init();
     }
+    getElem() {
+        return this.sliderElem;
+    }
+    makeUnselectable() {
+        this.sliderElem.classList.add('slider_unselectable');
+    }
+    makeSelectable() {
+        this.sliderElem.classList.remove('slider_unselectable');
+    }
     init() {
         this.sliderElem = document.createElement('div');
         this.sliderElem.classList.add('slider');
-    }
-    getElem() {
-        return this.sliderElem;
     }
 }
 
 ;// CONCATENATED MODULE: ./facade/view/components/scaleLabel.ts
 class ScaleLabel {
-    constructor(parent) {
-        this.init(parent);
+    constructor() {
+        this.init();
     }
     getElem() {
         return this.scaleLabelElem;
-    }
-    getTextElem() {
-        return this.scaleTextElem;
     }
     setPosition(options, value) {
         const { minValue, maxValue, isVertical, } = options;
@@ -11163,8 +11166,7 @@ class ScaleLabel {
     setLabelText(text) {
         this.getTextElem().textContent = text;
     }
-    init(parent) {
-        this.parentElem = parent;
+    init() {
         this.scaleLabelElem = document.createElement('div');
         this.scaleLabelElem.classList.add('slider__scale-label');
         this.scalePinElem = document.createElement('div');
@@ -11172,6 +11174,9 @@ class ScaleLabel {
         this.scaleTextElem = document.createElement('div');
         this.scaleTextElem.classList.add('slider__scale-text');
         this.scaleLabelElem.append(this.scaleTextElem, this.scalePinElem);
+    }
+    getTextElem() {
+        return this.scaleTextElem;
     }
 }
 
@@ -11208,7 +11213,7 @@ class Scale {
         if (residualSegmentValue !== undefined)
             segmentsValuesSequence.push(residualSegmentValue);
         for (let i = 0, labelValue = minValue; i < labelsNumber; i += 1) {
-            const label = new ScaleLabel(this.scaleElem);
+            const label = new ScaleLabel();
             label.setPosition(this.options, labelValue);
             label.setLabelText(labelValue.toString());
             this.scaleLabels.push(label);
@@ -11268,10 +11273,6 @@ class ThumbLabel {
         this.parent = parent;
         this.init();
     }
-    init() {
-        this.thumbLabelElem = document.createElement('div');
-        this.thumbLabelElem.classList.add('slider__thumb-label');
-    }
     getElem() {
         return this.thumbLabelElem;
     }
@@ -11281,8 +11282,9 @@ class ThumbLabel {
     setLabelText(text) {
         this.getElem().textContent = text;
     }
-    removeThumb() {
-        this.getElem().remove();
+    init() {
+        this.thumbLabelElem = document.createElement('div');
+        this.thumbLabelElem.classList.add('slider__thumb-label');
     }
 }
 
@@ -11292,12 +11294,6 @@ class Thumb {
     constructor(parent) {
         this.parent = parent;
         this.init();
-    }
-    init() {
-        this.thumbElem = document.createElement('div');
-        this.thumbElem.classList.add('slider__thumb');
-        this.thumbLabel = new ThumbLabel(this.getElem());
-        this.setLabel();
     }
     setLabel() {
         this.thumbElem.append(this.thumbLabel.getElem());
@@ -11341,6 +11337,12 @@ class Thumb {
             this.thumbElem.style.top = 'auto';
         }
     }
+    init() {
+        this.thumbElem = document.createElement('div');
+        this.thumbElem.classList.add('slider__thumb');
+        this.thumbLabel = new ThumbLabel(this.getElem());
+        this.setLabel();
+    }
     hasLabel() {
         return (this.getElem().querySelector('.slider__thumb-label') !== null);
     }
@@ -11354,14 +11356,9 @@ class Thumb {
 
 ;// CONCATENATED MODULE: ./facade/view/components/selectBar.ts
 class selectBar {
-    constructor(parent, options) {
+    constructor(parent) {
         this.parent = parent;
-        this.options = options;
         this.init();
-    }
-    init() {
-        this.selectBarElem = document.createElement('div');
-        this.selectBarElem.classList.add('slider__select-bar');
     }
     set() {
         this.parent.append(this.selectBarElem);
@@ -11394,6 +11391,10 @@ class selectBar {
             this.selectBarElem.style.top = '';
             this.selectBarElem.style.height = '';
         }
+    }
+    init() {
+        this.selectBarElem = document.createElement('div');
+        this.selectBarElem.classList.add('slider__select-bar');
     }
 }
 
@@ -11433,7 +11434,6 @@ class View {
         }
         else {
             // обновить весь слайдер -   значение ярлыков ползунков, положение селектбара
-            console.log('обновить весь слайдер');
             this.updateScale();
             this.setOrientation();
             this.setScaleIndent();
@@ -11443,8 +11443,16 @@ class View {
             this.updateSelectBarPosition();
         }
     }
-    updateOptions(newOptions) {
-        this.options = Object.assign(Object.assign({}, this.options), newOptions);
+    disableView() {
+        this.unbindListeners();
+        this.main.makeUnselectable();
+    }
+    enableView() {
+        this.bindListeners();
+        this.main.makeSelectable();
+    }
+    deleteView() {
+        this.main.getElem().remove();
     }
     init(parent, options) {
         this.parent = parent;
@@ -11453,7 +11461,7 @@ class View {
         this.main = new Main();
         this.sliderElem = this.main.getElem();
         this.parent.append(this.main.getElem());
-        this.setScale(this.sliderElem);
+        this.setScale();
         this.setThumbs();
         this.setSelectBar();
         this.setOrientation();
@@ -11463,13 +11471,16 @@ class View {
         this.updateSelectBarPosition();
         this.bindListeners();
     }
-    setScale(slider) {
-        this.scale = new Scale(slider, this.options);
+    updateOptions(newOptions) {
+        this.options = Object.assign(Object.assign({}, this.options), newOptions);
+    }
+    setScale() {
+        this.scale = new Scale(this.sliderElem, this.options);
         this.scale.set();
     }
     updateScale() {
         this.scale.getScaleElem().remove();
-        this.setScale(this.sliderElem);
+        this.setScale();
     }
     calculateScaleIndent() {
         let scaleIndent;
@@ -11524,7 +11535,7 @@ class View {
         this.thumbs.forEach((thumb, i) => thumb.updateLabel(this.options, i));
     }
     setSelectBar() {
-        this.selectBar = new selectBar(this.sliderElem, this.options);
+        this.selectBar = new selectBar(this.sliderElem);
         this.selectBar.set();
     }
     setScaleIndent() {
@@ -11538,8 +11549,10 @@ class View {
     bindListeners() {
         this.sliderElem.addEventListener('pointerdown', this.handlePointerDown);
     }
+    unbindListeners() {
+        this.sliderElem.removeEventListener('pointerdown', this.handlePointerDown);
+    }
     handlePointerDown(e) {
-        console.log('down');
         e.preventDefault();
         const target = e.target;
         const targetThumb = target === null || target === void 0 ? void 0 : target.closest('.slider__thumb');
@@ -11569,10 +11582,8 @@ class View {
         e.target.removeEventListener('pointerup', this.handlePointerUp);
         e.target.removeEventListener('pointermove', this.handlePointerMove);
         this.targetThumbIndex = 2;
-        console.log('up');
     }
     handlePointerMove(e) {
-        console.log('start - move');
         const value = this.calculateValue(e);
         let values;
         if (this.targetThumbIndex === 0) {
@@ -11656,6 +11667,15 @@ class Presenter {
     subscribeToModel(fn) {
         this.model.observer.subscribe(fn);
     }
+    disableSlider() {
+        this.view.disableView();
+    }
+    enableSlider() {
+        this.view.enableView();
+    }
+    deleteSlider() {
+        this.view.deleteView();
+    }
     init(parent, model) {
         this.model = model;
         this.view = new View(parent, model.getOptions());
@@ -11689,6 +11709,9 @@ class Facade {
     subscribeToModel(fn) {
         this.presenter.subscribeToModel(fn);
     }
+    getOptions() {
+        return this.model.getOptions();
+    }
     init(parent, userData) {
         this.model = new Model(userData);
         this.presenter = new Presenter(parent, this.model);
@@ -11707,11 +11730,13 @@ class Facade {
                 return this
                     .each((index, elem) => $(elem).data('facade', new Facade(elem, initOptions)));
             },
-            show() {
-                //
+            disable() {
+                return this
+                    .each((index, elem) => $(elem).data('facade').presenter.disableSlider());
             },
-            hide() {
-                //
+            enable() {
+                return this
+                    .each((index, elem) => $(elem).data('facade').presenter.enableSlider());
             },
             update(updateOptions) {
                 return this
@@ -11722,16 +11747,21 @@ class Facade {
                     .each((index, elem) => $(elem).data('facade').presenter.subscribeToModel(fn));
             },
             delete() {
+                return this
+                    .each((index, elem) => {
+                    $(elem).data('facade').presenter.deleteSlider();
+                    $(elem).removeData('facade');
+                });
                 //
             },
             getOptions() {
                 if (this.length === 1) {
-                    const options = $(this.get(0)).data('facade').presenter.model.getOptions();
+                    const options = $(this.get(0)).data('facade').getOptions();
                     return options;
                 }
                 const optionsArray = this
                     .each((i, sliderElem) => {
-                    optionsArray.push($(sliderElem).data('facade').presenter.model.getOptions());
+                    optionsArray.push($(sliderElem).data('facade').getOptions());
                 });
                 return optionsArray;
             },
