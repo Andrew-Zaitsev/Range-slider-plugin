@@ -3,3 +3,5 @@
 
 const tests = require.context('./src/facade/', true, /\.spec.ts$/);
 tests.keys().forEach(tests);
+
+// require('./src/facade/view/test-binding-listeners.ts');
